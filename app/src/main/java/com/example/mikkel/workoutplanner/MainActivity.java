@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.mikkel.workoutplanner.fragments.fragment_calender;
+import com.example.mikkel.workoutplanner.fragments.fragment_plans;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     break;
                 case R.id.navigation_plans:
+                    currentFragment = new fragment_plans();
                     break;
                 case R.id.navigation_calender:
                     currentFragment = new fragment_calender();
