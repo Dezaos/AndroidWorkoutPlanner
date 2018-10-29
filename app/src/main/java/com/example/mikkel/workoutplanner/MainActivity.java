@@ -3,9 +3,12 @@ package com.example.mikkel.workoutplanner;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.example.mikkel.workoutplanner.fragments.fragment_calender;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,17 +19,26 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment currentFragment = null;
+
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
+                    break;
+                case R.id.navigation_plans:
+                    break;
+                case R.id.navigation_calender:
+                    currentFragment = new fragment_calender();
+                    break;
             }
+
+            if(currentFragment != null)
+            {
+                android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.mainFrame,currentFragment);
+                fragmentTransaction.commit();
+                return true;
+            }
+
             return false;
         }
     };
