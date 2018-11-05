@@ -12,7 +12,7 @@ import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.Singletons.WorkoutPlansManager;
 import com.example.mikkel.workoutplanner.adapters.WorkoutPlanAdapter;
 
-public class fragment_plans extends Fragment
+public class Fragment_plans extends Fragment
 {
     private WorkoutPlanAdapter adapter;
 

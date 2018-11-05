@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.example.mikkel.workoutplanner.R;
+import com.example.mikkel.workoutplanner.Singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.data.WorkoutPlan;
+import com.example.mikkel.workoutplanner.fragments.Fragment_EditWorkoutPlan;
 
 import java.util.ArrayList;
 
@@ -36,7 +39,7 @@ public class WorkoutPlanAdapter extends ArrayAdapter<WorkoutPlan>
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("Test",item.name);
+                    FragmentTransitionManager.getInstance().InitializeFragment((AppCompatActivity)context,new Fragment_EditWorkoutPlan());
                 }
             });
         }

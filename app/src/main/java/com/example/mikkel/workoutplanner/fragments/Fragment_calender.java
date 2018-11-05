@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.example.mikkel.workoutplanner.R;
 
-public class fragment_calender extends Fragment
+public class Fragment_calender extends Fragment
 {
     @Nullable
     @Override
