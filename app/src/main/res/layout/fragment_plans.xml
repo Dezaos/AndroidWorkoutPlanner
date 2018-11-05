@@ -6,14 +6,19 @@
     android:orientation="vertical"
     android:gravity="center"
 >
-    <TextView
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/workout_plans"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"/>
+        android:gravity="center">
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/PlanNameEdirText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:hint="Name"
+            android:textSize="25dp"
+            android:gravity="center"/>
+    </android.support.design.widget.TextInputLayout>
 
     <ListView
         android:id="@+id/workoutListView"
@@ -23,5 +28,4 @@
         android:dividerHeight="0dp"
         android:divider="@android:color/transparent"
         />
-
 </LinearLayout>

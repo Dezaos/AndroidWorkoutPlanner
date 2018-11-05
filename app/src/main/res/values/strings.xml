@@ -8,4 +8,7 @@
     <string name="deafaultid">1</string>
     <string name="defaulttitle">defaultTitle</string>
     <string name="workout_plans">Workout plans</string>
+    <string name="defaultWorkplanName">Name</string>
+    <string name="weight">Weight</string>
+    <string name="Time">Time</string>
 </resources>
