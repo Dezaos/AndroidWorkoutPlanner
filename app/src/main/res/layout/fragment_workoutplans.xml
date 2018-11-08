@@ -11,6 +11,7 @@
         android:orientation="horizontal"
         android:layoutDirection="rtl"
         android:gravity="center_vertical"
+        android:background="@color/colorPrimaryDark"
         >
 
         <ImageButton
