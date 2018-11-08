@@ -11,17 +11,17 @@ import android.widget.ArrayAdapter;
 
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.Singletons.FragmentTransitionManager;
-import com.example.mikkel.workoutplanner.data.WorkoutPlan;
+import com.example.mikkel.workoutplanner.data.Exercise;
 import com.example.mikkel.workoutplanner.fragments.Fragment_EditWorkoutPlan;
 
 import java.util.ArrayList;
 
-public class WorkoutPlanAdapter extends ArrayAdapter<WorkoutPlan>
+public class ExerciseAdapter extends ArrayAdapter<Exercise>
 {
     private Context context;
-    private ArrayList<WorkoutPlan> workoutPlans;
+    private ArrayList<Exercise> exercises;
 
-    public WorkoutPlanAdapter(@NonNull Context context, ArrayList<WorkoutPlan> resource) {
+    public ExerciseAdapter(@NonNull Context context, ArrayList<Exercise> resource) {
         super(context,0, resource);
         this.context = context;
     }
@@ -29,7 +29,7 @@ public class WorkoutPlanAdapter extends ArrayAdapter<WorkoutPlan>
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        final WorkoutPlan item = getItem(position);
+        final Exercise item = getItem(position);
 
         if(convertView == null)
         {

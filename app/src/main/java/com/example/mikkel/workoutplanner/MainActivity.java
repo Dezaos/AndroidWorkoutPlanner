@@ -10,13 +10,14 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.mikkel.workoutplanner.Singletons.FragmentTransitionManager;
-import com.example.mikkel.workoutplanner.fragments.Fragment_calender;
-import com.example.mikkel.workoutplanner.fragments.Fragment_plans;
+import com.example.mikkel.workoutplanner.fragments.Fragment_Calender;
+import com.example.mikkel.workoutplanner.fragments.Fragment_WorkoutPlans;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static AppCompatActivity Activity;
+
     private TextView mTextMessage;
-    private AppCompatActivity _this;
     private int _lastBottomFragment = -1;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -33,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.navigation_plans:
                     currentItemIndex = 1;
-                    currentFragment = new Fragment_plans();
+                    currentFragment = new Fragment_WorkoutPlans();
                     break;
                 case R.id.navigation_calender:
                     currentItemIndex = 2;
-                    currentFragment = new Fragment_calender();
+                    currentFragment = new Fragment_Calender();
                     break;
             }
 
@@ -50,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
             int inAnimationOld = _lastBottomFragment < currentItemIndex ? R.anim.enter_from_right : R.anim.enter_from_left;
             int outAnimationCurrent = _lastBottomFragment < currentItemIndex ? R.anim.exit_to_left : R.anim.exit_to_right;
             int outAnimationOld = _lastBottomFragment < currentItemIndex ? R.anim.exit_to_right : R.anim.exit_to_left;
-            FragmentTransitionManager.getInstance().setCurrentFragmentAnimation(_this,inAnimationOld,outAnimationOld);
+            FragmentTransitionManager.getInstance().setCurrentFragmentAnimation(Activity,inAnimationOld,outAnimationOld);
 
             _lastBottomFragment = currentItemIndex;
             if(currentFragment != null)
             {
-                FragmentTransitionManager.getInstance().clearAndInitializeFragment(_this,currentFragment,inAnimationCurrent,outAnimationCurrent);
+                FragmentTransitionManager.getInstance().clearAndInitializeFragment(Activity,currentFragment,inAnimationCurrent,outAnimationCurrent);
                 return true;
             }
 
@@ -66,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Activity = this;
         setContentView(R.layout.activity_main);
 
-        _this = this;
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

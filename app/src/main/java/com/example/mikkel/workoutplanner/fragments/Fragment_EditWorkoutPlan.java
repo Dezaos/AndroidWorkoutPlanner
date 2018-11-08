@@ -12,6 +12,9 @@ import android.widget.AutoCompleteTextView;
 
 import com.example.mikkel.workoutplanner.R;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public class Fragment_EditWorkoutPlan extends Fragment {
 
     private String[] _muscleSuggestions = new String[]
@@ -34,6 +37,7 @@ public class Fragment_EditWorkoutPlan extends Fragment {
             }
         });
 
+        Arrays.sort(_muscleSuggestions);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(container.getContext(),
                 android.R.layout.simple_dropdown_item_1line,_muscleSuggestions);
         AutoCompleteTextView autoComplete = view.findViewById(R.id.MuscleEditText);

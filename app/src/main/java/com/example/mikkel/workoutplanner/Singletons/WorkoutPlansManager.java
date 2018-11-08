@@ -1,6 +1,6 @@
 package com.example.mikkel.workoutplanner.Singletons;
 
-import com.example.mikkel.workoutplanner.data.WorkoutPlan;
+import com.example.mikkel.workoutplanner.data.Exercise;
 
 import java.util.ArrayList;
 
@@ -11,22 +11,22 @@ public class WorkoutPlansManager {
         return ourInstance;
     }
 
-    private ArrayList<WorkoutPlan> workoutPlans = new ArrayList<>();
+    private ArrayList<Exercise> exercises = new ArrayList<>();
 
     private WorkoutPlansManager() {
         //Remove this, only for test purpose
-        workoutPlans.add(new WorkoutPlan("Leg Day"));
-        workoutPlans.add(new WorkoutPlan("Guns!!"));
-        workoutPlans.add(new WorkoutPlan("Cardio"));
+        exercises.add(new Exercise("Leg Day"));
+        exercises.add(new Exercise("Guns!!"));
+        exercises.add(new Exercise("Cardio"));
     }
 
-    public ArrayList<WorkoutPlan> getWorkoutPlans() {
-        return workoutPlans;
+    public ArrayList<Exercise> getExercises() {
+        return exercises;
     }
 
-    public void addWorkoutPlan(WorkoutPlan plan)
+    public void addWorkoutPlan(Exercise plan)
     {
-        workoutPlans.add(plan);
+        exercises.add(plan);
     }
 }
 
