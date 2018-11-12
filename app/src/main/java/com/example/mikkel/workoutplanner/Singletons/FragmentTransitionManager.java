@@ -5,8 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.FrameLayout;
 
 import com.example.mikkel.workoutplanner.R;
+
+import java.util.ArrayList;
 
 public class FragmentTransitionManager {
     private static final FragmentTransitionManager ourInstance = new FragmentTransitionManager();
@@ -15,6 +18,7 @@ public class FragmentTransitionManager {
     }
 
     private FragmentTransaction _currentFragmentTransition;
+    private ArrayList<FrameLayout> _savedFrames = new ArrayList<>();
 
     private FragmentTransitionManager() {
     }
@@ -43,6 +47,13 @@ public class FragmentTransitionManager {
             fragmentTransaction.setCustomAnimations(animationIn,animationOut,animationIn,animationOut);
         }
         int id = frameId == -1 ? R.id.mainFrame : frameId;
+        if(id != R.id.mainFrame)
+        {
+            FrameLayout frame = activity.findViewById(id);
+            if(frame != null && !_savedFrames.contains(frame))
+                _savedFrames.add(frame);
+        }
+
         fragmentTransaction.replace(id,fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -76,10 +87,24 @@ public class FragmentTransitionManager {
             fragmentTransaction.setCustomAnimations(animationIn,animationOut,animationIn,animationOut);
         }
 
+        for (int i = 0; i < _savedFrames.size(); i++) {
+            _savedFrames.get(i).removeAllViews();
+            _savedFrames.get(i).removeAllViewsInLayout();
+        }
+        _savedFrames.clear();
+
         int id = frameId == -1 ? R.id.mainFrame : frameId;
+        if(id != R.id.mainFrame)
+        {
+            FrameLayout frame = activity.findViewById(id);
+            if(frame != null && !_savedFrames.contains(frame))
+                _savedFrames.add(frame);
+        }
         fragmentTransaction.replace(id,fragment);
         fragmentTransaction.commit();
         _currentFragmentTransition = fragmentTransaction;
+
+
     }
 
 

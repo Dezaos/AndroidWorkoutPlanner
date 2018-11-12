@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:paddingTop="10dp"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="100dp"
+            android:text="@string/loginText"
+            android:textSize="21dp"
+            android:gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/ErrorText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loginErrorText"
+            android:textColor="@color/wrongColor"
+            android:visibility="invisible"/>
+
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loginButton" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:foregroundGravity="center_horizontal"
+        android:text="@string/personalDataText"
+        android:paddingBottom="10dp"
+        android:textSize="12dp"/>
+
+
+
+</RelativeLayout>

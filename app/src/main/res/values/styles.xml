@@ -1,6 +1,13 @@
 <resources>
     <style name="Theme.AppTheme.WorkoutPlannerTheme" parent="Theme.AppCompat.NoActionBar" >
         <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+    <style name="Theme.AppTheme.PopupStyle" parent="Theme.AppCompat.NoActionBar" >
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownVerticalOffset">-5dp</item>
     </style>
 
 </resources>

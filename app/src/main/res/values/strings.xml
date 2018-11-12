@@ -11,4 +11,12 @@
     <string name="defaultWorkplanName">Name</string>
     <string name="weight">Weight</string>
     <string name="Time">Time</string>
+    <string name="loginButton">Sign in with Email</string>
+    <string name="signupButton">Sign up</string>
+    <string name="loginText">Sign in to save your workouts to the cloud and sync to your different devices</string>
+    <string name="personalDataText">Your login is only used to store your workout data, your personal data will not be shared</string>
+    <string name="loginErrorText">*Something wen\'t wrong, try again</string>
+    <string name="LoginTitle">Login</string>
+    <string name="action_settings_title">Settings</string>
+    <string name="logoutText">Logout</string>
 </resources>

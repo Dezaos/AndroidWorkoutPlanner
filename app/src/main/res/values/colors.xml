@@ -2,5 +2,7 @@
 <resources>
     <color name="colorAccent">#ff9f43</color>
     <color name="topColor">#252525</color>
+    <color name="wrongColor">#e74c3c</color>
+
 
 </resources>
