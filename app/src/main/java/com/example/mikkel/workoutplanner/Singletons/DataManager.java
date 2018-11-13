@@ -23,16 +23,23 @@ public class DataManager {
 
     private FirebaseAuth _auth;
     private ArrayList<StateData> _stateData = new ArrayList<StateData>();
+    private boolean _init;
+    private FirebaseUser _user;
 
     public FirebaseUser get_user() {
         return _user;
     }
-
     public void set_user(FirebaseUser _user) {
         this._user = _user;
     }
 
-    private FirebaseUser _user;
+    public boolean get_init() {
+        return _init;
+    }
+
+    public void set_init(boolean _init) {
+        this._init = _init;
+    }
 
     private DataManager()
     {

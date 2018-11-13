@@ -1,33 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layoutDirection="rtl"
-        android:gravity="center_vertical"
         android:background="@color/topColor"
         >
 
-        <ImageButton
-            android:id="@+id/workplanAddButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/add"
-            android:backgroundTint="#fff"
-            />
-
         <android.support.design.widget.TabLayout
             android:id="@+id/WorkoutplanTabs"
-            android:layout_width="match_parent"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             app:tabMode="scrollable"
->
+            android:layout_alignParentLeft="true"
+            >
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,7 +53,17 @@
                 android:text="test1"/>
 
         </android.support.design.widget.TabLayout>
-    </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/workplanAddButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/add_white"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+
+ />
+    </RelativeLayout>
 
 
     <FrameLayout

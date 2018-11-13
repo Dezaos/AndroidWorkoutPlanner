@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int _lastBottomFragment = -1;
     BottomNavigationView _bottomNavigation;
+    private Menu _actionMenu;
     private MainActivityState _state;
 
     @Override
@@ -37,34 +38,44 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         _bottomNavigation = (BottomNavigationView) findViewById(R.id.navigation);
+        _bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        //Gets the current state of the activity, so when the activity is remade, then it know what
+        // is state where before
         _state = DataManager.getInstance().getState(MainActivityState.class);
         if(_state == null)
         {
-            _state = DataManager.getInstance().addState(new MainActivityState());
+            _state = DataManager.getInstance().addState(new MainActivityState(this));
         }
 
-        if(DataManager.getInstance().get_user() != null)
+        //If the app just have been opened, then check if it is logged in and act accountancy, else
+        //pop it's state
+        if(!DataManager.getInstance().get_init())
         {
-            loginSucces();
+            DataManager.getInstance().set_init(true);
+            if(DataManager.getInstance().get_user() != null)
+            {
+                loginSucces();
+            }
+            else
+            {
+                logout();
+            }
         }
-        else
-        {
-            logout();
-        }
+
+        _state.applyState();
     }
 
     private void logout()
     {
-        _bottomNavigation.setOnNavigationItemSelectedListener(null);
-        _bottomNavigation.setVisibility(View.INVISIBLE);
-        FragmentTransitionManager.getInstance().clearAndInitializeFragment(this,new Fragment_Login(),R.id.outerFrame);
+        setActionMenuVisibility(false);
+        FragmentTransitionManager.getInstance().clearAndInitializeFragment(this,new Fragment_Login(),R.id.mainFrame);
     }
 
     public void loginSucces()
     {
-        _bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        _bottomNavigation.setVisibility(View.VISIBLE);
+        setBottomNavigationVisibility(View.VISIBLE);
+        setActionMenuVisibility(true);
         changeMainFragment("Home",new Fragment_Home(),0);
     }
 
@@ -104,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void changeMainFragment(String newTitle, Fragment newFragment, int newIndex)
     {
-        getSupportActionBar().setTitle(newTitle);
+        _state.set_currentTitle(newTitle);
 
         int inAnimationCurrent = _lastBottomFragment < newIndex ? R.anim.enter_from_left : R.anim.enter_from_right;
         int inAnimationOld = _lastBottomFragment < newIndex ? R.anim.enter_from_right : R.anim.enter_from_left;
@@ -124,6 +135,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu,menu);
+        _actionMenu = menu;
+
+        for (int i = 0; i < _actionMenu.size(); i++) {
+            MenuItem item = _actionMenu.getItem(i);
+            item.setVisible(_state.get_showActionMenu());
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -139,4 +156,28 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void setBottomNavigationVisibility(int visibility)
+    {
+        _bottomNavigation.setVisibility(visibility);
+    }
+
+    public void setActionMenuVisibility(boolean show)
+    {
+        if(_actionMenu != null)
+        {
+            for (int i = 0; i < _actionMenu.size(); i++) {
+                MenuItem item = _actionMenu.getItem(i);
+                item.setVisible(show);
+            }
+        }
+        _state.set_showActionMenu(show);
+    }
+
+    public void changeTitle(String title)
+    {
+        _state.set_currentTitle(title);
+    }
+
+
 }

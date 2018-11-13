@@ -54,7 +54,7 @@ public class FragmentTransitionManager {
                 _savedFrames.add(frame);
         }
 
-        fragmentTransaction.replace(id,fragment);
+                fragmentTransaction.replace(id,fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         _currentFragmentTransition = fragmentTransaction;
