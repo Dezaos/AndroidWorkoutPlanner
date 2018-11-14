@@ -1,5 +1,6 @@
 package com.example.mikkel.workoutplanner.adapters;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,8 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
-import com.example.mikkel.workoutplanner.Singletons.FragmentTransitionManager;
+import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.data.Exercise;
 import com.example.mikkel.workoutplanner.fragments.Fragment_EditWorkoutPlan;
 
@@ -37,7 +39,12 @@ public class ExerciseAdapter extends ArrayAdapter<Exercise>
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FragmentTransitionManager.getInstance().initializeFragment((AppCompatActivity)context,new Fragment_EditWorkoutPlan(),R.anim.enlarge,R.anim.minimize);
+                    FragmentTransitionManager.getInstance().setCurrentFragmentAnimation(
+                            MainActivity.Activity,R.anim.enter_from_top,R.anim.exit_to_top);
+                    FragmentTransitionManager.getInstance().initializeFragment(
+                            (AppCompatActivity)context,new Fragment_EditWorkoutPlan(),
+                            R.anim.enter_from_bottom,R.anim.exit_to_bottom);
+
                 }
             });
         }

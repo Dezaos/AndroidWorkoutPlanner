@@ -5,11 +5,11 @@ import android.view.View;
 
 public class ViewState
 {
-    public Context Context;
+    public View view;
     public int Visibility;
 
-    public ViewState(Context context, int visibility) {
-        Context = context;
+    public ViewState(View view, int visibility) {
+        this.view = view;
         Visibility = visibility;
     }
 }

@@ -1,6 +1,5 @@
-package com.example.mikkel.workoutplanner.Singletons;
+package com.example.mikkel.workoutplanner.singletons;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 
 import com.example.mikkel.workoutplanner.MainActivity;

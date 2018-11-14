@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.mikkel.workoutplanner.R;
-import com.example.mikkel.workoutplanner.Singletons.WorkoutPlansManager;
+import com.example.mikkel.workoutplanner.singletons.WorkoutPlansManager;
 import com.example.mikkel.workoutplanner.adapters.ExerciseAdapter;
 
 public class Fragment_Exercises extends Fragment

@@ -16,24 +16,24 @@ public class StateData
 {
     private Map<Integer,ViewState> _views = new HashMap<Integer, ViewState>();
 
-    public void setVisibleityOfView(Context context, int id, int visibility)
+    public void setVisibleityOfView(View view, int id, int visibility)
     {
-        View v = ((Activity)context).findViewById(id);
+        View v = view.findViewById(id);
         if(v != null)
         {
             if(!_views.containsKey(id))
-                _views.put(id,new ViewState(context,visibility));
+                _views.put(id,new ViewState(view,visibility));
             else
             {
                 _views.get(id).Visibility = visibility;
             }
-            setVisibility(context,id,visibility);
+            setVisibility(view,id,visibility);
         }
     }
 
-    private void setVisibility(Context context,int id, int visibility)
+    private void setVisibility(View view,int id, int visibility)
     {
-        ((Activity)context).findViewById(id).setVisibility(visibility);
+        view.findViewById(id).setVisibility(visibility);
     }
 
     private void popAllVisibilityState()
@@ -41,7 +41,7 @@ public class StateData
         for(Integer id : _views.keySet())
         {
             ViewState state = _views.get(id);
-            setVisibility(state.Context,id,state.Visibility);
+            setVisibility(state.view,id,state.Visibility);
         }
     }
 

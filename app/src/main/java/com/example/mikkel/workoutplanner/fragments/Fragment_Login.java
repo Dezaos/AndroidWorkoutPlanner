@@ -13,9 +13,8 @@ import android.widget.TextView;
 
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
-import com.example.mikkel.workoutplanner.Singletons.DataManager;
+import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;

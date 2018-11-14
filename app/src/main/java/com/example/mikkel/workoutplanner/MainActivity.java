@@ -11,14 +11,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.mikkel.workoutplanner.Singletons.DataManager;
-import com.example.mikkel.workoutplanner.Singletons.FragmentTransitionManager;
+import com.example.mikkel.workoutplanner.singletons.DataManager;
+import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.data.StateData.MainActivityState;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Calender;
 
 import com.example.mikkel.workoutplanner.fragments.Fragment_Home;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
-import com.example.mikkel.workoutplanner.fragments.Fragment_WorkoutPlans;
+import com.example.mikkel.workoutplanner.fragments.Fragment_Plans;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setBottomNavigationVisibility(View.VISIBLE);
         setActionMenuVisibility(true);
         changeMainFragment("Home",new Fragment_Home(),0);
+        _bottomNavigation.getMenu().findItem(R.id.navigation_home).setChecked(true);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -96,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.navigation_plans:
                     currentItemIndex = 1;
-                    currentFragment = new Fragment_WorkoutPlans();
-                    newTitle = "Edit Workout Plans";
+                    currentFragment = new Fragment_Plans();
+                    newTitle = "Workout Plans";
                     break;
                 case R.id.navigation_calender:
                     currentItemIndex = 2;
