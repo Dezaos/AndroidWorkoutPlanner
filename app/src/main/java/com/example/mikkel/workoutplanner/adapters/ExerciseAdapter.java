@@ -39,11 +39,13 @@ public class ExerciseAdapter extends ArrayAdapter<Exercise>
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FragmentTransitionManager.getInstance().setCurrentFragmentAnimation(
-                            MainActivity.Activity,R.anim.enter_from_top,R.anim.exit_to_top);
+//                    FragmentTransitionManager.getInstance().setCurrentFragmentAnimation(
+//                            (AppCompatActivity)context,R.anim.exit_to_top,R.anim.exit_to_top);
+
                     FragmentTransitionManager.getInstance().initializeFragment(
-                            (AppCompatActivity)context,new Fragment_EditWorkoutPlan(),
-                            R.anim.enter_from_bottom,R.anim.exit_to_bottom);
+                            (AppCompatActivity)context,new Fragment_EditWorkoutPlan(), false,
+                            R.anim.enter_from_bottom,R.anim.exit_to_top,
+                            R.anim.enter_from_top,R.anim.exit_to_bottom);
 
                 }
             });

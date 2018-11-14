@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private void logout()
     {
         setActionMenuVisibility(false);
-        FragmentTransitionManager.getInstance().clearAndInitializeFragment(this,new Fragment_Login(),R.id.mainFrame);
+        FragmentTransitionManager.getInstance().initializeFragment(this,new Fragment_Login(),true,R.id.mainFrame);
     }
 
     public void loginSucces()
@@ -119,15 +119,16 @@ public class MainActivity extends AppCompatActivity {
         _state.set_currentTitle(newTitle);
 
         int inAnimationCurrent = _lastBottomFragment < newIndex ? R.anim.enter_from_left : R.anim.enter_from_right;
-        int inAnimationOld = _lastBottomFragment < newIndex ? R.anim.enter_from_right : R.anim.enter_from_left;
+        int inAnimationBackstack = _lastBottomFragment < newIndex ? R.anim.enter_from_right : R.anim.enter_from_left;
         int outAnimationCurrent = _lastBottomFragment < newIndex ? R.anim.exit_to_left : R.anim.exit_to_right;
-        int outAnimationOld = _lastBottomFragment < newIndex ? R.anim.exit_to_right : R.anim.exit_to_left;
-        FragmentTransitionManager.getInstance().setCurrentFragmentAnimation(Activity,inAnimationOld,outAnimationOld);
+        int outAnimationBackstack = _lastBottomFragment < newIndex ? R.anim.exit_to_right : R.anim.exit_to_left;
+//        FragmentTransitionManager.getInstance().setCurrentFragmentAnimation(Activity,inAnimationOld,outAnimationOld);
 
         _lastBottomFragment = newIndex;
         if(newFragment != null)
         {
-            FragmentTransitionManager.getInstance().clearAndInitializeFragment(Activity,newFragment,inAnimationCurrent,outAnimationCurrent);
+            FragmentTransitionManager.getInstance().initializeFragment(Activity,newFragment,false,
+                    inAnimationCurrent,outAnimationCurrent,inAnimationBackstack,outAnimationBackstack);
         }
 
     }

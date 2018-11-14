@@ -54,7 +54,8 @@ public class DataManager {
                 .signOut(MainActivity.Activity)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     public void onComplete(@NonNull Task<Void> task) {
-                        FragmentTransitionManager.getInstance().clearAndInitializeFragment(MainActivity.Activity,new Fragment_Login());
+                        FragmentTransitionManager.getInstance().initializeFragment(
+                                MainActivity.Activity,new Fragment_Login(),true);
                     }
                 });
 

@@ -17,106 +17,53 @@ public class FragmentTransitionManager {
     }
 
     private FragmentTransaction _currentFragmentTransition;
-    private ArrayList<FrameLayout> _savedFrames = new ArrayList<>();
 
     private FragmentTransitionManager() {
     }
 
-    public void initializeFragment(AppCompatActivity activity, Fragment fragment)
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment, boolean clear)
     {
-        initializeFragment(activity,fragment,-1,-1,-1);
+        initializeFragment(activity,fragment,clear,-1,-1,-1,-1-1);
     }
 
-    public void initializeFragment(AppCompatActivity activity, Fragment fragment, int frameId)
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment, boolean clear, int frameId)
     {
-        initializeFragment(activity,fragment,-1,-1,frameId);
+        initializeFragment(activity,fragment,clear,-1,-1,-1,-1,frameId);
     }
 
-    public void initializeFragment(AppCompatActivity activity, Fragment fragment, int animationIn, int animationOut)
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment, boolean clear, int animationIn, int animationOut, int backstackAnimationIn, int backStackAnimationOut)
     {
-        initializeFragment(activity,fragment,animationIn,animationOut,-1);
+        initializeFragment(activity,fragment,clear,animationIn,animationOut,backstackAnimationIn,backStackAnimationOut,-1);
     }
 
-    public void initializeFragment(AppCompatActivity activity, Fragment fragment, int animationIn, int animationOut, int frameId)
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment,boolean clear, int animationIn, int animationOut, int backstackAnimationIn, int backStackAnimationOut, int frameId)
     {
         FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
 
-        if(animationIn != -1 && animationOut != -1)
+        if(clear)
         {
-            fragmentTransaction.setCustomAnimations(animationIn,animationOut,animationIn,animationOut);
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            if(fragmentManager.getBackStackEntryCount() > 0)
+            {
+                fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+        }
+
+        if(animationIn != -1 && animationOut != -1 &&
+                backstackAnimationIn != -1 && backStackAnimationOut != -1)
+        {
+            fragmentTransaction.setCustomAnimations(animationIn,animationOut,
+                    backstackAnimationIn,backStackAnimationOut);
         }
         int id = frameId == -1 ? R.id.mainFrame : frameId;
-        if(id != R.id.mainFrame)
-        {
-            FrameLayout frame = activity.findViewById(id);
-            if(frame != null && !_savedFrames.contains(frame))
-                _savedFrames.add(frame);
-        }
 
-                fragmentTransaction.replace(id,fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        _currentFragmentTransition = fragmentTransaction;
-    }
-
-
-    public void clearAndInitializeFragment(AppCompatActivity activity, Fragment fragment, int frameId)
-    {
-        clearAndInitializeFragment(activity,fragment,-1,-1,frameId);
-    }
-
-    public void clearAndInitializeFragment(AppCompatActivity activity, Fragment fragment, int animationIn, int animationOut)
-    {
-        clearAndInitializeFragment(activity,fragment,animationIn,animationOut,-1);
-    }
-
-    public void clearAndInitializeFragment(AppCompatActivity activity, Fragment fragment, int animationIn, int animationOut,int frameId)
-    {
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-
-        if(fragmentManager.getBackStackEntryCount() > 0)
-        {
-            fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        if(animationIn != -1 && animationOut != -1)
-        {
-            fragmentTransaction.setCustomAnimations(animationIn,animationOut,animationIn,animationOut);
-        }
-
-        for (int i = 0; i < _savedFrames.size(); i++) {
-            _savedFrames.get(i).removeAllViews();
-            _savedFrames.get(i).removeAllViewsInLayout();
-        }
-        _savedFrames.clear();
-
-        int id = frameId == -1 ? R.id.mainFrame : frameId;
-        if(id != R.id.mainFrame)
-        {
-            FrameLayout frame = activity.findViewById(id);
-            if(frame != null && !_savedFrames.contains(frame))
-                _savedFrames.add(frame);
-        }
+        //Replace or add to backstack
+        if(!clear)
+            fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(id,fragment);
         fragmentTransaction.commit();
+
+        //Save current Transition
         _currentFragmentTransition = fragmentTransaction;
-
-
-    }
-
-
-    public void clearAndInitializeFragment(AppCompatActivity activity, Fragment fragment)
-    {
-        clearAndInitializeFragment(activity,fragment,-1,-1,-1);
-    }
-
-
-
-    public void setCurrentFragmentAnimation(AppCompatActivity activity, int animationIn, int animationOut)
-    {
-        if(_currentFragmentTransition != null)
-            _currentFragmentTransition.setCustomAnimations(animationIn,animationOut,animationIn,animationOut);
     }
 }
