@@ -19,6 +19,11 @@ import com.example.mikkel.workoutplanner.fragments.Fragment_Calender;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Home;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Plans;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity {

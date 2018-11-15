@@ -1,5 +1,5 @@
 package com.example.mikkel.workoutplanner.Interfaces;
 
-public interface onPositiveClick {
+public interface OnPositiveClick {
     public void onPositiveClicked(Object data);
 }
