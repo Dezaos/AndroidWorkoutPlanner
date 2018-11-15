@@ -9,11 +9,17 @@ import android.view.ViewGroup;
 
 import com.example.mikkel.workoutplanner.R;
 
-public class Fragment_Home extends Fragment
+public class Fragment_Home extends NavigationFragment
 {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home,container,false);
+    }
+
+    @Override
+    protected void onCreateNavigation() {
+        super.onCreateNavigation();
+        setToolbarTitle("Home");
     }
 }

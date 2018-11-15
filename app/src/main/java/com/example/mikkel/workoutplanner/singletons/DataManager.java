@@ -16,6 +16,8 @@ import java.util.ArrayList;
 public class DataManager {
     private static final DataManager ourInstance = new DataManager();
 
+    public static final String PlansDataName = "Plans";
+
     public static DataManager getInstance() {
         return ourInstance;
     }

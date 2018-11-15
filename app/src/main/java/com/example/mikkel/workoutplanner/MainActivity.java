@@ -62,21 +62,17 @@ public class MainActivity extends AppCompatActivity {
                 logout();
             }
         }
-
         _state.applyState();
     }
 
     private void logout()
     {
-        setActionMenuVisibility(false);
         FragmentTransitionManager.getInstance().initializeFragment(this,new Fragment_Login(),true,R.id.mainFrame);
     }
 
     public void loginSucces()
     {
-        setBottomNavigationVisibility(View.VISIBLE);
-        setActionMenuVisibility(true);
-        changeMainFragment("Home",new Fragment_Home(),0);
+        changeMainFragment(new Fragment_Home(),0);
         _bottomNavigation.getMenu().findItem(R.id.navigation_home).setChecked(true);
     }
 
@@ -88,47 +84,41 @@ public class MainActivity extends AppCompatActivity {
             Fragment currentFragment = null;
 
             int currentItemIndex = -1;
-            String newTitle = "Home";
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     currentItemIndex = 0;
                     currentFragment = new Fragment_Home();
-                    newTitle = "Home";
                     break;
                 case R.id.navigation_plans:
                     currentItemIndex = 1;
                     currentFragment = new Fragment_Plans();
-                    newTitle = "Workout Plans";
                     break;
                 case R.id.navigation_calender:
                     currentItemIndex = 2;
                     currentFragment = new Fragment_Calender();
-                    newTitle = "Calender";
                     break;
             }
 
             if(currentItemIndex == _lastBottomFragment)
                 return false;
-            changeMainFragment(newTitle,currentFragment,currentItemIndex);
+            changeMainFragment(currentFragment,currentItemIndex);
             return true;
         }
     };
 
-    private void changeMainFragment(String newTitle, Fragment newFragment, int newIndex)
+    private void changeMainFragment(Fragment newFragment, int newIndex)
     {
-        _state.set_currentTitle(newTitle);
-
+        //old animations
         int inAnimationCurrent = _lastBottomFragment < newIndex ? R.anim.enter_from_left : R.anim.enter_from_right;
         int inAnimationBackstack = _lastBottomFragment < newIndex ? R.anim.enter_from_right : R.anim.enter_from_left;
         int outAnimationCurrent = _lastBottomFragment < newIndex ? R.anim.exit_to_left : R.anim.exit_to_right;
         int outAnimationBackstack = _lastBottomFragment < newIndex ? R.anim.exit_to_right : R.anim.exit_to_left;
-//        FragmentTransitionManager.getInstance().setCurrentFragmentAnimation(Activity,inAnimationOld,outAnimationOld);
 
         _lastBottomFragment = newIndex;
         if(newFragment != null)
         {
             FragmentTransitionManager.getInstance().initializeFragment(Activity,newFragment,false,
-                    inAnimationCurrent,outAnimationCurrent,inAnimationBackstack,outAnimationBackstack);
+                    R.anim.fade_in,R.anim.fade_out,R.anim.fade_in,R.anim.fade_out);
         }
 
     }
@@ -175,11 +165,5 @@ public class MainActivity extends AppCompatActivity {
         }
         _state.set_showActionMenu(show);
     }
-
-    public void changeTitle(String title)
-    {
-        _state.set_currentTitle(title);
-    }
-
 
 }

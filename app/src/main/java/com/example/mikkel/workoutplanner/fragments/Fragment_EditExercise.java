@@ -3,7 +3,6 @@ package com.example.mikkel.workoutplanner.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +11,9 @@ import android.widget.AutoCompleteTextView;
 
 import com.example.mikkel.workoutplanner.R;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
-public class Fragment_EditWorkoutPlan extends Fragment {
+public class Fragment_EditExercise extends NavigationFragment {
 
     private String[] _muscleSuggestions = new String[]
             {
@@ -28,14 +26,7 @@ public class Fragment_EditWorkoutPlan extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.edit_exercise,container,false);
-
-        view.findViewById(R.id.EditPlanCloseButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getFragmentManager().popBackStack();
-            }
-        });
+        View view = inflater.inflate(R.layout.fragment_edit_exercise,container,false);
 
         Arrays.sort(_muscleSuggestions);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(container.getContext(),
@@ -49,6 +40,26 @@ public class Fragment_EditWorkoutPlan extends Fragment {
                 ((AutoCompleteTextView)view).showDropDown();
             }
         });
+
+
         return view;
+    }
+
+    @Override
+    protected void onCreateNavigation() {
+        super.onCreateNavigation();
+        setToolbarTitle("Edit exercise");
+        setupBottomNavigation(View.GONE);
+        if(toolbar != null)
+        {
+            toolbar.setNavigationIcon(R.drawable.back_white);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getFragmentManager().popBackStack();
+                }
+            });
+        }
     }
 }

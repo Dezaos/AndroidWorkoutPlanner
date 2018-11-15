@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="bottomFragmentTransitionDuration">200</integer>
-    <integer name="enlargeTransitionDuration">200</integer>
-    <integer name="minimizeTransitionDuration">200</integer>
-
-
+    <integer name="animTime">200</integer>
 </resources>

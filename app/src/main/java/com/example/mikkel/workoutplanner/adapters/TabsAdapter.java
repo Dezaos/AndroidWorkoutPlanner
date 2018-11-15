@@ -35,4 +35,6 @@ public class TabsAdapter extends FragmentStatePagerAdapter{
         return fragments.size();
     }
 
+    public void clear(){fragments.clear();}
+
 }

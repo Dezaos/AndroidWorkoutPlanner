@@ -12,6 +12,8 @@
         android:gravity="center"
         android:orientation="vertical">
 
+        <include layout="@layout/tool_bar"/>
+
         <TextView
             android:paddingTop="10dp"
             android:layout_width="325dp"

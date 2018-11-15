@@ -22,7 +22,7 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class Fragment_Login extends Fragment
+public class Fragment_Login extends NavigationFragment
 {
     private View _view;
     final int LOGIN_RC = 1;
@@ -32,8 +32,7 @@ public class Fragment_Login extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_login,container,false);
 
-        //Hide the bottom navigation bar and action menu
-        MainActivity.Activity.setBottomNavigationVisibility(View.GONE);
+
 
         Button loginButton = _view.findViewById(R.id.loginButton);
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -50,9 +49,6 @@ public class Fragment_Login extends Fragment
                         LOGIN_RC);
             }
         });
-
-        MainActivity.Activity.getSupportActionBar().setTitle(R.string.LoginTitle);
-
         return _view;
     }
 
@@ -71,5 +67,13 @@ public class Fragment_Login extends Fragment
                 errorText.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    @Override
+    protected void onCreateNavigation() {
+        super.onCreateNavigation();
+        setToolbarTitle("Login");
+        setupBottomNavigation(View.GONE);
+        setupActioMenu(false);
     }
 }
