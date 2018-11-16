@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void loginSucces()
     {
+        DataManager.getInstance().login();
         changeMainFragment(new Fragment_Home(),0);
         _bottomNavigation.getMenu().findItem(R.id.navigation_home).setChecked(true);
     }
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         _lastBottomFragment = newIndex;
         if(newFragment != null)
         {
-            FragmentTransitionManager.getInstance().initializeFragment(Activity,newFragment,false,
+            FragmentTransitionManager.getInstance().initializeFragment(Activity,newFragment,true,
                     R.anim.fade_in,R.anim.fade_out,R.anim.fade_in,R.anim.fade_out);
         }
 

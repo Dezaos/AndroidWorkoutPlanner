@@ -7,7 +7,7 @@
     <style name="Theme.AppTheme.PopupStyle" parent="Theme.AppCompat.NoActionBar" >
         <item name="colorAccent">@color/colorAccent</item>
         <item name="overlapAnchor">false</item>
-        <item name="android:dropDownVerticalOffset">-5dp</item>
+        <item name="android:dropDownVerticalOffset">-7dp</item>
     </style>
 
 </resources>

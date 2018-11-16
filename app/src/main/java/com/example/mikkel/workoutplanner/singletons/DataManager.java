@@ -65,28 +65,33 @@ public class DataManager {
     {
         _auth = FirebaseAuth.getInstance();
         _user = _auth.getCurrentUser();
+    }
 
+    public void login()
+    {
         FirebaseDatabase.getInstance().getReference().
                 child(DataManager.PlansDataName).child(_user.getUid()).
                 addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                plans.clear();
-                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                while (iterator.hasNext())
-                {
-                    Plan plan = iterator.next().getValue(Plan.class);
-                    plans.add(plan);
-                }
-                eventHandler.notifyAllListeners(plans);
-            }
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        plans.clear();
+                        Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                        while (iterator.hasNext())
+                        {
+                            Plan plan = iterator.next().getValue(Plan.class);
+                            plans.add(plan);
+                        }
+                        eventHandler.notifyAllListeners(plans);
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
+
     }
+
 
     public void logout()
     {
