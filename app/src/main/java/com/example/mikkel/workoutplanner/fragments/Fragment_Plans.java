@@ -3,6 +3,7 @@ package com.example.mikkel.workoutplanner.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -96,7 +97,9 @@ public class Fragment_Plans extends NavigationFragment implements OnPositiveClic
         ArrayList<Plan> plans = DataManager.getInstance().getPlans();
         for (int i = 0; i < plans.size(); i++) {
             Plan plan = plans.get(i);
-            tabsAdapter.addItem(new Fragment_Exercises(),plan.getName());
+            Fragment_Exercises exercises = new Fragment_Exercises();
+            exercises.setPlanUId(plan.getuId());
+            tabsAdapter.addItem(exercises,plan.getName());
         }
         tabsAdapter.notifyDataSetChanged();
         setCurrentTab();
@@ -145,7 +148,7 @@ public class Fragment_Plans extends NavigationFragment implements OnPositiveClic
 
         Plan plan = new Plan();
         plan.setName((String)data);
-        database.child(DataManager.PlansDataName).child(DataManager.getInstance().get_user().getUid()).push().setValue(plan);
+        database.child(DataManager.PLANS_PATH_ID).child(DataManager.getInstance().get_user().getUid()).push().setValue(plan);
         syncPlans();
         setCurrentTab();
     }

@@ -18,6 +18,10 @@ public class FragmentTransitionManager {
 
     private FragmentTransaction _currentFragmentTransition;
 
+    public FragmentTransaction get_currentFragmentTransition() {
+        return _currentFragmentTransition;
+    }
+
     private FragmentTransitionManager() {
     }
 
@@ -66,4 +70,6 @@ public class FragmentTransitionManager {
         //Save current Transition
         _currentFragmentTransition = fragmentTransaction;
     }
+
+
 }

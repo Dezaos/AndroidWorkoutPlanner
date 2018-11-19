@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -11,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.mikkel.workoutplanner.data.Database.Exercise;
+import com.example.mikkel.workoutplanner.data.Database.Plan;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.data.StateData.MainActivityState;
@@ -35,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     private Menu _actionMenu;
     private MainActivityState _state;
 
+    public MainActivityState get_state() {
+        return _state;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         if(_state == null)
         {
             _state = DataManager.getInstance().addState(new MainActivityState(this));
+            _state.setMenuId(R.menu.menu);
         }
 
         //If the app just have been opened, then check if it is logged in and act accountancy, else
@@ -132,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
+        inflater.inflate(_state.getMenuId(),menu);
         _actionMenu = menu;
 
         for (int i = 0; i < _actionMenu.size(); i++) {
@@ -151,6 +159,20 @@ public class MainActivity extends AppCompatActivity {
                 logout();
                 DataManager.getInstance().logout();
             break;
+            case R.id.add_exercise:
+                Exercise exercise = DataManager.getInstance().getCurrentEditExercise();
+                DataManager.getInstance().setCurrentEditExercise(null);
+
+                if(exercise != null && exercise.valid())
+                {
+                    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+                    String uId = DataManager.getInstance().get_user().getUid();
+                    database.child(DataManager.EXERCISES_PATH_ID).child(uId).child(exercise.getPlanUId()).push().setValue(exercise);
+                }
+
+                getSupportFragmentManager().popBackStack();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

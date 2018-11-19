@@ -5,6 +5,17 @@ import com.example.mikkel.workoutplanner.MainActivity;
 public class MainActivityState extends StateData
 {
     private boolean _showActionMenu;
+    private int menuId;
+
+    public int getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(int menuId)
+    {
+        this.menuId = menuId;
+        MainActivity.Activity.invalidateOptionsMenu();
+    }
 
     public boolean get_showActionMenu() {
         return _showActionMenu;
@@ -23,4 +34,6 @@ public class MainActivityState extends StateData
     public void applyState() {
         super.applyState();
     }
+
+
 }

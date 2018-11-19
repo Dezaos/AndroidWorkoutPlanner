@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
-import com.example.mikkel.workoutplanner.data.Exercise;
+import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.fragments.Fragment_EditExercise;
 
 import java.util.ArrayList;

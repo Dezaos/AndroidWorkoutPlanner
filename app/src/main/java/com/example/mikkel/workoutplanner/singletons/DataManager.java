@@ -1,12 +1,13 @@
 package com.example.mikkel.workoutplanner.singletons;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.Utils.EventHandler;
+import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.data.Database.Plan;
 import com.example.mikkel.workoutplanner.data.StateData.StateData;
-import com.example.mikkel.workoutplanner.fragments.Fragment_Exercises;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -15,7 +16,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -23,21 +23,28 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class DataManager {
+
+    //Singleton field & property
     private static final DataManager ourInstance = new DataManager();
-
-    public static final String PlansDataName = "Plans";
-
     public static DataManager getInstance() {
         return ourInstance;
     }
 
+    //Static fields
+    public static final String PLANS_PATH_ID = "Plans";
+    public static final String EXERCISES_PATH_ID = "Exercises";
+
+    //Fields
     private FirebaseAuth _auth;
     private ArrayList<StateData> _stateData = new ArrayList<StateData>();
     private boolean _init;
     private FirebaseUser _user;
     private ArrayList<Plan> plans = new ArrayList<>();
+    private ArrayList<Exercise> exercises = new ArrayList<>();
     private EventHandler eventHandler = new EventHandler();
+    private Exercise currentEditExercise;
 
+    //Properties
     public FirebaseUser get_user() {
         return _user;
     }
@@ -61,6 +68,23 @@ public class DataManager {
         return eventHandler;
     }
 
+    public ArrayList<Exercise> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(ArrayList<Exercise> exercises) {
+        this.exercises = exercises;
+    }
+
+    public Exercise getCurrentEditExercise() {
+        return currentEditExercise;
+    }
+
+    public void setCurrentEditExercise(Exercise currentEditExercise) {
+        this.currentEditExercise = currentEditExercise;
+    }
+
+    //Contructor
     private DataManager()
     {
         _auth = FirebaseAuth.getInstance();
@@ -69,8 +93,13 @@ public class DataManager {
 
     public void login()
     {
+        subscribeSyncEvents();
+    }
+
+    private void subscribeSyncEvents()
+    {
         FirebaseDatabase.getInstance().getReference().
-                child(DataManager.PlansDataName).child(_user.getUid()).
+                child(DataManager.PLANS_PATH_ID).child(_user.getUid()).
                 addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -78,7 +107,9 @@ public class DataManager {
                         Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                         while (iterator.hasNext())
                         {
-                            Plan plan = iterator.next().getValue(Plan.class);
+                            DataSnapshot snapshot = iterator.next();
+                            Plan plan = snapshot.getValue(Plan.class);
+                            plan.setuId(snapshot.getKey());
                             plans.add(plan);
                         }
                         eventHandler.notifyAllListeners(plans);
@@ -90,8 +121,28 @@ public class DataManager {
                     }
                 });
 
-    }
+        FirebaseDatabase.getInstance().getReference().
+                child(DataManager.EXERCISES_PATH_ID).child(_user.getUid()).addValueEventListener(
+                        new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                exercises.clear();
+                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                while (iterator.hasNext())
+                {
+                    DataSnapshot snapshot = iterator.next();
+                    Exercise exercise = snapshot.getValue(Exercise.class);
+                    exercises.add(exercise);
+                }
+                eventHandler.notifyAllListeners(exercises);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     public void logout()
     {
@@ -124,5 +175,7 @@ public class DataManager {
         }
         return null;
     }
+
+
 
 }
