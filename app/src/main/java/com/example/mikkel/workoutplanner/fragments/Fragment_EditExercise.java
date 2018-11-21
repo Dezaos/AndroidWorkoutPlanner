@@ -3,13 +3,11 @@ package com.example.mikkel.workoutplanner.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.example.mikkel.workoutplanner.Enums.ExerciseType;
@@ -31,7 +29,7 @@ public class Fragment_EditExercise extends NavigationFragment {
             };
 
     private String uId;
-    private String planUId;
+    private String routineUId;
     private int savedMenu;
     private Exercise currentExercise;
 
@@ -43,12 +41,12 @@ public class Fragment_EditExercise extends NavigationFragment {
         this.uId = uId;
     }
 
-    public String getPlanUId() {
-        return planUId;
+    public String getRoutineUId() {
+        return routineUId;
     }
 
-    public void setPlanUId(String planUId) {
-        this.planUId = planUId;
+    public void setRoutineUId(String routineUId) {
+        this.routineUId = routineUId;
     }
 
     @Nullable
@@ -74,7 +72,7 @@ public class Fragment_EditExercise extends NavigationFragment {
         currentExercise = DataManager.getInstance().getCurrentEditExercise();
 
         RadioGroup radioGroup = view.findViewById(R.id.exerciseType);
-        if(planUId == null)
+        if(routineUId == null)
             radioGroup.check(0);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

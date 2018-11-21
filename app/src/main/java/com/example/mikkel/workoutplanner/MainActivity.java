@@ -4,16 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
-import com.example.mikkel.workoutplanner.data.Database.Plan;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.data.StateData.MainActivityState;
@@ -21,12 +18,9 @@ import com.example.mikkel.workoutplanner.fragments.Fragment_Calender;
 
 import com.example.mikkel.workoutplanner.fragments.Fragment_Home;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
-import com.example.mikkel.workoutplanner.fragments.Fragment_Plans;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.example.mikkel.workoutplanner.fragments.Fragment_Routines;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -103,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
                     currentItemIndex = 0;
                     currentFragment = new Fragment_Home();
                     break;
-                case R.id.navigation_plans:
+                case R.id.navigation_routines:
                     currentItemIndex = 1;
-                    currentFragment = new Fragment_Plans();
+                    currentFragment = new Fragment_Routines();
                     break;
                 case R.id.navigation_calender:
                     currentItemIndex = 2;

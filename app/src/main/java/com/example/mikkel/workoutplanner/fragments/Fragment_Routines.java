@@ -3,7 +3,6 @@ package com.example.mikkel.workoutplanner.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -15,9 +14,9 @@ import com.example.mikkel.workoutplanner.Interfaces.Notification;
 import com.example.mikkel.workoutplanner.Interfaces.OnPositiveClick;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.adapters.TabsAdapter;
-import com.example.mikkel.workoutplanner.data.Database.Plan;
-import com.example.mikkel.workoutplanner.data.StateData.PlansFragmentState;
-import com.example.mikkel.workoutplanner.dialogs.DialogNewPlan;
+import com.example.mikkel.workoutplanner.data.Database.Routine;
+import com.example.mikkel.workoutplanner.data.StateData.RoutinesFragmentState;
+import com.example.mikkel.workoutplanner.dialogs.DialogNewRoutine;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -25,13 +24,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 
-public class Fragment_Plans extends NavigationFragment implements OnPositiveClick,Notification
+public class Fragment_Routines extends NavigationFragment implements OnPositiveClick,Notification
 {
     private View view;
     private TabLayout tabsLayout;
     private ViewPager viewPager;
     private TabsAdapter tabsAdapter;
-    private PlansFragmentState state;
+    private RoutinesFragmentState state;
 
     @Nullable
     @Override
@@ -44,14 +43,14 @@ public class Fragment_Plans extends NavigationFragment implements OnPositiveClic
     @Override
     protected void onCreateNavigation() {
         super.onCreateNavigation();
-        setToolbarTitle("Workout plans");
+        setToolbarTitle("Routines");
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ImageButton imageButton = view.findViewById(R.id.workplanAddButton);
+        ImageButton imageButton = view.findViewById(R.id.routineAddButton);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,16 +60,16 @@ public class Fragment_Plans extends NavigationFragment implements OnPositiveClic
 
         tabsAdapter = new TabsAdapter(getChildFragmentManager());
 
-        viewPager = view.findViewById(R.id.PlansViewPager);
+        viewPager = view.findViewById(R.id.RoutineViewPager);
         viewPager.setAdapter(tabsAdapter);
 
-        tabsLayout = view.findViewById(R.id.WorkoutPlanTabs);
+        tabsLayout = view.findViewById(R.id.WorkoutRoutineTabs);
         tabsLayout.setupWithViewPager(viewPager);
 
-        if(DataManager.getInstance().getState(PlansFragmentState.class) == null)
-            state = DataManager.getInstance().addState(new PlansFragmentState());
+        if(DataManager.getInstance().getState(RoutinesFragmentState.class) == null)
+            state = DataManager.getInstance().addState(new RoutinesFragmentState());
         else
-            state = DataManager.getInstance().getState(PlansFragmentState.class);
+            state = DataManager.getInstance().getState(RoutinesFragmentState.class);
 
         tabsLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -94,12 +93,12 @@ public class Fragment_Plans extends NavigationFragment implements OnPositiveClic
     private void syncPlans()
     {
        tabsAdapter.clear();
-        ArrayList<Plan> plans = DataManager.getInstance().getPlans();
-        for (int i = 0; i < plans.size(); i++) {
-            Plan plan = plans.get(i);
+        ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
+        for (int i = 0; i < routines.size(); i++) {
+            Routine routine = routines.get(i);
             Fragment_Exercises exercises = new Fragment_Exercises();
-            exercises.setPlanUId(plan.getuId());
-            tabsAdapter.addItem(exercises,plan.getName());
+            exercises.setRoutineUId(routine.getuId());
+            tabsAdapter.addItem(exercises, routine.getName());
         }
         tabsAdapter.notifyDataSetChanged();
         setCurrentTab();
@@ -110,7 +109,7 @@ public class Fragment_Plans extends NavigationFragment implements OnPositiveClic
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        DialogNewPlan dialog = new DialogNewPlan();
+        DialogNewRoutine dialog = new DialogNewRoutine();
         dialog.setListener(this);
         dialog.show(getActivity().getFragmentManager(), "NewPlanDialog");
     }
@@ -146,9 +145,9 @@ public class Fragment_Plans extends NavigationFragment implements OnPositiveClic
     public void onPositiveClicked(Object data) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
-        Plan plan = new Plan();
-        plan.setName((String)data);
-        database.child(DataManager.PLANS_PATH_ID).child(DataManager.getInstance().get_user().getUid()).push().setValue(plan);
+        Routine routine = new Routine();
+        routine.setName((String)data);
+        database.child(DataManager.Routines_PATH_ID).child(DataManager.getInstance().get_user().getUid()).push().setValue(routine);
         syncPlans();
         setCurrentTab();
     }

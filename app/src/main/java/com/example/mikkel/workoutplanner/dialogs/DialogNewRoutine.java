@@ -14,7 +14,7 @@ import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.google.firebase.auth.FirebaseUser;
 
-public class DialogNewPlan extends DialogFragment
+public class DialogNewRoutine extends DialogFragment
 {
     private OnPositiveClick listener;
 
@@ -26,7 +26,7 @@ public class DialogNewPlan extends DialogFragment
         final View view = inflater.inflate(R.layout.fragment_new_plan_dialog,null);
 
         builder.setView(view).
-                setPositiveButton(R.string.planDialogAccept, new DialogInterface.OnClickListener() {
+                setPositiveButton(R.string.routineDialogAccept, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -40,7 +40,7 @@ public class DialogNewPlan extends DialogFragment
 
 
                     }
-                }).setNegativeButton(R.string.planDialogDecline, new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.routineDialogDecline, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

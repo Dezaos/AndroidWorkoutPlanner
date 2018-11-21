@@ -1,12 +1,11 @@
 package com.example.mikkel.workoutplanner.singletons;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.Utils.EventHandler;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
-import com.example.mikkel.workoutplanner.data.Database.Plan;
+import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.data.StateData.StateData;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.firebase.ui.auth.AuthUI;
@@ -31,7 +30,7 @@ public class DataManager {
     }
 
     //Static fields
-    public static final String PLANS_PATH_ID = "Plans";
+    public static final String Routines_PATH_ID = "Routines";
     public static final String EXERCISES_PATH_ID = "Exercises";
 
     //Fields
@@ -39,7 +38,7 @@ public class DataManager {
     private ArrayList<StateData> _stateData = new ArrayList<StateData>();
     private boolean _init;
     private FirebaseUser _user;
-    private ArrayList<Plan> plans = new ArrayList<>();
+    private ArrayList<Routine> routines = new ArrayList<>();
     private ArrayList<Exercise> exercises = new ArrayList<>();
     private EventHandler eventHandler = new EventHandler();
     private Exercise currentEditExercise;
@@ -60,8 +59,8 @@ public class DataManager {
         this._init = _init;
     }
 
-    public ArrayList<Plan> getPlans() {
-        return plans;
+    public ArrayList<Routine> getRoutines() {
+        return routines;
     }
 
     public EventHandler getEventHandler() {
@@ -99,25 +98,25 @@ public class DataManager {
     private void subscribeSyncEvents()
     {
         FirebaseDatabase.getInstance().getReference().
-                child(DataManager.PLANS_PATH_ID).child(_user.getUid()).
+                child(DataManager.Routines_PATH_ID).child(_user.getUid()).
                 addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        plans.clear();
+                        routines.clear();
                         Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                         while (iterator.hasNext())
                         {
                             DataSnapshot snapshot = iterator.next();
-                            Plan plan = snapshot.getValue(Plan.class);
-                            plan.setuId(snapshot.getKey());
-                            plans.add(plan);
+                            Routine routine = snapshot.getValue(Routine.class);
+                            routine.setuId(snapshot.getKey());
+                            routines.add(routine);
                         }
-                        eventHandler.notifyAllListeners(plans);
+                        eventHandler.notifyAllListeners(routines);
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        int x = 1;
                     }
                 });
 

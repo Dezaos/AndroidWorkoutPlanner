@@ -2,7 +2,7 @@ package com.example.mikkel.workoutplanner.data.Database;
 
 import com.google.firebase.database.Exclude;
 
-public class Plan
+public class Routine
 {
     //Fields
     private String name;
@@ -28,10 +28,10 @@ public class Plan
     }
 
     //Contructors
-    public Plan() {
+    public Routine() {
     }
 
-    public Plan(String name, String uId) {
+    public Routine(String name, String uId) {
         this.name = name;
         this.uId = uId;
     }
