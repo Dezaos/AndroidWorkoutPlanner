@@ -1,4 +1,4 @@
-package com.example.mikkel.workoutplanner.Utils;
+package com.example.mikkel.workoutplanner.utils;
 
 import com.example.mikkel.workoutplanner.Interfaces.Notification;
 

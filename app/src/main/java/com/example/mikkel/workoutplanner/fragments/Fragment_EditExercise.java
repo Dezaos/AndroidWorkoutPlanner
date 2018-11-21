@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -15,6 +16,8 @@ import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 
@@ -49,6 +52,12 @@ public class Fragment_EditExercise extends NavigationFragment {
         this.routineUId = routineUId;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,8 +77,7 @@ public class Fragment_EditExercise extends NavigationFragment {
             }
         });
 
-        DataManager.getInstance().setCurrentEditExercise(new Exercise());
-        currentExercise = DataManager.getInstance().getCurrentEditExercise();
+        currentExercise = new Exercise();
 
         RadioGroup radioGroup = view.findViewById(R.id.exerciseType);
         if(routineUId == null)
@@ -121,5 +129,29 @@ public class Fragment_EditExercise extends NavigationFragment {
         super.onDestroy();
         MainActivity.Activity.get_state().setMenuId(savedMenu);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.add_exercise:
+                if(currentExercise != null && currentExercise.valid())
+                {
+                    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+                    String uId = DataManager.getInstance().get_user().getUid();
+
+                    if(currentExercise.getRoutineUId() == null)
+                    {
+                        database.child(DataManager.EXERCISES_PATH_ID).child(uId).
+                                child(getRoutineUId()).push().setValue(currentExercise);
+                    }
+                }
+
+                getFragmentManager().popBackStack();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

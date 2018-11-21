@@ -12,7 +12,6 @@ public class Exercise
     private String name;
     private String muscle;
     private ExerciseType type;
-    private List<Set> sets = new ArrayList<>();
 
     @Exclude
     private String planUId;
@@ -42,16 +41,7 @@ public class Exercise
         this.type = type;
     }
 
-    public List<Set> getSets() {
-        return sets;
-    }
-
-    public void setSets(List<Set> sets) {
-        this.sets = sets;
-    }
-
-
-    public String getPlanUId() {
+    public String getRoutineUId() {
         return planUId;
     }
 
@@ -72,8 +62,7 @@ public class Exercise
     public boolean valid()
     {
         boolean sharedValuesValid = name != null && name != "" &&
-                muscle != null && muscle != "" &&
-                planUId != null && planUId != "";
+                muscle != null && muscle != "";
 
         if(type == ExerciseType.Weight)
         {

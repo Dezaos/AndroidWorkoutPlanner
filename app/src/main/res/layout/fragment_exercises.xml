@@ -7,8 +7,8 @@
     android:gravity="center"
 >
 
-    <view class="android.support.v7.app.AlertController$RecycleListView"
-        android:id="@+id/workoutListView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/exerciseRecycleListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="30dp"

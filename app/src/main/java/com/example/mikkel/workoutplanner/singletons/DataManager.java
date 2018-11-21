@@ -3,7 +3,7 @@ package com.example.mikkel.workoutplanner.singletons;
 import android.support.annotation.NonNull;
 
 import com.example.mikkel.workoutplanner.MainActivity;
-import com.example.mikkel.workoutplanner.Utils.EventHandler;
+import com.example.mikkel.workoutplanner.utils.EventHandler;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.data.StateData.StateData;
@@ -41,7 +41,6 @@ public class DataManager {
     private ArrayList<Routine> routines = new ArrayList<>();
     private ArrayList<Exercise> exercises = new ArrayList<>();
     private EventHandler eventHandler = new EventHandler();
-    private Exercise currentEditExercise;
 
     //Properties
     public FirebaseUser get_user() {
@@ -73,14 +72,6 @@ public class DataManager {
 
     public void setExercises(ArrayList<Exercise> exercises) {
         this.exercises = exercises;
-    }
-
-    public Exercise getCurrentEditExercise() {
-        return currentEditExercise;
-    }
-
-    public void setCurrentEditExercise(Exercise currentEditExercise) {
-        this.currentEditExercise = currentEditExercise;
     }
 
     //Contructor

@@ -33,7 +33,7 @@ public class ExerciseAdapter extends ArrayAdapter<Exercise>
 
         if(convertView == null)
         {
-            convertView = LayoutInflater.from(context).inflate(R.layout.workoutplanmenu_item,parent,false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.routine_item,parent,false);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

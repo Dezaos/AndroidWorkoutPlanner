@@ -36,7 +36,6 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_plans,container,false);
-
         return view;
     }
 
@@ -58,6 +57,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
             }
         });
 
+
         tabsAdapter = new TabsAdapter(getChildFragmentManager());
 
         viewPager = view.findViewById(R.id.RoutineViewPager);
@@ -75,6 +75,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 state.setSelectedTab(tab.getPosition());
+
             }
 
             @Override
@@ -87,10 +88,10 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
 
             }
         });
-        syncPlans();
+        syncRoutines();
     }
 
-    private void syncPlans()
+    private void syncRoutines()
     {
        tabsAdapter.clear();
         ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
@@ -148,12 +149,12 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         Routine routine = new Routine();
         routine.setName((String)data);
         database.child(DataManager.Routines_PATH_ID).child(DataManager.getInstance().get_user().getUid()).push().setValue(routine);
-        syncPlans();
+        syncRoutines();
         setCurrentTab();
     }
 
     @Override
     public void onNotification(Object data) {
-        syncPlans();
+        syncRoutines();
     }
 }

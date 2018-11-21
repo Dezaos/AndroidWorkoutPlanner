@@ -153,20 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 logout();
                 DataManager.getInstance().logout();
             break;
-            case R.id.add_exercise:
-                Exercise exercise = DataManager.getInstance().getCurrentEditExercise();
-                DataManager.getInstance().setCurrentEditExercise(null);
-
-                if(exercise != null && exercise.valid())
-                {
-                    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-
-                    String uId = DataManager.getInstance().get_user().getUid();
-                    database.child(DataManager.EXERCISES_PATH_ID).child(uId).child(exercise.getPlanUId()).push().setValue(exercise);
-                }
-
-                getSupportFragmentManager().popBackStack();
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
