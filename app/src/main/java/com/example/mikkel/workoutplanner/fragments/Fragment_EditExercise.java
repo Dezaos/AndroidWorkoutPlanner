@@ -3,12 +3,14 @@ package com.example.mikkel.workoutplanner.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.example.mikkel.workoutplanner.Enums.ExerciseType;
@@ -67,10 +69,10 @@ public class Fragment_EditExercise extends NavigationFragment {
         Arrays.sort(_muscleSuggestions);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(container.getContext(),
                 android.R.layout.simple_dropdown_item_1line,_muscleSuggestions);
-        AutoCompleteTextView autoComplete = view.findViewById(R.id.MuscleEditText);
+        AutoCompleteTextView autoComplete = view.findViewById(R.id.MuscleAutoComplete);
         autoComplete.setAdapter(adapter);
 
-        view.findViewById(R.id.MuscleEditText).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.MuscleAutoComplete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((AutoCompleteTextView)view).showDropDown();
@@ -85,20 +87,19 @@ public class Fragment_EditExercise extends NavigationFragment {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+
                 switch (checkedId)
                 {
-                    case 0:
+                    case R.id.WeightItem:
                         currentExercise.setType(ExerciseType.Weight);
                         break;
-                    case 1:
+                    case R.id.TimeItem:
                         currentExercise.setType(ExerciseType.Time);
                         break;
                 }
             }
         });
 
-        currentExercise.setName("Test");
-        currentExercise.setMuscle("Test");
         return view;
     }
 
@@ -136,17 +137,21 @@ public class Fragment_EditExercise extends NavigationFragment {
         switch (item.getItemId())
         {
             case R.id.add_exercise:
+
+                String name = ((TextInputEditText)getView().findViewById(R.id.NameEditText)).getText().toString();
+                String muscle = ((AutoCompleteTextView)getView().findViewById(R.id.MuscleAutoComplete)).getText().toString();
+
+                currentExercise.setName(name);
+                currentExercise.setMuscle(muscle);
+
                 if(currentExercise != null && currentExercise.valid())
                 {
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
                     String uId = DataManager.getInstance().get_user().getUid();
 
-                    if(currentExercise.getRoutineUId() == null)
-                    {
                         database.child(DataManager.EXERCISES_PATH_ID).child(uId).
                                 child(getRoutineUId()).push().setValue(currentExercise);
-                    }
                 }
 
                 getFragmentManager().popBackStack();

@@ -21,4 +21,9 @@
     <string name="routineDialogTitle">New routine</string>
     <string name="routineDialogAccept">Ok</string>
     <string name="routineDialogDecline">Cancel</string>
+    <string name="setSplitterText">X</string>
+    <string name="editExerciseTypeText">Type</string>
+    <string name="editExerciseWeigthHint">sets</string>
+    <string name="editExerciseWeigthSecondHint">reps</string>
+    <string name="editExerciseWeigthThirdHint">kg</string>
 </resources>

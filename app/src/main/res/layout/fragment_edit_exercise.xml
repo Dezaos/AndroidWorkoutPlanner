@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Type"
+            android:text="@string/editExerciseTypeText"
             android:textSize="25dp"/>
 
         <RadioGroup
@@ -28,10 +28,12 @@
             android:orientation="horizontal"
             >
             <RadioButton
+                android:id="@+id/WeightItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/weight"/>
             <RadioButton
+                android:id="@+id/TimeItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Time"
@@ -42,17 +44,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
+                android:id="@+id/NameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Name"
-                android:textSize="25dp"/>
+                android:textSize="25dp"
+                />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <AutoCompleteTextView
-                android:id="@+id/MuscleEditText"
+                android:id="@+id/MuscleAutoComplete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Muscle"
@@ -60,6 +64,49 @@
                 android:completionThreshold="0"
                 />
         </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/firstSetElement"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/editExerciseWeigthHint"
+                    android:textSize="25dp"
+                    />
+            </android.support.design.widget.TextInputLayout>
+            <include layout="@layout/edit_exercise_splitter"/>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/secondSetElement"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/editExerciseWeigthSecondHint"
+                    android:textSize="25dp"
+                    />
+            </android.support.design.widget.TextInputLayout>
+            <include layout="@layout/edit_exercise_splitter"/>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/thirdSetElement"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/editExerciseWeigthThirdHint"
+                    android:textSize="25dp"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
