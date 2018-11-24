@@ -1,18 +1,22 @@
 package com.example.mikkel.workoutplanner.singletons;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.example.mikkel.workoutplanner.MainActivity;
+import com.example.mikkel.workoutplanner.utils.CollectionUtils;
 import com.example.mikkel.workoutplanner.utils.EventHandler;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.data.StateData.StateData;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
+import com.example.mikkel.workoutplanner.utils.ListUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,7 +43,6 @@ public class DataManager {
     private boolean _init;
     private FirebaseUser _user;
     private ArrayList<Routine> routines = new ArrayList<>();
-    private ArrayList<Exercise> exercises = new ArrayList<>();
     private EventHandler eventHandler = new EventHandler();
 
     //Properties
@@ -66,14 +69,6 @@ public class DataManager {
         return eventHandler;
     }
 
-    public ArrayList<Exercise> getExercises() {
-        return exercises;
-    }
-
-    public void setExercises(ArrayList<Exercise> exercises) {
-        this.exercises = exercises;
-    }
-
     //Contructor
     private DataManager()
     {
@@ -89,42 +84,39 @@ public class DataManager {
     private void subscribeSyncEvents()
     {
         FirebaseDatabase.getInstance().getReference().
-                child(DataManager.Routines_PATH_ID).child(_user.getUid()).
-                addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        routines.clear();
-                        Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                        while (iterator.hasNext())
-                        {
-                            DataSnapshot snapshot = iterator.next();
-                            Routine routine = snapshot.getValue(Routine.class);
-                            routine.setuId(snapshot.getKey());
-                            routines.add(routine);
-                        }
-                        eventHandler.notifyAllListeners(routines);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        int x = 1;
-                    }
-                });
-
-        FirebaseDatabase.getInstance().getReference().
-                child(DataManager.EXERCISES_PATH_ID).child(_user.getUid()).addValueEventListener(
-                        new ValueEventListener() {
+                child(DataManager.Routines_PATH_ID).child(_user.getUid()).addChildEventListener(
+                        new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                exercises.clear();
-                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                while (iterator.hasNext())
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Routine routine = Routine.build(Routine.class,dataSnapshot);
+                routines.add(routine);
+                eventHandler.notifyAllListeners(routine);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Routine routine = Routine.build(Routine.class,dataSnapshot);
+                int index = ListUtils.indexOfWithEquals(Routine.class,routines,routine);
+                if(index >= 0)
                 {
-                    DataSnapshot snapshot = iterator.next();
-                    Exercise exercise = snapshot.getValue(Exercise.class);
-                    exercises.add(exercise);
+                    routines.set(index,routine);
+                    eventHandler.notifyAllListeners(routine);
                 }
-                eventHandler.notifyAllListeners(exercises);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                Routine routine = Routine.build(Routine.class,dataSnapshot);
+                if(CollectionUtils.removeByEquals(routines,routine))
+                {
+                    eventHandler.notifyAllListeners(routine);
+                }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
             }
 
             @Override
@@ -132,6 +124,7 @@ public class DataManager {
 
             }
         });
+
     }
 
     public void logout()

@@ -3,18 +3,20 @@ package com.example.mikkel.workoutplanner.data.Database;
 import com.example.mikkel.workoutplanner.Enums.ExerciseType;
 import com.google.firebase.database.Exclude;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Exercise
+public class Exercise extends FirebaseData
 {
     //Fields
     private String name;
     private String muscle;
     private ExerciseType type;
+    private int sets;
+    private int reps;
+    private float kg;
+    private float time;
+    private float km;
 
     @Exclude
-    private String planUId;
+    private String routineUId;
 
     //Properties
     public String getName() {
@@ -42,11 +44,51 @@ public class Exercise
     }
 
     public String getRoutineUId() {
-        return planUId;
+        return routineUId;
     }
 
-    public void setPlanUId(String planUId) {
-        this.planUId = planUId;
+    public void setRoutineUId(String routineUId) {
+        this.routineUId = routineUId;
+    }
+
+    public int getSets() {
+        return sets;
+    }
+
+    public void setSets(int sets) {
+        this.sets = sets;
+    }
+
+    public int getReps() {
+        return reps;
+    }
+
+    public void setReps(int reps) {
+        this.reps = reps;
+    }
+
+    public float getKg() {
+        return kg;
+    }
+
+    public void setKg(float kg) {
+        this.kg = kg;
+    }
+
+    public float getTime() {
+        return time;
+    }
+
+    public void setTime(float time) {
+        this.time = time;
+    }
+
+    public float getKm() {
+        return km;
+    }
+
+    public void setKm(float km) {
+        this.km = km;
     }
 
     //Constructor
@@ -76,4 +118,5 @@ public class Exercise
         }
         return false;
     }
+
 }

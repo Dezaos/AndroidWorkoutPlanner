@@ -1,14 +1,9 @@
 package com.example.mikkel.workoutplanner.data.Database;
 
-import com.google.firebase.database.Exclude;
-
-public class Routine
+public class Routine extends FirebaseData
 {
     //Fields
     private String name;
-
-    @Exclude
-    private String uId;
 
     //Properties
     public String getName() {
@@ -19,21 +14,20 @@ public class Routine
         this.name = name;
     }
 
-    public String getuId() {
-        return uId;
-    }
-
-    public void setuId(String uId) {
-        this.uId = uId;
-    }
-
     //Contructors
     public Routine() {
     }
 
     public Routine(String name, String uId) {
         this.name = name;
-        this.uId = uId;
+        setuId(this.uId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+
+        return super.equals(obj);
     }
 
 

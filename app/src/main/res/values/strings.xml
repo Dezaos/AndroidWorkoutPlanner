@@ -5,8 +5,8 @@
     <string name="title_notifications">Notifications</string>
     <string name="routines">Routines</string>
     <string name="calender">Calender</string>
-    <string name="deafaultid">1</string>
-    <string name="defaulttitle">defaultTitle</string>
+    <string name="defaultId">1</string>
+    <string name="defaulttitle">DefaultTitle</string>
     <string name="defaultWorkplanName">Name</string>
     <string name="weight">Weight</string>
     <string name="Time">Time</string>
@@ -26,4 +26,10 @@
     <string name="editExerciseWeigthHint">sets</string>
     <string name="editExerciseWeigthSecondHint">reps</string>
     <string name="editExerciseWeigthThirdHint">kg</string>
+    <string name="editExerciseTimeHint">reps</string>
+    <string name="editExerciseTimeSecondHint">time</string>
+    <string name="editExerciseTimeThirdHint">km</string>
+    <string name="defaultMuscle">Shoulders</string>
+    <string name="muscleEditTextHint">Muscle</string>
+    <string name="nameEditTextHint">Name</string>
 </resources>

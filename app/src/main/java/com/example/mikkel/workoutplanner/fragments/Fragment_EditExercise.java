@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +20,7 @@ import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
+import com.example.mikkel.workoutplanner.utils.MathUtils;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,18 +36,9 @@ public class Fragment_EditExercise extends NavigationFragment {
                 "Glutes", "Hamstrings", "Calves", "Cardio"
             };
 
-    private String uId;
     private String routineUId;
     private int savedMenu;
     private Exercise currentExercise;
-
-    public String getuId() {
-        return uId;
-    }
-
-    public void setuId(String uId) {
-        this.uId = uId;
-    }
 
     public String getRoutineUId() {
         return routineUId;
@@ -64,7 +58,7 @@ public class Fragment_EditExercise extends NavigationFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_edit_exercise,container,false);
+        final View view = inflater.inflate(R.layout.fragment_edit_exercise,container,false);
 
         Arrays.sort(_muscleSuggestions);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(container.getContext(),
@@ -79,34 +73,135 @@ public class Fragment_EditExercise extends NavigationFragment {
             }
         });
 
-        currentExercise = new Exercise();
+        if(currentExercise == null)
+            applyNewExercise(view);
+        else
+            applyOldExercise(view);
 
         RadioGroup radioGroup = view.findViewById(R.id.exerciseType);
-        if(routineUId == null)
-            radioGroup.check(0);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                TextInputEditText first = view.findViewById(R.id.firstSetElement);
+                TextInputEditText second = view.findViewById(R.id.secondSetElement);
+                TextInputEditText third = view.findViewById(R.id.thirdSetElement);
 
-                switch (checkedId)
-                {
-                    case R.id.WeightItem:
-                        currentExercise.setType(ExerciseType.Weight);
-                        break;
-                    case R.id.TimeItem:
-                        currentExercise.setType(ExerciseType.Time);
-                        break;
-                }
+                first.setText(null);
+                second.setText(null);
+                third.setText(null);
+                applySetValues(view,checkedId);
             }
         });
 
         return view;
     }
 
+    private void applySetValues(View view, int checkedId)
+    {
+        switch (checkedId)
+        {
+            case R.id.WeightItem:
+                currentExercise.setType(ExerciseType.Weight);
+                break;
+            case R.id.TimeItem:
+                currentExercise.setType(ExerciseType.Time);
+                break;
+        }
+
+        TextInputEditText first = view.findViewById(R.id.firstSetElement);
+        TextInputEditText second = view.findViewById(R.id.secondSetElement);
+        TextInputEditText third = view.findViewById(R.id.thirdSetElement);
+
+        TextInputLayout firstLayout = view.findViewById(R.id.firstSetElementLayout);
+        TextInputLayout secondLayout = view.findViewById(R.id.secondSetElementLayout);
+        TextInputLayout thirdLayout = view.findViewById(R.id.thirdSetElementLayout);
+
+
+        String firstHint = currentExercise.getType() == ExerciseType.Weight ?
+                getResources().getString(R.string.editExerciseWeigthHint) :
+                getResources().getString(R.string.editExerciseTimeHint);
+        String secondHint = currentExercise.getType() == ExerciseType.Weight ?
+                getResources().getString(R.string.editExerciseWeigthSecondHint) :
+                getResources().getString(R.string.editExerciseTimeSecondHint);
+        String thirdHint = currentExercise.getType() == ExerciseType.Weight ?
+                getResources().getString(R.string.editExerciseWeigthThirdHint) :
+                getResources().getString(R.string.editExerciseTimeThirdHint);
+
+
+        switch (checkedId)
+        {
+            case R.id.WeightItem:
+                first.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+                second.setInputType(InputType.TYPE_CLASS_NUMBER);
+                third.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                break;
+            case R.id.TimeItem:
+                first.setInputType(InputType.TYPE_CLASS_NUMBER);
+                second.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                third.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                break;
+        }
+        firstLayout.setHint(firstHint);
+        secondLayout.setHint(secondHint);
+        thirdLayout.setHint(thirdHint);
+    }
+
+    private void applyNewExercise(View view)
+    {
+        currentExercise = new Exercise();
+        RadioGroup radioGroup = view.findViewById(R.id.exerciseType);
+        radioGroup.check(R.id.WeightItem);
+        currentExercise.setType(ExerciseType.Weight);
+        applySetValues(view,radioGroup.getCheckedRadioButtonId());
+    }
+
+    private void applyOldExercise(View view)
+    {
+        RadioGroup radioGroup = view.findViewById(R.id.exerciseType);
+        switch (currentExercise.getType())
+        {
+            case Weight:
+                radioGroup.check(R.id.WeightItem);
+                break;
+            case Time:
+                radioGroup.check(R.id.TimeItem);
+                break;
+        }
+        applySetValues(view,radioGroup.getCheckedRadioButtonId());
+
+        TextInputEditText name = view.findViewById(R.id.NameEditText);
+        AutoCompleteTextView muscle = view.findViewById(R.id.MuscleAutoComplete);
+        TextInputEditText first = view.findViewById(R.id.firstSetElement);
+        TextInputEditText second = view.findViewById(R.id.secondSetElement);
+        TextInputEditText third = view.findViewById(R.id.thirdSetElement);
+
+
+        //Set name
+        name.setText(currentExercise.getName());
+
+        //Set muscle
+        muscle.setText(currentExercise.getMuscle());
+
+        //Set first element value
+        first.setText(currentExercise.getType() == ExerciseType.Weight ? currentExercise.getSets()
+        : currentExercise.getReps());
+
+        //set second element value
+        second.setText(currentExercise.getType() == ExerciseType.Weight ?
+                String.valueOf(currentExercise.getReps())
+                : Float.toString(currentExercise.getTime()));
+
+        //set second element value
+        second.setText(currentExercise.getType() == ExerciseType.Weight ?
+                String.valueOf(currentExercise.getKg())
+                : Float.toString(currentExercise.getKm()));
+    }
+
+
     @Override
     protected void onCreateNavigation() {
         super.onCreateNavigation();
-        setToolbarTitle(uId != null ? "Edit exercise" : "Add exercise");
+        setToolbarTitle(currentExercise != null && currentExercise.getuId() != null ? "Edit exercise" : "Add exercise");
         setupBottomNavigation(View.GONE);
         if(toolbar != null)
         {
@@ -120,8 +215,6 @@ public class Fragment_EditExercise extends NavigationFragment {
             });
             savedMenu = MainActivity.Activity.get_state().getMenuId();
             MainActivity.Activity.get_state().setMenuId(R.menu.edit_exercise_menu);
-
-
         }
     }
 
@@ -140,9 +233,38 @@ public class Fragment_EditExercise extends NavigationFragment {
 
                 String name = ((TextInputEditText)getView().findViewById(R.id.NameEditText)).getText().toString();
                 String muscle = ((AutoCompleteTextView)getView().findViewById(R.id.MuscleAutoComplete)).getText().toString();
+                TextInputEditText first = getView().findViewById(R.id.firstSetElement);
+                TextInputEditText second = getView().findViewById(R.id.secondSetElement);
+                TextInputEditText third = getView().findViewById(R.id.thirdSetElement);
 
                 currentExercise.setName(name);
                 currentExercise.setMuscle(muscle);
+                currentExercise.setRoutineUId(getRoutineUId());
+
+                int sets = 0;
+                int reps = 0;
+                float kg = 0;
+                float time = 0;
+                float km = 0;
+
+                if(currentExercise.getType() == ExerciseType.Weight)
+                {
+                    sets = Integer.parseInt(!first.getText().equals("") ? first.getText().toString() : String.valueOf(0));
+                    reps = Integer.parseInt(!first.getText().equals("") ? second.getText().toString() : String.valueOf(0));
+                    kg = MathUtils.round(Float.parseFloat(!first.getText().equals("") ? second.getText().toString() : String.valueOf(0)),2);
+                    currentExercise.setSets(sets);
+                    currentExercise.setReps(reps);
+                    currentExercise.setKg(kg);
+                }
+                else if(currentExercise.getType() == ExerciseType.Time)
+                {
+                    reps = Integer.parseInt(!first.getText().equals("") ? first.getText().toString() : String.valueOf(0));
+                    time = MathUtils.round(Float.parseFloat(!first.getText().equals("") ? second.getText().toString() : String.valueOf(0)),2);
+                    km = MathUtils.round(Float.parseFloat(!first.getText().equals("") ? third.getText().toString() : String.valueOf(0)),2);
+                    currentExercise.setReps(reps);
+                    currentExercise.setTime(time);
+                    currentExercise.setKm(km);
+                }
 
                 if(currentExercise != null && currentExercise.valid())
                 {
@@ -150,8 +272,10 @@ public class Fragment_EditExercise extends NavigationFragment {
 
                     String uId = DataManager.getInstance().get_user().getUid();
 
-                        database.child(DataManager.EXERCISES_PATH_ID).child(uId).
-                                child(getRoutineUId()).push().setValue(currentExercise);
+                       DatabaseReference ref = database.child(DataManager.EXERCISES_PATH_ID).child(uId).
+                                child(getRoutineUId()).push();
+                       currentExercise.setuId(ref.getKey());
+                       ref.setValue(currentExercise);
                 }
 
                 getFragmentManager().popBackStack();
