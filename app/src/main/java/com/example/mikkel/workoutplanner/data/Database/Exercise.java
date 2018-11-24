@@ -119,4 +119,15 @@ public class Exercise extends FirebaseData
         return false;
     }
 
+    public boolean weigthValid()
+    {
+        return getSets() > 0 && getReps() > 0;
+    }
+
+    public boolean timeValid()
+    {
+        return getTime() > 0 || getKm() > 0;
+    }
+
+
 }

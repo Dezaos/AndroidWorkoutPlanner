@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 
 public class Fragment_Home extends NavigationFragment
@@ -21,5 +22,8 @@ public class Fragment_Home extends NavigationFragment
     protected void onCreateNavigation() {
         super.onCreateNavigation();
         setToolbarTitle("Home");
+
+        MainActivity.Activity.get_state().setMenuId(R.menu.menu);
+
     }
 }

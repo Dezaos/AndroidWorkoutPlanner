@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 
 public class Fragment_Calender extends NavigationFragment
@@ -20,5 +22,8 @@ public class Fragment_Calender extends NavigationFragment
     protected void onCreateNavigation() {
         super.onCreateNavigation();
         setToolbarTitle("Calender");
+
+        MainActivity.Activity.get_state().setMenuId(R.menu.menu);
+
     }
 }

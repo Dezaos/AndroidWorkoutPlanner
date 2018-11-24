@@ -32,4 +32,5 @@
     <string name="defaultMuscle">Shoulders</string>
     <string name="muscleEditTextHint">Muscle</string>
     <string name="nameEditTextHint">Name</string>
+    <string name="remove_routine_menu_text">Remove routine</string>
 </resources>

@@ -7,4 +7,10 @@
         app:showAsAction="never"
         >
     </item>
+    <item
+        android:id="@+id/removeRoutineMenu"
+        android:title="@string/remove_routine_menu_text"
+        app:showAsAction="never"
+        >
+    </item>
 </menu>

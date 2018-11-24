@@ -26,7 +26,10 @@ public class Routine extends FirebaseData
     @Override
     public boolean equals(Object obj) {
 
-
+        if(obj instanceof Routine)
+        {
+            return ((Routine)obj).getuId().equals(getuId());
+        }
         return super.equals(obj);
     }
 

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -247,23 +248,33 @@ public class Fragment_EditExercise extends NavigationFragment {
                 float time = 0;
                 float km = 0;
 
+                String firstText = first.getText().toString();
+                String secondText = second.getText().toString();
+                String thirdText = third.getText().toString();
+
                 if(currentExercise.getType() == ExerciseType.Weight)
                 {
-                    sets = Integer.parseInt(!first.getText().equals("") ? first.getText().toString() : String.valueOf(0));
-                    reps = Integer.parseInt(!first.getText().equals("") ? second.getText().toString() : String.valueOf(0));
-                    kg = MathUtils.round(Float.parseFloat(!first.getText().equals("") ? second.getText().toString() : String.valueOf(0)),2);
+                    sets = firstText.isEmpty() ? 0 : Integer.parseInt(first.getText().toString());
+                    reps = secondText.isEmpty() ? 0 : Integer.parseInt(second.getText().toString());
+                    kg = thirdText.isEmpty() ? 0 : MathUtils.round(Float.parseFloat(thirdText),2);
                     currentExercise.setSets(sets);
                     currentExercise.setReps(reps);
                     currentExercise.setKg(kg);
+
+                    if(!currentExercise.weigthValid())
+                        return super.onOptionsItemSelected(item);
                 }
                 else if(currentExercise.getType() == ExerciseType.Time)
                 {
-                    reps = Integer.parseInt(!first.getText().equals("") ? first.getText().toString() : String.valueOf(0));
-                    time = MathUtils.round(Float.parseFloat(!first.getText().equals("") ? second.getText().toString() : String.valueOf(0)),2);
-                    km = MathUtils.round(Float.parseFloat(!first.getText().equals("") ? third.getText().toString() : String.valueOf(0)),2);
+                    reps = firstText.isEmpty() ? 0 : Integer.parseInt(first.getText().toString());
+                    time = secondText.isEmpty() ? 0 : MathUtils.round(Float.parseFloat(secondText),2);
+                    km = thirdText.isEmpty() ? 0 : MathUtils.round(Float.parseFloat(thirdText),2);
                     currentExercise.setReps(reps);
                     currentExercise.setTime(time);
                     currentExercise.setKm(km);
+
+                    if(!currentExercise.timeValid())
+                        return super.onOptionsItemSelected(item);
                 }
 
                 if(currentExercise != null && currentExercise.valid())
@@ -283,4 +294,6 @@ public class Fragment_EditExercise extends NavigationFragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

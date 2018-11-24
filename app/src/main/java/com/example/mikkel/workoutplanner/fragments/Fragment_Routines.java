@@ -6,18 +6,21 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.example.mikkel.workoutplanner.Interfaces.Notification;
 import com.example.mikkel.workoutplanner.Interfaces.OnPositiveClick;
+import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.adapters.TabsAdapter;
 import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.data.StateData.RoutinesFragmentState;
 import com.example.mikkel.workoutplanner.dialogs.DialogNewRoutine;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
+import com.example.mikkel.workoutplanner.utils.TabInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -40,9 +43,17 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     protected void onCreateNavigation() {
         super.onCreateNavigation();
         setToolbarTitle("Routines");
+
+        MainActivity.Activity.get_state().setMenuId(R.menu.routines_menu);
     }
 
     @Override
@@ -53,7 +64,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               onNewPlanClick();
+               onNewRoutineClick();
             }
         });
 
@@ -99,13 +110,13 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
             Routine routine = routines.get(i);
             Fragment_Exercises exercises = new Fragment_Exercises();
             exercises.setRoutineUId(routine.getuId());
-            tabsAdapter.addItem(exercises, routine.getName());
+            tabsAdapter.addItem(exercises, new TabInfo(routine.getName(),routine.getuId()));
         }
         tabsAdapter.notifyDataSetChanged();
         setCurrentTab();
     }
 
-    private void onNewPlanClick()
+    private void onNewRoutineClick()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -148,7 +159,10 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
 
         Routine routine = new Routine();
         routine.setName((String)data);
-        database.child(DataManager.Routines_PATH_ID).child(DataManager.getInstance().get_user().getUid()).push().setValue(routine);
+        DatabaseReference ref = database.child(DataManager.Routines_PATH_ID).
+                child(DataManager.getInstance().get_user().getUid()).push();
+        routine.setuId(ref.getKey());
+        ref.setValue(routine);
         syncRoutines();
         setCurrentTab();
     }
@@ -156,5 +170,24 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     @Override
     public void onNotification(Object data) {
         syncRoutines();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.removeRoutineMenu:
+                String routineUid = tabsAdapter.getInfo(state.getSelectedTab()).getuId();
+                FirebaseDatabase.getInstance().getReference().child(DataManager.Routines_PATH_ID).
+                        child(DataManager.getInstance().get_user().getUid()).
+                        child(routineUid).setValue(null);
+
+                FirebaseDatabase.getInstance().getReference().child(DataManager.EXERCISES_PATH_ID).
+                        child(DataManager.getInstance().get_user().getUid()).
+                        child(routineUid).removeValue();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
