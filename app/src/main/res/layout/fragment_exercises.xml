@@ -11,11 +11,12 @@
         android:id="@+id/exerciseRecycleListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="30dp"
         android:dividerHeight="0dp"
         android:divider="@android:color/transparent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="7.5dp"
         />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addExercise"
         android:layout_width="wrap_content"

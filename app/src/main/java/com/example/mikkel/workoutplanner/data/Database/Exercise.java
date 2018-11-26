@@ -103,31 +103,7 @@ public class Exercise extends FirebaseData
 
     public boolean valid()
     {
-        boolean sharedValuesValid = name != null && name != "" &&
-                muscle != null && muscle != "";
-
-        if(type == ExerciseType.Weight)
-        {
-            return sharedValuesValid;
-
-        }
-        else if(type == ExerciseType.Time)
-        {
-            return sharedValuesValid;
-
-        }
-        return false;
+        return name != null && !name.isEmpty() &&
+                muscle != null && !muscle.isEmpty();
     }
-
-    public boolean weigthValid()
-    {
-        return getSets() > 0 && getReps() > 0;
-    }
-
-    public boolean timeValid()
-    {
-        return getTime() > 0 || getKm() > 0;
-    }
-
-
 }

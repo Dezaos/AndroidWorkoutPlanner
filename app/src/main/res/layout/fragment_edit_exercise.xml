@@ -47,6 +47,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/nameEditTextHint"
                 android:textSize="25sp"
+                android:maxLines="1"
+                android:inputType="text"
                 />
         </android.support.design.widget.TextInputLayout>
 
@@ -60,6 +62,8 @@
                 android:hint="@string/muscleEditTextHint"
                 android:textSize="25sp"
                 android:completionThreshold="0"
+                android:maxLines="1"
+                android:inputType="text"
                 />
         </android.support.design.widget.TextInputLayout>
 
@@ -79,6 +83,7 @@
                     android:layout_width="75dp"
                     android:layout_height="wrap_content"
                     android:textSize="25sp"
+                    android:maxLines="1"
                     />
             </android.support.design.widget.TextInputLayout>
             <include layout="@layout/edit_exercise_splitter"/>
@@ -93,6 +98,7 @@
                     android:layout_width="75dp"
                     android:layout_height="wrap_content"
                     android:textSize="25sp"
+                    android:maxLines="1"
                     />
             </android.support.design.widget.TextInputLayout>
             <include layout="@layout/edit_exercise_splitter"/>
@@ -107,6 +113,7 @@
                     android:layout_width="75dp"
                     android:layout_height="wrap_content"
                     android:textSize="25sp"
+                    android:maxLines="1"
                     />
             </android.support.design.widget.TextInputLayout>
 

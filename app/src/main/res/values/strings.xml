@@ -33,4 +33,7 @@
     <string name="muscleEditTextHint">Muscle</string>
     <string name="nameEditTextHint">Name</string>
     <string name="remove_routine_menu_text">Remove routine</string>
+    <string name="invalid_number">Invalid number</string>
+    <string name="required">Required</string>
+    <string name="time_km_require">Time or km is required</string>
 </resources>
