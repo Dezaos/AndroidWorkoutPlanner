@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.text.Editable;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.example.mikkel.workoutplanner.Enums.ExerciseType;
@@ -40,6 +38,14 @@ public class Fragment_EditExercise extends NavigationFragment {
     private String routineUId;
     private int savedMenu;
     private Exercise currentExercise;
+
+    public Exercise getCurrentExercise() {
+        return currentExercise;
+    }
+
+    public void setCurrentExercise(Exercise currentExercise) {
+        this.currentExercise = currentExercise;
+    }
 
     public String getRoutineUId() {
         return routineUId;
@@ -90,14 +96,14 @@ public class Fragment_EditExercise extends NavigationFragment {
                 first.setText(null);
                 second.setText(null);
                 third.setText(null);
-                applySetValues(view,checkedId);
+                applySetHints(view,checkedId);
             }
         });
 
         return view;
     }
 
-    private void applySetValues(View view, int checkedId)
+    private void applySetHints(View view, int checkedId)
     {
         switch (checkedId)
         {
@@ -153,7 +159,7 @@ public class Fragment_EditExercise extends NavigationFragment {
         RadioGroup radioGroup = view.findViewById(R.id.exerciseType);
         radioGroup.check(R.id.WeightItem);
         currentExercise.setType(ExerciseType.Weight);
-        applySetValues(view,radioGroup.getCheckedRadioButtonId());
+        applySetHints(view,radioGroup.getCheckedRadioButtonId());
     }
 
     private void applyOldExercise(View view)
@@ -168,13 +174,17 @@ public class Fragment_EditExercise extends NavigationFragment {
                 radioGroup.check(R.id.TimeItem);
                 break;
         }
-        applySetValues(view,radioGroup.getCheckedRadioButtonId());
+        applySetHints(view,radioGroup.getCheckedRadioButtonId());
 
         TextInputEditText name = view.findViewById(R.id.NameEditText);
         AutoCompleteTextView muscle = view.findViewById(R.id.MuscleAutoComplete);
         TextInputEditText first = view.findViewById(R.id.firstSetElement);
         TextInputEditText second = view.findViewById(R.id.secondSetElement);
         TextInputEditText third = view.findViewById(R.id.thirdSetElement);
+
+        String firstText = String.valueOf(currentExercise.getType() == ExerciseType.Weight ?
+                currentExercise.getSets()
+                : currentExercise.getReps());
 
 
         //Set name
@@ -184,8 +194,7 @@ public class Fragment_EditExercise extends NavigationFragment {
         muscle.setText(currentExercise.getMuscle());
 
         //Set first element value
-        first.setText(currentExercise.getType() == ExerciseType.Weight ? currentExercise.getSets()
-        : currentExercise.getReps());
+        first.setText(firstText);
 
         //set second element value
         second.setText(currentExercise.getType() == ExerciseType.Weight ?
@@ -193,7 +202,7 @@ public class Fragment_EditExercise extends NavigationFragment {
                 : Float.toString(currentExercise.getTime()));
 
         //set second element value
-        second.setText(currentExercise.getType() == ExerciseType.Weight ?
+        third.setText(currentExercise.getType() == ExerciseType.Weight ?
                 String.valueOf(currentExercise.getKg())
                 : Float.toString(currentExercise.getKm()));
     }
@@ -202,7 +211,8 @@ public class Fragment_EditExercise extends NavigationFragment {
     @Override
     protected void onCreateNavigation() {
         super.onCreateNavigation();
-        setToolbarTitle(currentExercise != null && currentExercise.getuId() != null ? "Edit exercise" : "Add exercise");
+        setToolbarTitle(currentExercise != null && currentExercise.getuId() != null ?
+                "Edit exercise" : "Add exercise");
         setupBottomNavigation(View.GONE);
         if(toolbar != null)
         {
@@ -222,8 +232,8 @@ public class Fragment_EditExercise extends NavigationFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MainActivity.Activity.get_state().setMenuId(savedMenu);
-
+        if(savedMenu != 0)
+            MainActivity.Activity.get_state().setMenuId(savedMenu);
     }
 
     @Override
@@ -280,13 +290,21 @@ public class Fragment_EditExercise extends NavigationFragment {
                 if(currentExercise != null && currentExercise.valid())
                 {
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-
                     String uId = DataManager.getInstance().get_user().getUid();
 
-                       DatabaseReference ref = database.child(DataManager.EXERCISES_PATH_ID).child(uId).
+                    if(currentExercise.getuId() == null)
+                    {
+                        DatabaseReference ref = database.child(DataManager.EXERCISES_PATH_ID).child(uId).
                                 child(getRoutineUId()).push();
-                       currentExercise.setuId(ref.getKey());
-                       ref.setValue(currentExercise);
+                        currentExercise.setuId(ref.getKey());
+                        ref.setValue(currentExercise);
+                    }
+                    else
+                    {
+                        database.child(DataManager.EXERCISES_PATH_ID).child(uId).
+                                child(getRoutineUId()).child(currentExercise.getuId()).
+                                setValue(currentExercise);
+                    }
                 }
 
                 getFragmentManager().popBackStack();

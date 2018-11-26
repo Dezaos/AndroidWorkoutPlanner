@@ -15,6 +15,7 @@ import com.example.mikkel.workoutplanner.Enums.ExerciseType;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
+import com.example.mikkel.workoutplanner.data.StateData.ExercisesFragmentState;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.viewholders.ExerciseHolder;
@@ -26,14 +27,31 @@ import com.google.firebase.database.Query;
 public class Fragment_Exercises extends Fragment
 {
     private FirebaseRecyclerAdapter adapter;
-    private String routineUId;
+    private ExercisesFragmentState state;
 
     public String getRoutineUId() {
-        return routineUId;
+        if(state == null)
+        {
+            state = DataManager.getInstance().getState(ExercisesFragmentState.class);
+            if(state == null)
+            {
+                state = DataManager.getInstance().addState(new ExercisesFragmentState());
+            }
+        }
+
+        return state.getRoutineUid();
     }
 
     public void setRoutineUId(String routineUId) {
-        this.routineUId = routineUId;
+        if(state == null)
+        {
+            state = DataManager.getInstance().getState(ExercisesFragmentState.class);
+            if(state == null)
+            {
+                state = DataManager.getInstance().addState(new ExercisesFragmentState());
+            }
+        }
+        state.setRoutineUid(routineUId);
     }
 
     @Nullable
@@ -45,7 +63,7 @@ public class Fragment_Exercises extends Fragment
         final String uid = dataManager.get_user().getUid();
 
         Query query = FirebaseDatabase.getInstance().getReference().
-                child(DataManager.EXERCISES_PATH_ID).child(uid).child(routineUId).
+                child(DataManager.EXERCISES_PATH_ID).child(uid).child(getRoutineUId()).
                 limitToLast(100);
 
         FirebaseRecyclerOptions<Exercise> options = new FirebaseRecyclerOptions.
@@ -101,6 +119,13 @@ public class Fragment_Exercises extends Fragment
                                 child(model.getRoutineUId()).child(uId).setValue(null);
                     }
                 });
+
+                holder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onEditExerciseClick(model);
+                    }
+                });
             }
         };
 
@@ -130,5 +155,17 @@ public class Fragment_Exercises extends Fragment
     public void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+
+    private void onEditExerciseClick(Exercise exercise)
+    {
+        Fragment_EditExercise editExercise = new Fragment_EditExercise();
+        editExercise.setRoutineUId(getRoutineUId());
+        editExercise.setCurrentExercise(exercise);
+
+        FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
+                editExercise,false,
+                R.anim.enter_from_right,R.anim.exit_to_left,
+                R.anim.enter_from_left,R.anim.exit_to_right);
     }
 }

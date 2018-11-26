@@ -1,5 +1,6 @@
 package com.example.mikkel.workoutplanner.viewholders;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -19,6 +20,7 @@ public class ExerciseHolder extends RecyclerView.ViewHolder
     public TextView thirdElment;
     public TextView thirdtHint;
     public ImageButton removeButton;
+    public CardView cardView;
 
     public ExerciseHolder(View itemView) {
         super(itemView);
@@ -32,5 +34,6 @@ public class ExerciseHolder extends RecyclerView.ViewHolder
         thirdElment = itemView.findViewById(R.id.thirdExerciseElement);
         thirdtHint = itemView.findViewById(R.id.ThirdExerciseHint);
         removeButton = itemView.findViewById(R.id.ExerciseRemoveButtton);
+        cardView = itemView.findViewById(R.id.exerciseCardview);
     }
 }

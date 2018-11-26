@@ -177,14 +177,17 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         switch (item.getItemId())
         {
             case R.id.removeRoutineMenu:
-                String routineUid = tabsAdapter.getInfo(state.getSelectedTab()).getuId();
-                FirebaseDatabase.getInstance().getReference().child(DataManager.Routines_PATH_ID).
-                        child(DataManager.getInstance().get_user().getUid()).
-                        child(routineUid).setValue(null);
+                if(tabsAdapter.getCount() > 0 && tabsAdapter.getCount() >= state.getSelectedTab())
+                {
+                    String routineUid = tabsAdapter.getInfo(state.getSelectedTab()).getuId();
+                    FirebaseDatabase.getInstance().getReference().child(DataManager.Routines_PATH_ID).
+                            child(DataManager.getInstance().get_user().getUid()).
+                            child(routineUid).setValue(null);
 
-                FirebaseDatabase.getInstance().getReference().child(DataManager.EXERCISES_PATH_ID).
-                        child(DataManager.getInstance().get_user().getUid()).
-                        child(routineUid).removeValue();
+                    FirebaseDatabase.getInstance().getReference().child(DataManager.EXERCISES_PATH_ID).
+                            child(DataManager.getInstance().get_user().getUid()).
+                            child(routineUid).removeValue();
+                }
                 break;
         }
 

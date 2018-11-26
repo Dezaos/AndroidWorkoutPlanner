@@ -11,11 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppTheme.WorkoutPlannerTheme"
-        android:name=".Application">
+        android:name=".Application"
+        >
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AppTheme.WorkoutPlannerTheme">
+            android:theme="@style/Theme.AppTheme.WorkoutPlannerTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
