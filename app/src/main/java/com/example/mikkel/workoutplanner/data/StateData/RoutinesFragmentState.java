@@ -1,5 +1,6 @@
 package com.example.mikkel.workoutplanner.data.StateData;
 
+//A state for the routines fragment
 public class RoutinesFragmentState extends StateData
 {
     private int selectedTab;

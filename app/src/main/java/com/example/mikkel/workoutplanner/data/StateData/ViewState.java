@@ -3,6 +3,7 @@ package com.example.mikkel.workoutplanner.data.StateData;
 import android.content.Context;
 import android.view.View;
 
+//This is a state for a view
 public class ViewState
 {
     public View view;

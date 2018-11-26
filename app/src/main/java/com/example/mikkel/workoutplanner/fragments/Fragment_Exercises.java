@@ -29,6 +29,7 @@ public class Fragment_Exercises extends Fragment
     private FirebaseRecyclerAdapter adapter;
     private ExercisesFragmentState state;
 
+    //Gets the routine uId from the state
     public String getRoutineUId() {
         if(state == null)
         {
@@ -42,6 +43,7 @@ public class Fragment_Exercises extends Fragment
         return state.getRoutineUid();
     }
 
+    //Sets the routine uId for the state
     public void setRoutineUId(String routineUId) {
         if(state == null)
         {
@@ -62,6 +64,7 @@ public class Fragment_Exercises extends Fragment
         DataManager dataManager = DataManager.getInstance();
         final String uid = dataManager.get_user().getUid();
 
+        //The code below makes the firebase recycler view behavior
         Query query = FirebaseDatabase.getInstance().getReference().
                 child(DataManager.EXERCISES_PATH_ID).child(uid).child(getRoutineUId()).
                 limitToLast(100);
@@ -69,9 +72,11 @@ public class Fragment_Exercises extends Fragment
         FirebaseRecyclerOptions<Exercise> options = new FirebaseRecyclerOptions.
                 Builder<Exercise>().setQuery(query,Exercise.class).build();
 
+        //This creates the firebase recycler adapter
         adapter = new FirebaseRecyclerAdapter<Exercise, ExerciseHolder>(options) {
             @NonNull
             @Override
+            //This inflates the items in the recycler view
             public ExerciseHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).
                         inflate(R.layout.exercise_element,parent,false);
@@ -80,12 +85,14 @@ public class Fragment_Exercises extends Fragment
             }
 
             @Override
+            //This applies values for the different views
             protected void onBindViewHolder(@NonNull ExerciseHolder holder, int position, @NonNull final Exercise model) {
                 holder.name.setText(model.getName());
                 holder.mucle.setText(model.getMuscle());
 
                 final String uId = model.getuId();
 
+                //Gets the correct values from the type
                 String firstElement = String.valueOf(model.getType() == ExerciseType.Weight ?
                         (int)model.getSets() : (int)model.getReps());
                 String secondElement = model.getType() == ExerciseType.Weight ?
@@ -93,6 +100,7 @@ public class Fragment_Exercises extends Fragment
                 String thirdElement = String.valueOf(model.getType() == ExerciseType.Weight ?
                         model.getKg() : model.getKm());
 
+                //Gets the current hint from the type
                 String firstHint = model.getType() == ExerciseType.Weight ?
                         getResources().getString(R.string.editExerciseWeigthHint) :
                         getResources().getString(R.string.editExerciseTimeHint);
@@ -103,13 +111,17 @@ public class Fragment_Exercises extends Fragment
                         getResources().getString(R.string.editExerciseWeigthThirdHint) :
                         getResources().getString(R.string.editExerciseTimeThirdHint);
 
+                //Sets the number values
                 holder.firstElment.setText(firstElement);
                 holder.secondElment.setText(secondElement);
                 holder.thirdElment.setText(thirdElement);
 
+                //Sets the hints
                 holder.firstHint.setText(firstHint);
                 holder.secondHint.setText(secondHint);
                 holder.thirdtHint.setText(thirdHint);
+
+                //This button removes the current exercise from the database
                 holder.removeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -120,6 +132,7 @@ public class Fragment_Exercises extends Fragment
                     }
                 });
 
+                //This runs the edit exercise behavior
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -134,6 +147,7 @@ public class Fragment_Exercises extends Fragment
         exerciseList.setLayoutManager(new LinearLayoutManager(MainActivity.Activity));
         adapter.startListening();
 
+        //This makes the fab create a new exercise
         FloatingActionButton fab = view.findViewById(R.id.addExercise);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,12 +171,14 @@ public class Fragment_Exercises extends Fragment
         adapter.stopListening();
     }
 
+    //Cal this to edit exercise behavior
     private void onEditExerciseClick(Exercise exercise)
     {
         Fragment_EditExercise editExercise = new Fragment_EditExercise();
         editExercise.setRoutineUId(getRoutineUId());
         editExercise.setCurrentExercise(exercise);
 
+        //This opens the edit exercise fragment
         FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
                 editExercise,false,
                 R.anim.enter_from_right,R.anim.exit_to_left,

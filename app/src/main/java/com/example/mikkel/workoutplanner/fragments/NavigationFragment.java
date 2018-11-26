@@ -11,7 +11,6 @@ public class NavigationFragment extends Fragment {
 
     protected Toolbar toolbar;
 
-
     @Override
     public void onStart() {
         super.onStart();

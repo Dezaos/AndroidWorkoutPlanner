@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+//This singleton is used to store different data for the app
 public class DataManager {
 
     //Singleton field & property
@@ -76,11 +77,13 @@ public class DataManager {
         _user = _auth.getCurrentUser();
     }
 
+    //Call this to run login behavior
     public void login()
     {
         subscribeSyncEvents();
     }
 
+    //Call this to subscribe to firebase sync events
     private void subscribeSyncEvents()
     {
         FirebaseDatabase.getInstance().getReference().
@@ -88,6 +91,8 @@ public class DataManager {
                         new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                //This adds a new routine to the local list when a new routine is added
                 Routine routine = Routine.build(Routine.class,dataSnapshot);
                 routines.add(routine);
                 eventHandler.notifyAllListeners(routine);
@@ -95,6 +100,8 @@ public class DataManager {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                //This updates the routine in the local list when the routine is changed
                 Routine routine = Routine.build(Routine.class,dataSnapshot);
                 int index = ListUtils.indexOfWithEquals(Routine.class,routines,routine);
                 if(index >= 0)
@@ -107,6 +114,7 @@ public class DataManager {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
+                //This removes a routine in the local list when a routine is removed
                 Routine routine = Routine.build(Routine.class,dataSnapshot);
                 if(CollectionUtils.removeByEquals(routines,routine))
                 {
@@ -127,10 +135,12 @@ public class DataManager {
 
     }
 
+    //Call this to run the logout behavior
     public void logout()
     {
         _user = null;
 
+        //This code runs the firebase logout behavior
         AuthUI.getInstance()
                 .signOut(MainActivity.Activity)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -142,12 +152,14 @@ public class DataManager {
 
     }
 
+    //Call this to add a new state
     public <T extends StateData> T addState(T state)
     {
         _stateData.add(state);
         return state;
     }
 
+    //Call this to get a state
     public <T extends StateData> T getState(Class<T> type)
     {
         for (int i = 0; i < _stateData.size(); i++) {

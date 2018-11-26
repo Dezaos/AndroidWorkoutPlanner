@@ -10,6 +10,7 @@ import com.example.mikkel.workoutplanner.R;
 
 import java.util.ArrayList;
 
+//This singleton is used to make transitions to fragments
 public class FragmentTransitionManager {
     private static final FragmentTransitionManager ourInstance = new FragmentTransitionManager();
     public static FragmentTransitionManager getInstance() {
@@ -42,8 +43,10 @@ public class FragmentTransitionManager {
 
     public void initializeFragment(AppCompatActivity activity, Fragment fragment,boolean clear, int animationIn, int animationOut, int backstackAnimationIn, int backStackAnimationOut, int frameId)
     {
+        //This creates the fragment transition
         FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
 
+        //If clear is true, then clear the backstack
         if(clear)
         {
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
@@ -53,17 +56,21 @@ public class FragmentTransitionManager {
             }
         }
 
+        //If animations is not invalid, then apply them
         if(animationIn != -1 && animationOut != -1 &&
                 backstackAnimationIn != -1 && backStackAnimationOut != -1)
         {
             fragmentTransaction.setCustomAnimations(animationIn,animationOut,
                     backstackAnimationIn,backStackAnimationOut);
         }
+
+        //Gets the frame id
         int id = frameId == -1 ? R.id.mainFrame : frameId;
 
-        //Replace or add to backstack
+        //If this is not a clear call, then add the new fragment to the backstack
         if(!clear)
             fragmentTransaction.addToBackStack(null);
+
         fragmentTransaction.replace(id,fragment);
         fragmentTransaction.commit();
 

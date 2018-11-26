@@ -2,6 +2,7 @@ package com.example.mikkel.workoutplanner.data.StateData;
 
 import com.example.mikkel.workoutplanner.MainActivity;
 
+//A state for the main activity
 public class MainActivityState extends StateData
 {
     private boolean _showActionMenu;

@@ -29,7 +29,6 @@ public class DialogNewRoutine extends DialogFragment
                 setPositiveButton(R.string.routineDialogAccept, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         FirebaseUser user = DataManager.getInstance().get_user();
                         if(user != null)
                         {
@@ -37,8 +36,6 @@ public class DialogNewRoutine extends DialogFragment
                             if(listener != null)
                                 listener.onPositiveClicked(name);
                         }
-
-
                     }
                 }).setNegativeButton(R.string.routineDialogDecline, new DialogInterface.OnClickListener() {
             @Override

@@ -3,6 +3,7 @@ package com.example.mikkel.workoutplanner.data.Database;
 import com.example.mikkel.workoutplanner.Enums.ExerciseType;
 import com.google.firebase.database.Exclude;
 
+//This class is used to store the different values for an exercise
 public class Exercise extends FirebaseData
 {
     //Fields

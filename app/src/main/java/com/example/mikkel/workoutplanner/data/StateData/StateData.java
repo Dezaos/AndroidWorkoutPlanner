@@ -1,22 +1,20 @@
 package com.example.mikkel.workoutplanner.data.StateData;
 
-import android.app.Activity;
-import android.content.Context;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
-import com.example.mikkel.workoutplanner.R;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+This is a super class used for every state. A state is used to store the different values in a
+activity or fragment.
+ */
 public class StateData
 {
     private Map<Integer,ViewState> _views = new HashMap<Integer, ViewState>();
 
-    public void setVisibleityOfView(View view, int id, int visibility)
+    //This is used to set the visibility of a view and store it
+    public void setVisibilityOfView(View view, int id, int visibility)
     {
         View v = view.findViewById(id);
         if(v != null)
@@ -31,12 +29,14 @@ public class StateData
         }
     }
 
+    //This is used to set the visibility of a view and store it
     private void setVisibility(View view,int id, int visibility)
     {
         view.findViewById(id).setVisibility(visibility);
     }
 
-    private void popAllVisibilityState()
+    //This is used to apply all visibility changes in the state
+    private void applyAllVisibilityState()
     {
         for(Integer id : _views.keySet())
         {
@@ -45,9 +45,10 @@ public class StateData
         }
     }
 
+    //This is used to apply every state change
     public void applyState()
     {
-        popAllVisibilityState();
+        applyAllVisibilityState();
     }
     
 }

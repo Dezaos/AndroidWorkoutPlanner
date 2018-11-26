@@ -32,8 +32,7 @@ public class Fragment_Login extends NavigationFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_login,container,false);
 
-
-
+        //This makes the login button run the firebase logon ui
         Button loginButton = _view.findViewById(R.id.loginButton);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +55,7 @@ public class Fragment_Login extends NavigationFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == LOGIN_RC)
         {
+            //If the login is successful, then run the login behavior
             if(resultCode == RESULT_OK)
             {
                 DataManager.getInstance().set_user(FirebaseAuth.getInstance().getCurrentUser());
@@ -63,6 +63,7 @@ public class Fragment_Login extends NavigationFragment
             }
             else
             {
+                //If the login is unsuccessful, then show the error text
                 TextView errorText = _view.findViewById(R.id.ErrorText);
                 errorText.setVisibility(View.VISIBLE);
             }

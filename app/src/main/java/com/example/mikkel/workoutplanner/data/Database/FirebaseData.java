@@ -2,6 +2,7 @@ package com.example.mikkel.workoutplanner.data.Database;
 
 import com.google.firebase.database.DataSnapshot;
 
+//This class is super class for data that is supposed to be stored in Firebase realtime database
 public class FirebaseData
 {
     String uId;
@@ -14,6 +15,7 @@ public class FirebaseData
         this.uId = uId;
     }
 
+    //This method builds the data and sets the uId value in the data class
     public static <T extends FirebaseData> T build(Class<T> type, DataSnapshot snapshot)
     {
         if(snapshot != null)

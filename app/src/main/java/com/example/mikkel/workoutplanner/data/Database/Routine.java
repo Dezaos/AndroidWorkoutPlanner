@@ -1,5 +1,6 @@
 package com.example.mikkel.workoutplanner.data.Database;
 
+//This class is used to store routine data
 public class Routine extends FirebaseData
 {
     //Fields
@@ -23,6 +24,7 @@ public class Routine extends FirebaseData
         setuId(this.uId);
     }
 
+    //This overrides the equal method, to check for the routines uId instead of their instance
     @Override
     public boolean equals(Object obj) {
 

@@ -2,6 +2,6 @@
 <resources>
     <color name="colorAccent">#ff9f43</color>
     <color name="topColor">#252525</color>
-    <color name="topColorLight">#262626</color>
+    <color name="topColorSecondary">#353535</color>
     <color name="wrongColor">#e74c3c</color>
 </resources>
