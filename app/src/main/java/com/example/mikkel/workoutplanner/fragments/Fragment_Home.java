@@ -43,6 +43,9 @@ public class Fragment_Home extends NavigationFragment
         tempData.add(new MuscleInfo("Leg",2));
         tempData.add(new MuscleInfo("Bicep",2));
         tempData.add(new MuscleInfo("Tricep",2));
+        tempData.add(new MuscleInfo("Guns!",2));
+        tempData.add(new MuscleInfo("Cardio",2));
+        tempData.add(new MuscleInfo("Shoulder",2));
 
         RecyclerView recyclerView = view.findViewById(R.id.routinesRecyclerView);
 
@@ -71,7 +74,9 @@ public class Fragment_Home extends NavigationFragment
             protected void onBindViewHolder(@NonNull RoutineHolder holder, int position, @NonNull final Routine model) {
                 holder.title.setText(model.getName());
                 holder.muscles.setAdapter(new routineGridAdapter(getActivity(),tempData));
-                holder.muscles.setLayoutManager(new GridLayoutManager(getActivity(),3));
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),3,GridLayoutManager.VERTICAL,true);
+                holder.muscles.setLayoutManager(gridLayoutManager);
+                //holder.muscles.setHasFixedSize(true);
 
                 holder.editButton.setOnClickListener(new View.OnClickListener() {
                     @Override

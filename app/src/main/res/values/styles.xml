@@ -31,10 +31,9 @@
     </style>
 
     <style name="AppTheme.NavigationView" parent="Theme.AppTheme.WorkoutPlannerTheme">
-        <item name="itemIconTint">@color/colorPrimary</item>
-        <item name="itemTextColor">@color/textPrimaryColor</item>
-
-
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="itemIconTint">@color/bottom_selector</item>
+        <item name="itemTextColor">@color/bottom_selector</item>
     </style>
 
 </resources>
