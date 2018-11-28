@@ -144,7 +144,7 @@ public class Fragment_Exercises extends Fragment
 
         RecyclerView exerciseList = view.findViewById(R.id.exerciseRecycleListView);
         exerciseList.setAdapter(adapter);
-        exerciseList.setLayoutManager(new LinearLayoutManager(MainActivity.Activity));
+        exerciseList.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter.startListening();
 
         //This makes the fab create a new exercise

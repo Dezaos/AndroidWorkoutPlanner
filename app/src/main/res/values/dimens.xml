@@ -2,4 +2,10 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="exerciseElementPaddingRight">1dp</dimen>
+    <dimen name="exerciseElementAmountSize">22sp</dimen>
+    <dimen name="cardViewRadius">10dp</dimen>
+    <dimen name="cardViewPadding">10dp</dimen>
+    <dimen name="cardViewTitleSize">25sp</dimen>
+    <dimen name="cardViewIconSize">35dp</dimen>
 </resources>
