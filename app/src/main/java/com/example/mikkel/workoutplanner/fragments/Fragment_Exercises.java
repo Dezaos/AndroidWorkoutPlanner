@@ -15,7 +15,6 @@ import com.example.mikkel.workoutplanner.Enums.ExerciseType;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
-import com.example.mikkel.workoutplanner.data.StateData.ExercisesFragmentState;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.viewholders.ExerciseHolder;
@@ -27,33 +26,16 @@ import com.google.firebase.database.Query;
 public class Fragment_Exercises extends Fragment
 {
     private FirebaseRecyclerAdapter adapter;
-    private ExercisesFragmentState state;
+    private String routineUid;
 
     //Gets the routine uId from the state
     public String getRoutineUId() {
-        if(state == null)
-        {
-            state = DataManager.getInstance().getState(ExercisesFragmentState.class);
-            if(state == null)
-            {
-                state = DataManager.getInstance().addState(new ExercisesFragmentState());
-            }
-        }
-
-        return state.getRoutineUid();
+        return routineUid;
     }
 
     //Sets the routine uId for the state
     public void setRoutineUId(String routineUId) {
-        if(state == null)
-        {
-            state = DataManager.getInstance().getState(ExercisesFragmentState.class);
-            if(state == null)
-            {
-                state = DataManager.getInstance().addState(new ExercisesFragmentState());
-            }
-        }
-        state.setRoutineUid(routineUId);
+        this.routineUid = routineUId;
     }
 
     @Nullable

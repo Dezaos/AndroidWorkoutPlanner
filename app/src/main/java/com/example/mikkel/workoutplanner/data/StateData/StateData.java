@@ -11,7 +11,16 @@ activity or fragment.
  */
 public class StateData
 {
+    private String id;
     private Map<Integer,ViewState> _views = new HashMap<Integer, ViewState>();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     //This is used to set the visibility of a view and store it
     public void setVisibilityOfView(View view, int id, int visibility)

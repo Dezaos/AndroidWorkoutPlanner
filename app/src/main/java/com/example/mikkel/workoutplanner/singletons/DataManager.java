@@ -159,11 +159,31 @@ public class DataManager {
         return state;
     }
 
+    public <T extends StateData> T addState(T state, String id)
+    {
+        state.setId(id);
+        _stateData.add(state);
+        return state;
+    }
+
     //Call this to get a state
     public <T extends StateData> T getState(Class<T> type)
     {
         for (int i = 0; i < _stateData.size(); i++) {
             if(type.isInstance(_stateData.get(i)))
+            {
+                return (T)_stateData.get(i);
+            }
+        }
+        return null;
+    }
+
+    //Call this to get a state
+    public <T extends StateData> T getState(Class<T> type, String id)
+    {
+        for (int i = 0; i < _stateData.size(); i++) {
+            if(type.isInstance(_stateData.get(i)) &&
+                    id == _stateData.get(i).getId())
             {
                 return (T)_stateData.get(i);
             }
