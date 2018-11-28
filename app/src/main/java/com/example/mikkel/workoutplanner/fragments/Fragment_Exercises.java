@@ -171,7 +171,7 @@ public class Fragment_Exercises extends Fragment
         adapter.stopListening();
     }
 
-    //Cal this to edit exercise behavior
+    //Call this to edit exercise behavior
     private void onEditExerciseClick(Exercise exercise)
     {
         Fragment_EditExercise editExercise = new Fragment_EditExercise();

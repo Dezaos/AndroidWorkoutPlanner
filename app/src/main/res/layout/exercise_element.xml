@@ -16,7 +16,12 @@
         android:layout_height="wrap_content"
         android:minHeight="50dp"
         android:minWidth="200dp"
-        card_view:cardCornerRadius="@dimen/cardViewRadius">
+        card_view:cardCornerRadius="@dimen/cardViewRadius"
+        card_view:cardElevation="@dimen/cardViewElavation"
+        card_view:cardUseCompatPadding="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:theme="@style/AppTheme.TextInput"
 >
     <include layout="@layout/tool_bar" />
 
@@ -29,13 +30,17 @@
                 android:id="@+id/WeightItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/weight"/>
+                android:text="@string/weight"
+                android:textSize="15dp"
+                android:textColor="@color/colorPrimary"/>
             <RadioButton
                 android:id="@+id/TimeItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Time"
-                android:layout_marginStart="15dp"/>
+                android:layout_marginStart="15dp"
+                android:textSize="15dp"
+                android:textColor="@color/colorPrimary"/>
         </RadioGroup>
 
         <android.support.design.widget.TextInputLayout

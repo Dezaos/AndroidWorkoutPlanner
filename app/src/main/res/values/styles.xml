@@ -1,13 +1,40 @@
 <resources>
-    <style name="Theme.AppTheme.WorkoutPlannerTheme" parent="Theme.AppCompat.NoActionBar" >
+    <style name="Theme.AppTheme.WorkoutPlannerTheme" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/textPrimaryColor</item>
+        <item name="android:textColorSecondary">@color/textSecondaryColor</item>
 
     </style>
 
-    <style name="Theme.AppTheme.PopupStyle" parent="Theme.AppCompat.NoActionBar" >
+    <style name="Theme.AppTheme.PopupStyle" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="colorAccent">@color/colorAccent</item>
         <item name="overlapAnchor">false</item>
         <item name="android:dropDownVerticalOffset">-7dp</item>
+    </style>
+
+    <style name="AppTheme.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.TabLayout" parent="Theme.AppTheme.WorkoutPlannerTheme">
+        <item name="tabBackground">@color/colorPrimary</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="tabTextColor">@color/inactive</item>
+        <item name="tabSelectedTextColor">@color/textSecondaryColor</item>
+    </style>
+
+    <style name="AppTheme.TextInput" parent="Widget.Design.TextInputLayout">
+        <item name="android:textColorHint">@color/textPrimaryColor</item>
+        <item name="android:colorControlNormal">@color/textPrimaryColor</item>
+    </style>
+
+    <style name="AppTheme.NavigationView" parent="Theme.AppTheme.WorkoutPlannerTheme">
+        <item name="itemIconTint">@color/colorPrimary</item>
+        <item name="itemTextColor">@color/textPrimaryColor</item>
+
+
     </style>
 
 </resources>

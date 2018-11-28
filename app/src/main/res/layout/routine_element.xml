@@ -6,8 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:paddingBottom="15dp"
-
     >
 
     <android.support.v7.widget.CardView
@@ -17,7 +15,12 @@
         android:minHeight="50dp"
         android:minWidth="200dp"
         card_view:cardCornerRadius="5dp"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        card_view:cardElevation="@dimen/cardViewElavation"
+        card_view:cardUseCompatPadding="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

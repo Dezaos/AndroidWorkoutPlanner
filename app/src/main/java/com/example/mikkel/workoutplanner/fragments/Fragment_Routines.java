@@ -15,7 +15,7 @@ import com.example.mikkel.workoutplanner.Interfaces.Notification;
 import com.example.mikkel.workoutplanner.Interfaces.OnPositiveClick;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
-import com.example.mikkel.workoutplanner.adapters.TabsAdapter;
+import com.example.mikkel.workoutplanner.adapters.RoutineTabsAdapter;
 import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.data.StateData.RoutinesFragmentState;
 import com.example.mikkel.workoutplanner.dialogs.DialogNewRoutine;
@@ -32,8 +32,9 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     private View view;
     private TabLayout tabsLayout;
     private ViewPager viewPager;
-    private TabsAdapter tabsAdapter;
+    private RoutineTabsAdapter tabsAdapter;
     private RoutinesFragmentState state;
+    private String nextTab;
 
     @Nullable
     @Override
@@ -69,7 +70,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         });
 
 
-        tabsAdapter = new TabsAdapter(getChildFragmentManager());
+        tabsAdapter = new RoutineTabsAdapter(getChildFragmentManager());
 
         viewPager = view.findViewById(R.id.RoutineViewPager);
         viewPager.setAdapter(tabsAdapter);
@@ -136,7 +137,10 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
 
     private void setCurrentTab()
     {
-        TabLayout.Tab tab = tabsLayout.getTabAt(state.getSelectedTab());
+        int index = nextTab == null ? state.getSelectedTab() :
+                tabsAdapter.getIndex(nextTab);
+
+        TabLayout.Tab tab = index != -1 ? tabsLayout.getTabAt(index) : null;
         if(tab != null)
             tab.select();
         else
@@ -145,6 +149,14 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
             if(tab != null)
                 tab.select();
         }
+
+        if(nextTab != null)
+            nextTab = null;
+    }
+
+    public void changeCurrentTab(String uId)
+    {
+        nextTab = uId;
     }
 
     @Override
@@ -193,4 +205,6 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

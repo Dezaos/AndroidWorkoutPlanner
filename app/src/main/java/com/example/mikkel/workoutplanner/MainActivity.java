@@ -174,4 +174,21 @@ public class MainActivity extends AppCompatActivity {
         _state.set_showActionMenu(show);
     }
 
+    public void setCheckedInButtonNavigation(int id)
+    {
+        MenuItem item = _bottomNavigation.getMenu().findItem(id);
+        item.setChecked(true);
+        switch (item.getItemId()) {
+            case R.id.navigation_home:
+                _lastBottomFragment = 0;
+                break;
+            case R.id.navigation_routines:
+                _lastBottomFragment = 1;
+                break;
+            case R.id.navigation_calender:
+                _lastBottomFragment = 2;
+                break;
+        }
+    }
+
 }
