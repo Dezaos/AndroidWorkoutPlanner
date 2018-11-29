@@ -6,9 +6,7 @@ import android.support.annotation.Nullable;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.utils.CollectionUtils;
 import com.example.mikkel.workoutplanner.utils.EventHandler;
-import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.data.Database.Routine;
-import com.example.mikkel.workoutplanner.data.StateData.StateData;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.example.mikkel.workoutplanner.utils.ListUtils;
 import com.firebase.ui.auth.AuthUI;
@@ -20,10 +18,8 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 //This singleton is used to store different data for the app
 public class DataManager {
@@ -39,27 +35,27 @@ public class DataManager {
     public static final String EXERCISES_PATH_ID = "Exercises";
 
     //Fields
-    private FirebaseAuth _auth;
-    private ArrayList<StateData> _stateData = new ArrayList<StateData>();
-    private boolean _init;
-    private FirebaseUser _user;
+    private FirebaseAuth auth;
+    private boolean init;
+    private FirebaseUser user;
     private ArrayList<Routine> routines = new ArrayList<>();
     private EventHandler eventHandler = new EventHandler();
+    private StateHandler stateHandler = new StateHandler();
 
     //Properties
-    public FirebaseUser get_user() {
-        return _user;
+    public FirebaseUser getUser() {
+        return user;
     }
-    public void set_user(FirebaseUser _user) {
-        this._user = _user;
-    }
-
-    public boolean get_init() {
-        return _init;
+    public void setUser(FirebaseUser user) {
+        this.user = user;
     }
 
-    public void set_init(boolean _init) {
-        this._init = _init;
+    public boolean getInit() {
+        return init;
+    }
+
+    public void setInit(boolean init) {
+        this.init = init;
     }
 
     public ArrayList<Routine> getRoutines() {
@@ -70,11 +66,19 @@ public class DataManager {
         return eventHandler;
     }
 
+    public StateHandler getStateHandler() {
+        return stateHandler;
+    }
+
+    public void setStateHandler(StateHandler stateHandler) {
+        this.stateHandler = stateHandler;
+    }
+
     //Contructor
     private DataManager()
     {
-        _auth = FirebaseAuth.getInstance();
-        _user = _auth.getCurrentUser();
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
     }
 
     //Call this to run login behavior
@@ -87,7 +91,7 @@ public class DataManager {
     private void subscribeSyncEvents()
     {
         FirebaseDatabase.getInstance().getReference().
-                child(DataManager.Routines_PATH_ID).child(_user.getUid()).addChildEventListener(
+                child(DataManager.Routines_PATH_ID).child(user.getUid()).addChildEventListener(
                         new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -138,7 +142,7 @@ public class DataManager {
     //Call this to run the logout behavior
     public void logout()
     {
-        _user = null;
+        user = null;
 
         //This code runs the firebase logout behavior
         AuthUI.getInstance()
@@ -150,45 +154,6 @@ public class DataManager {
                     }
                 });
 
-    }
-
-    //Call this to add a new state
-    public <T extends StateData> T addState(T state)
-    {
-        _stateData.add(state);
-        return state;
-    }
-
-    public <T extends StateData> T addState(T state, String id)
-    {
-        state.setId(id);
-        _stateData.add(state);
-        return state;
-    }
-
-    //Call this to get a state
-    public <T extends StateData> T getState(Class<T> type)
-    {
-        for (int i = 0; i < _stateData.size(); i++) {
-            if(type.isInstance(_stateData.get(i)))
-            {
-                return (T)_stateData.get(i);
-            }
-        }
-        return null;
-    }
-
-    //Call this to get a state
-    public <T extends StateData> T getState(Class<T> type, String id)
-    {
-        for (int i = 0; i < _stateData.size(); i++) {
-            if(type.isInstance(_stateData.get(i)) &&
-                    id == _stateData.get(i).getId())
-            {
-                return (T)_stateData.get(i);
-            }
-        }
-        return null;
     }
 
 

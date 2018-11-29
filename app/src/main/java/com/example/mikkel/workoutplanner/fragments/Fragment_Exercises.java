@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +39,23 @@ public class Fragment_Exercises extends Fragment
         this.routineUid = routineUId;
     }
 
+
+    public Fragment_Exercises() {
+        int i = 1;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_exercises,container,false);
 
+        Log.d("Test","Yes");
+
+        if(routineUid == null)
+            return super.onCreateView(inflater,container,savedInstanceState);
+
         DataManager dataManager = DataManager.getInstance();
-        final String uid = dataManager.get_user().getUid();
+        final String uid = dataManager.getUser().getUid();
 
         //The code below makes the firebase recycler view behavior
         Query query = FirebaseDatabase.getInstance().getReference().
@@ -69,58 +80,7 @@ public class Fragment_Exercises extends Fragment
             @Override
             //This applies values for the different views
             protected void onBindViewHolder(@NonNull ExerciseHolder holder, int position, @NonNull final Exercise model) {
-                holder.name.setText(model.getName());
-                holder.mucle.setText(model.getMuscle());
-
-                final String uId = model.getuId();
-
-                //Gets the correct values from the type
-                String firstElement = String.valueOf(model.getType() == ExerciseType.Weight ?
-                        (int)model.getSets() : (int)model.getReps());
-                String secondElement = model.getType() == ExerciseType.Weight ?
-                        String.valueOf(model.getReps()) : String.valueOf(model.getTime());
-                String thirdElement = String.valueOf(model.getType() == ExerciseType.Weight ?
-                        model.getKg() : model.getKm());
-
-                //Gets the current hint from the type
-                String firstHint = model.getType() == ExerciseType.Weight ?
-                        getResources().getString(R.string.editExerciseWeigthHint) :
-                        getResources().getString(R.string.editExerciseTimeHint);
-                String secondHint = model.getType() == ExerciseType.Weight ?
-                        getResources().getString(R.string.editExerciseWeigthSecondHint) :
-                        getResources().getString(R.string.editExerciseTimeSecondHint);
-                String thirdHint = model.getType() == ExerciseType.Weight ?
-                        getResources().getString(R.string.editExerciseWeigthThirdHint) :
-                        getResources().getString(R.string.editExerciseTimeThirdHint);
-
-                //Sets the number values
-                holder.firstElment.setText(firstElement);
-                holder.secondElment.setText(secondElement);
-                holder.thirdElment.setText(thirdElement);
-
-                //Sets the hints
-                holder.firstHint.setText(firstHint);
-                holder.secondHint.setText(secondHint);
-                holder.thirdtHint.setText(thirdHint);
-
-                //This button removes the current exercise from the database
-                holder.removeButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        FirebaseDatabase.getInstance().getReference().
-                                child(DataManager.EXERCISES_PATH_ID).
-                                child(DataManager.getInstance().get_user().getUid()).
-                                child(model.getRoutineUId()).child(uId).setValue(null);
-                    }
-                });
-
-                //This runs the edit exercise behavior
-                holder.cardView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onEditExerciseClick(model);
-                    }
-                });
+                updateCards(holder,position,model);
             }
         };
 
@@ -144,13 +104,22 @@ public class Fragment_Exercises extends Fragment
             }
         });
 
+
+
         return view;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if(adapter != null)
+            adapter.stopListening();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DataManager.getInstance().getStateHandler().removeObjectState(this);
     }
 
     //Call this to edit exercise behavior
@@ -166,4 +135,61 @@ public class Fragment_Exercises extends Fragment
                 R.anim.enter_from_right,R.anim.exit_to_left,
                 R.anim.enter_from_left,R.anim.exit_to_right);
     }
+
+    private void updateCards(@NonNull ExerciseHolder holder, int position, @NonNull final Exercise model)
+    {
+        holder.name.setText(model.getName());
+        holder.mucle.setText(model.getMuscle());
+
+        final String uId = model.getuId();
+
+        //Gets the correct values from the type
+        String firstElement = String.valueOf(model.getType() == ExerciseType.Weight ?
+                (int)model.getSets() : (int)model.getReps());
+        String secondElement = model.getType() == ExerciseType.Weight ?
+                String.valueOf(model.getReps()) : String.valueOf(model.getTime());
+        String thirdElement = String.valueOf(model.getType() == ExerciseType.Weight ?
+                model.getKg() : model.getKm());
+
+        //Gets the current hint from the type
+        String firstHint = model.getType() == ExerciseType.Weight ?
+                getResources().getString(R.string.editExerciseWeigthHint) :
+                getResources().getString(R.string.editExerciseTimeHint);
+        String secondHint = model.getType() == ExerciseType.Weight ?
+                getResources().getString(R.string.editExerciseWeigthSecondHint) :
+                getResources().getString(R.string.editExerciseTimeSecondHint);
+        String thirdHint = model.getType() == ExerciseType.Weight ?
+                getResources().getString(R.string.editExerciseWeigthThirdHint) :
+                getResources().getString(R.string.editExerciseTimeThirdHint);
+
+        //Sets the number values
+        holder.firstElment.setText(firstElement);
+        holder.secondElment.setText(secondElement);
+        holder.thirdElment.setText(thirdElement);
+
+        //Sets the hints
+        holder.firstHint.setText(firstHint);
+        holder.secondHint.setText(secondHint);
+        holder.thirdtHint.setText(thirdHint);
+
+        //This button removes the current exercise from the database
+        holder.removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseDatabase.getInstance().getReference().
+                        child(DataManager.EXERCISES_PATH_ID).
+                        child(DataManager.getInstance().getUser().getUid()).
+                        child(model.getRoutineUId()).child(uId).setValue(null);
+            }
+        });
+
+        //This runs the edit exercise behavior
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onEditExerciseClick(model);
+            }
+        });
+    }
+
 }

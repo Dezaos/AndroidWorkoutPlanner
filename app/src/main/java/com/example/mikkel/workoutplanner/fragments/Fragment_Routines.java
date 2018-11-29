@@ -1,8 +1,10 @@
 package com.example.mikkel.workoutplanner.fragments;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -69,7 +71,6 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
             }
         });
 
-
         tabsAdapter = new RoutineTabsAdapter(getChildFragmentManager());
 
         viewPager = view.findViewById(R.id.RoutineViewPager);
@@ -78,10 +79,10 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         tabsLayout = view.findViewById(R.id.WorkoutRoutineTabs);
         tabsLayout.setupWithViewPager(viewPager);
 
-        if(DataManager.getInstance().getState(RoutinesFragmentState.class) == null)
-            state = DataManager.getInstance().addState(new RoutinesFragmentState());
+        if(DataManager.getInstance().getStateHandler().getState(RoutinesFragmentState.class) == null)
+            state = DataManager.getInstance().getStateHandler().addState(new RoutinesFragmentState());
         else
-            state = DataManager.getInstance().getState(RoutinesFragmentState.class);
+            state = DataManager.getInstance().getStateHandler().getState(RoutinesFragmentState.class);
 
         tabsLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -105,16 +106,18 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
 
     private void syncRoutines()
     {
-       tabsAdapter.clear();
-        ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
-        for (int i = 0; i < routines.size(); i++) {
-            Routine routine = routines.get(i);
-            Fragment_Exercises exercises = new Fragment_Exercises();
-            exercises.setRoutineUId(routine.getuId());
-            tabsAdapter.addItem(exercises, new TabInfo(routine.getName(),routine.getuId()));
-        }
-        tabsAdapter.notifyDataSetChanged();
-        setCurrentTab();
+            tabsAdapter.clear();
+
+            ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
+            for (int i = 0; i < routines.size(); i++) {
+                Routine routine = routines.get(i);
+                Fragment_Exercises exercises = new Fragment_Exercises();
+
+                exercises.setRoutineUId(routine.getuId());
+                tabsAdapter.addItem(exercises, new TabInfo(routine.getName(),routine.getuId()));
+            }
+            tabsAdapter.notifyDataSetChanged();
+            setCurrentTab();
     }
 
     private void onNewRoutineClick()
@@ -172,7 +175,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         Routine routine = new Routine();
         routine.setName((String)data);
         DatabaseReference ref = database.child(DataManager.Routines_PATH_ID).
-                child(DataManager.getInstance().get_user().getUid()).push();
+                child(DataManager.getInstance().getUser().getUid()).push();
         routine.setuId(ref.getKey());
         ref.setValue(routine);
         syncRoutines();
@@ -193,11 +196,11 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
                 {
                     String routineUid = tabsAdapter.getInfo(state.getSelectedTab()).getuId();
                     FirebaseDatabase.getInstance().getReference().child(DataManager.Routines_PATH_ID).
-                            child(DataManager.getInstance().get_user().getUid()).
+                            child(DataManager.getInstance().getUser().getUid()).
                             child(routineUid).setValue(null);
 
                     FirebaseDatabase.getInstance().getReference().child(DataManager.EXERCISES_PATH_ID).
-                            child(DataManager.getInstance().get_user().getUid()).
+                            child(DataManager.getInstance().getUser().getUid()).
                             child(routineUid).removeValue();
                 }
                 break;

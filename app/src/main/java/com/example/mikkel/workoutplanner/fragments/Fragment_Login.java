@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import com.example.mikkel.workoutplanner.MainActivity;
@@ -58,7 +57,7 @@ public class Fragment_Login extends NavigationFragment
             //If the login is successful, then run the login behavior
             if(resultCode == RESULT_OK)
             {
-                DataManager.getInstance().set_user(FirebaseAuth.getInstance().getCurrentUser());
+                DataManager.getInstance().setUser(FirebaseAuth.getInstance().getCurrentUser());
                 MainActivity.Activity.loginSucces();
             }
             else

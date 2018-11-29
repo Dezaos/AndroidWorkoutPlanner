@@ -78,5 +78,10 @@ public class FragmentTransitionManager {
         _currentFragmentTransition = fragmentTransaction;
     }
 
+    public void removeFragment()
+    {
+
+    }
+
 
 }

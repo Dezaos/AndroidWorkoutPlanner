@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.data.StateData.MainActivityState;
@@ -19,8 +18,6 @@ import com.example.mikkel.workoutplanner.fragments.Fragment_Calender;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Home;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Routines;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -48,19 +45,19 @@ public class MainActivity extends AppCompatActivity {
 
         //Gets the current state of the activity, so when the activity is remade, then it know what
         // is state where before
-        _state = DataManager.getInstance().getState(MainActivityState.class);
+        _state = DataManager.getInstance().getStateHandler().getState(MainActivityState.class);
         if(_state == null)
         {
-            _state = DataManager.getInstance().addState(new MainActivityState(this));
+            _state = DataManager.getInstance().getStateHandler().addState(new MainActivityState(this));
             _state.setMenuId(R.menu.menu);
         }
 
         //If the app just have been opened, then check if it is logged in and act accountancy, else
         //pop it's state
-        if(!DataManager.getInstance().get_init())
+        if(!DataManager.getInstance().getInit())
         {
-            DataManager.getInstance().set_init(true);
-            if(DataManager.getInstance().get_user() != null)
+            DataManager.getInstance().setInit(true);
+            if(DataManager.getInstance().getUser() != null)
             {
                 loginSucces();
             }

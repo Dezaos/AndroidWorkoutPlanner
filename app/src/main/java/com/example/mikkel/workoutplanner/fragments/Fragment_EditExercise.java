@@ -338,7 +338,7 @@ public class Fragment_EditExercise extends NavigationFragment {
                 {
                     //This gets tne database reference and use uId
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                    String uId = DataManager.getInstance().get_user().getUid();
+                    String uId = DataManager.getInstance().getUser().getUid();
 
                     /*
                     If the exercise uId is empty, then add the current exercise as a

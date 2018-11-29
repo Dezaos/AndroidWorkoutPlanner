@@ -29,7 +29,7 @@ public class DialogNewRoutine extends DialogFragment
                 setPositiveButton(R.string.routineDialogAccept, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        FirebaseUser user = DataManager.getInstance().get_user();
+                        FirebaseUser user = DataManager.getInstance().getUser();
                         if(user != null)
                         {
                             String name = ((EditText)view.findViewById(R.id.planNameEditText)).getText().toString();
