@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
 import com.example.mikkel.workoutplanner.R;
+import com.example.mikkel.workoutplanner.utils.Animation;
 
 import java.util.ArrayList;
 
@@ -28,20 +29,41 @@ public class FragmentTransitionManager {
 
     public void initializeFragment(AppCompatActivity activity, Fragment fragment, boolean clear)
     {
-        initializeFragment(activity,fragment,clear,-1,-1,-1,-1-1);
+        initializeFragment(activity,fragment,clear,null,-1,null);
     }
 
-    public void initializeFragment(AppCompatActivity activity, Fragment fragment, boolean clear, int frameId)
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment,
+                                   boolean clear, int frameId)
     {
-        initializeFragment(activity,fragment,clear,-1,-1,-1,-1,frameId);
+        initializeFragment(activity,fragment,clear,null,frameId,null);
     }
 
-    public void initializeFragment(AppCompatActivity activity, Fragment fragment, boolean clear, int animationIn, int animationOut, int backstackAnimationIn, int backStackAnimationOut)
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment,
+                                   boolean clear, Animation animation)
     {
-        initializeFragment(activity,fragment,clear,animationIn,animationOut,backstackAnimationIn,backStackAnimationOut,-1);
+        initializeFragment(activity,fragment,clear,animation,-1,null);
     }
 
-    public void initializeFragment(AppCompatActivity activity, Fragment fragment,boolean clear, int animationIn, int animationOut, int backstackAnimationIn, int backStackAnimationOut, int frameId)
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment,
+                                   boolean clear, String tag)
+    {
+        initializeFragment(activity,fragment,clear,null,-1,tag);
+    }
+
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment,
+                                   boolean clear, int frameId, String tag)
+    {
+        initializeFragment(activity,fragment,clear,null,frameId,tag);
+    }
+
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment,
+                                   boolean clear, Animation animation, String tag)
+    {
+        initializeFragment(activity,fragment,clear,animation,-1,tag);
+    }
+
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment,
+                                   boolean clear, Animation animation, int frameId, String tag)
     {
         //This creates the fragment transition
         FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
@@ -56,13 +78,8 @@ public class FragmentTransitionManager {
             }
         }
 
-        //If animations is not invalid, then apply them
-        if(animationIn != -1 && animationOut != -1 &&
-                backstackAnimationIn != -1 && backStackAnimationOut != -1)
-        {
-            fragmentTransaction.setCustomAnimations(animationIn,animationOut,
-                    backstackAnimationIn,backStackAnimationOut);
-        }
+        if(animation != null)
+            animation.useAnimation(fragmentTransaction);
 
         //Gets the frame id
         int id = frameId == -1 ? R.id.mainFrame : frameId;
@@ -71,16 +88,11 @@ public class FragmentTransitionManager {
         if(!clear)
             fragmentTransaction.addToBackStack(null);
 
-        fragmentTransaction.replace(id,fragment);
+        fragmentTransaction.replace(id,fragment,tag);
         fragmentTransaction.commit();
 
         //Save current Transition
         _currentFragmentTransition = fragmentTransaction;
-    }
-
-    public void removeFragment()
-    {
-
     }
 
 

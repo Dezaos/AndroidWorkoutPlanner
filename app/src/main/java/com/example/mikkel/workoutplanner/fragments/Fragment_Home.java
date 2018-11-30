@@ -16,6 +16,7 @@ import com.example.mikkel.workoutplanner.adapters.routineGridAdapter;
 import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
+import com.example.mikkel.workoutplanner.utils.Animation;
 import com.example.mikkel.workoutplanner.utils.MuscleInfo;
 import com.example.mikkel.workoutplanner.viewholders.RoutineHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -84,8 +85,8 @@ public class Fragment_Home extends NavigationFragment
                         //This opens the edit exercise fragment
                         FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
                                 routines,false,
-                                R.anim.enter_from_right,R.anim.exit_to_left,
-                                R.anim.enter_from_left,R.anim.exit_to_right);
+                                new Animation(R.anim.enter_from_right,R.anim.exit_to_left,
+                                        R.anim.enter_from_left,R.anim.exit_to_right));
                         MainActivity.Activity.setCheckedInButtonNavigation(R.id.navigation_routines);
                     }
                 });

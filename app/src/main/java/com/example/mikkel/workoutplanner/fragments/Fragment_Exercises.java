@@ -18,6 +18,7 @@ import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
+import com.example.mikkel.workoutplanner.utils.Animation;
 import com.example.mikkel.workoutplanner.viewholders.ExerciseHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -28,6 +29,7 @@ public class Fragment_Exercises extends Fragment
 {
     private FirebaseRecyclerAdapter adapter;
     private String routineUid;
+    private int hash;
 
     //Gets the routine uId from the state
     public String getRoutineUId() {
@@ -41,6 +43,8 @@ public class Fragment_Exercises extends Fragment
 
 
     public Fragment_Exercises() {
+
+        hash = hashCode();
         int i = 1;
     }
 
@@ -99,8 +103,8 @@ public class Fragment_Exercises extends Fragment
 
                 FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
                         editExercise,false,
-                        R.anim.enter_from_right,R.anim.exit_to_left,
-                        R.anim.enter_from_left,R.anim.exit_to_right);
+                        new Animation(R.anim.enter_from_right,R.anim.exit_to_left,
+                                R.anim.enter_from_left,R.anim.exit_to_right));
             }
         });
 
@@ -132,8 +136,8 @@ public class Fragment_Exercises extends Fragment
         //This opens the edit exercise fragment
         FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
                 editExercise,false,
-                R.anim.enter_from_right,R.anim.exit_to_left,
-                R.anim.enter_from_left,R.anim.exit_to_right);
+                new Animation(R.anim.enter_from_right,R.anim.exit_to_left,
+                        R.anim.enter_from_left,R.anim.exit_to_right));
     }
 
     private void updateCards(@NonNull ExerciseHolder holder, int position, @NonNull final Exercise model)

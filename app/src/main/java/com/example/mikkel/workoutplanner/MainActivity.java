@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import com.example.mikkel.workoutplanner.fragments.Fragment_Calender;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Home;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Routines;
+import com.example.mikkel.workoutplanner.utils.Animation;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         _bottomNavigation = (BottomNavigationView) findViewById(R.id.navigation);
         _bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
 
         //Gets the current state of the activity, so when the activity is remade, then it know what
         // is state where before
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     public void loginSucces()
     {
         DataManager.getInstance().login();
-        changeMainFragment(new Fragment_Home(),0);
+        changeMainFragment(new Fragment_Home(),0,String.valueOf(R.id.navigation_home));
         _bottomNavigation.getMenu().findItem(R.id.navigation_home).setChecked(true);
     }
 
@@ -86,32 +89,36 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment currentFragment = null;
+            Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(
+                    String.valueOf(item.getItemId()));
 
             int currentItemIndex = -1;
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     currentItemIndex = 0;
-                    currentFragment = new Fragment_Home();
+                    if(currentFragment == null)
+                        currentFragment = new Fragment_Home();
                     break;
                 case R.id.navigation_routines:
                     currentItemIndex = 1;
-                    currentFragment = new Fragment_Routines();
+                    if(currentFragment == null)
+                        currentFragment = new Fragment_Routines();
                     break;
                 case R.id.navigation_calender:
                     currentItemIndex = 2;
-                    currentFragment = new Fragment_Calender();
+                    if(currentFragment == null)
+                        currentFragment = new Fragment_Calender();
                     break;
             }
 
             if(currentItemIndex == _lastBottomFragment)
                 return false;
-            changeMainFragment(currentFragment,currentItemIndex);
+            changeMainFragment(currentFragment,currentItemIndex,String.valueOf(item.getItemId()) );
             return true;
         }
     };
 
-    private void changeMainFragment(Fragment newFragment, int newIndex)
+    private void changeMainFragment(Fragment newFragment, int newIndex,String tag)
     {
         //old animations
         int inAnimationCurrent = _lastBottomFragment < newIndex ? R.anim.enter_from_left : R.anim.enter_from_right;
@@ -123,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         if(newFragment != null)
         {
             FragmentTransitionManager.getInstance().initializeFragment(Activity,newFragment,true,
-                    R.anim.fade_in,R.anim.fade_out,R.anim.fade_in,R.anim.fade_out);
+                    new Animation(R.anim.fade_in,R.anim.fade_out,R.anim.fade_in,R.anim.fade_out),tag);
         }
 
     }
