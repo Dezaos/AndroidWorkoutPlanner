@@ -1,7 +1,9 @@
 package com.example.mikkel.workoutplanner.fragments;
 
 import android.app.FragmentManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -77,6 +79,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
 
         viewPager = view.findViewById(R.id.RoutineViewPager);
         viewPager.setAdapter(tabsAdapter);
+        //viewPager.setSaveFromParentEnabled(false);
 
         tabsLayout = view.findViewById(R.id.WorkoutRoutineTabs);
         tabsLayout.setupWithViewPager(viewPager);
@@ -114,7 +117,6 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
             for (int i = 0; i < routines.size(); i++) {
                 Routine routine = routines.get(i);
                 Fragment_Exercises exercises = new Fragment_Exercises();
-
                 exercises.setRoutineUId(routine.getuId());
                 tabsAdapter.addItem(exercises, new TabInfo(routine.getName(),routine.getuId()));
             }
@@ -171,6 +173,13 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        tabsAdapter.clear();
+        tabsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onPositiveClicked(Object data) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
@@ -211,5 +220,8 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 }

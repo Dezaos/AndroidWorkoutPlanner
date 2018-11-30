@@ -1,8 +1,10 @@
 package com.example.mikkel.workoutplanner.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Pair;
 
@@ -10,7 +12,7 @@ import com.example.mikkel.workoutplanner.utils.TabInfo;
 
 import java.util.ArrayList;
 
-public class RoutineTabsAdapter extends FragmentStatePagerAdapter{
+public class RoutineTabsAdapter extends FragmentPagerAdapter {
     private final ArrayList<Pair<Fragment, TabInfo>> tabs = new ArrayList<>();
 
     public RoutineTabsAdapter(FragmentManager fm) {
@@ -59,7 +61,25 @@ public class RoutineTabsAdapter extends FragmentStatePagerAdapter{
     }
 
     public void clear(){
-        tabs.clear();}
+        tabs.clear();
+        notifyDataSetChanged();
+    }
 
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        int index = -1;
+        for (int i = 0; i < tabs.size(); i++) {
+            if(tabs.get(i).first == object)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if(index == -1)
+            return POSITION_NONE;
+        return index;
+
+    }
 }
 

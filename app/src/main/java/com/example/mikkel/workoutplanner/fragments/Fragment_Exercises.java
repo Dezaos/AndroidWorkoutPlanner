@@ -46,17 +46,19 @@ public class Fragment_Exercises extends Fragment
 
         hash = hashCode();
         int i = 1;
+        Log.d("Test","Yes");
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_exercises,container,false);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        Log.d("Test","Yes");
+        View view = getView();
+
+        Log.d("Test","Yes2");
 
         if(routineUid == null)
-            return super.onCreateView(inflater,container,savedInstanceState);
+            return;
 
         DataManager dataManager = DataManager.getInstance();
         final String uid = dataManager.getUser().getUid();
@@ -107,9 +109,12 @@ public class Fragment_Exercises extends Fragment
                                 R.anim.enter_from_left,R.anim.exit_to_right));
             }
         });
+    }
 
-
-
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_exercises,container,false);
         return view;
     }
 
