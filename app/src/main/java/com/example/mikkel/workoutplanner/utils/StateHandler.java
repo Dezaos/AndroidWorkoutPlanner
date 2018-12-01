@@ -1,4 +1,4 @@
-package com.example.mikkel.workoutplanner.singletons;
+package com.example.mikkel.workoutplanner.utils;
 
 import com.example.mikkel.workoutplanner.data.StateData.StateData;
 

@@ -18,6 +18,7 @@ import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
+import com.example.mikkel.workoutplanner.singletons.StateManager;
 import com.example.mikkel.workoutplanner.utils.Animation;
 import com.example.mikkel.workoutplanner.viewholders.ExerciseHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -27,6 +28,8 @@ import com.google.firebase.database.Query;
 
 public class Fragment_Exercises extends Fragment
 {
+    private final String UID_BUNDLE_TAG = "uIdBundle";
+
     private FirebaseRecyclerAdapter adapter;
     private String routineUid;
     private int hash;
@@ -41,23 +44,22 @@ public class Fragment_Exercises extends Fragment
         this.routineUid = routineUId;
     }
 
-
-    public Fragment_Exercises() {
-
-        hash = hashCode();
-        int i = 1;
-        Log.d("Test","Yes");
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if(routineUid == null)
+        {
+            routineUid = savedInstanceState.getString(UID_BUNDLE_TAG);
+        }
+        setup();
+    }
+
+    private void setup()
+    {
         View view = getView();
 
-        Log.d("Test","Yes2");
-
-        if(routineUid == null)
+        if(view == null)
             return;
 
         DataManager dataManager = DataManager.getInstance();
@@ -128,7 +130,7 @@ public class Fragment_Exercises extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        DataManager.getInstance().getStateHandler().removeObjectState(this);
+        StateManager.getInstance().getStateHandler().removeObjectState(this);
     }
 
     //Call this to edit exercise behavior
@@ -201,4 +203,10 @@ public class Fragment_Exercises extends Fragment
         });
     }
 
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(UID_BUNDLE_TAG,routineUid);
+    }
 }

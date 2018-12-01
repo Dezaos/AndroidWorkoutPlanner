@@ -9,6 +9,7 @@ import com.example.mikkel.workoutplanner.utils.EventHandler;
 import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.example.mikkel.workoutplanner.utils.ListUtils;
+import com.example.mikkel.workoutplanner.utils.StateHandler;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -40,7 +41,6 @@ public class DataManager {
     private FirebaseUser user;
     private ArrayList<Routine> routines = new ArrayList<>();
     private EventHandler eventHandler = new EventHandler();
-    private StateHandler stateHandler = new StateHandler();
 
     //Properties
     public FirebaseUser getUser() {
@@ -66,13 +66,6 @@ public class DataManager {
         return eventHandler;
     }
 
-    public StateHandler getStateHandler() {
-        return stateHandler;
-    }
-
-    public void setStateHandler(StateHandler stateHandler) {
-        this.stateHandler = stateHandler;
-    }
 
     //Contructor
     private DataManager()

@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.data.StateData.RoutinesFragmentState;
 import com.example.mikkel.workoutplanner.dialogs.DialogNewRoutine;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
+import com.example.mikkel.workoutplanner.singletons.StateManager;
 import com.example.mikkel.workoutplanner.utils.TabInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -52,7 +54,6 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        Log.d("Test","Test2");
     }
 
     @Override
@@ -78,16 +79,14 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         tabsAdapter = new RoutineTabsAdapter(getChildFragmentManager());
 
         viewPager = view.findViewById(R.id.RoutineViewPager);
-        viewPager.setAdapter(tabsAdapter);
-        //viewPager.setSaveFromParentEnabled(false);
-
         tabsLayout = view.findViewById(R.id.WorkoutRoutineTabs);
+        viewPager.setAdapter(tabsAdapter);
         tabsLayout.setupWithViewPager(viewPager);
 
-        if(DataManager.getInstance().getStateHandler().getState(RoutinesFragmentState.class) == null)
-            state = DataManager.getInstance().getStateHandler().addState(new RoutinesFragmentState());
+        if(StateManager.getInstance().getStateHandler().getState(RoutinesFragmentState.class) == null)
+            state = StateManager.getInstance().getStateHandler().addState(new RoutinesFragmentState());
         else
-            state = DataManager.getInstance().getStateHandler().getState(RoutinesFragmentState.class);
+            state = StateManager.getInstance().getStateHandler().getState(RoutinesFragmentState.class);
 
         tabsLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -106,22 +105,24 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
 
             }
         });
-        syncRoutines();
+        syncRoutines(true,false);
     }
 
-    private void syncRoutines()
+    private void syncRoutines(boolean init, boolean setLastTab)
     {
-            tabsAdapter.clear();
+        boolean clear = !init;
+        ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
 
-            ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
-            for (int i = 0; i < routines.size(); i++) {
-                Routine routine = routines.get(i);
-                Fragment_Exercises exercises = new Fragment_Exercises();
-                exercises.setRoutineUId(routine.getuId());
-                tabsAdapter.addItem(exercises, new TabInfo(routine.getName(),routine.getuId()));
-            }
-            tabsAdapter.notifyDataSetChanged();
-            setCurrentTab();
+        tabsAdapter.clear();
+        for (int i = 0; i < routines.size(); i++) {
+            Routine routine = routines.get(i);
+            Fragment_Exercises exercises = new Fragment_Exercises();
+            exercises.setRoutineUId(routine.getuId());
+            tabsAdapter.addItem(exercises, new TabInfo(routine.getName(),routine.getuId()));
+        }
+
+        tabsAdapter.notifyDataSetChanged();
+        setCurrentTab(setLastTab ? tabsAdapter.getCount() : -1);
     }
 
     private void onNewRoutineClick()
@@ -139,13 +140,18 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     public void onResume() {
         super.onResume();
         DataManager.getInstance().getEventHandler().subscribe(this);
-        setCurrentTab();
+        setCurrentTab(-1);
     }
 
-    private void setCurrentTab()
+    private void setCurrentTab(int nextindex)
     {
-        int index = nextTab == null ? state.getSelectedTab() :
-                tabsAdapter.getIndex(nextTab);
+        int index = nextindex;
+
+        if(index < 0)
+        {
+            index = nextTab == null ? state.getSelectedTab() :
+                    tabsAdapter.getIndex(nextTab);
+        }
 
         TabLayout.Tab tab = index != -1 ? tabsLayout.getTabAt(index) : null;
         if(tab != null)
@@ -189,13 +195,12 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
                 child(DataManager.getInstance().getUser().getUid()).push();
         routine.setuId(ref.getKey());
         ref.setValue(routine);
-        syncRoutines();
-        setCurrentTab();
+        syncRoutines(false,true);
     }
 
     @Override
     public void onNotification(Object data) {
-        syncRoutines();
+        syncRoutines(false,false);
     }
 
     @Override
@@ -220,8 +225,4 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
 }

@@ -8,25 +8,39 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Pair;
 
+import com.example.mikkel.workoutplanner.fragments.Fragment_Exercises;
 import com.example.mikkel.workoutplanner.utils.TabInfo;
 
 import java.util.ArrayList;
 
 public class RoutineTabsAdapter extends FragmentPagerAdapter {
-    private final ArrayList<Pair<Fragment, TabInfo>> tabs = new ArrayList<>();
+    private ArrayList<Pair<Fragment_Exercises, TabInfo>> tabs = new ArrayList<>();
+
+    public ArrayList<Pair<Fragment_Exercises, TabInfo>> getTabs() {
+        return tabs;
+    }
+
+    public void setTabs(ArrayList<Pair<Fragment_Exercises, TabInfo>> tabs) {
+        this.tabs = tabs;
+    }
 
     public RoutineTabsAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    public void addItem(Fragment fragment, TabInfo tabInfo) {
+    public void addItem(Fragment_Exercises fragment, TabInfo tabInfo) {
         tabs.add(new Pair<>(fragment, tabInfo));
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public Fragment_Exercises getItem(int position) {
         return tabs.get(position).first;
     }
+
+    //@Override
+    //public long getItemId(int position) {
+    //    return tabs.get(position).first.hashCode();
+    //}
 
     public TabInfo getInfo(int position)
     {
@@ -67,19 +81,17 @@ public class RoutineTabsAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getItemPosition(@NonNull Object object) {
-        int index = -1;
         for (int i = 0; i < tabs.size(); i++) {
             if(tabs.get(i).first == object)
             {
-                index = i;
-                break;
+                return i;
             }
         }
-
-        if(index == -1)
-            return POSITION_NONE;
-        return index;
-
+        return POSITION_NONE;
     }
+
+
+
+
 }
 

@@ -1,12 +1,12 @@
 package com.example.mikkel.workoutplanner;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +19,7 @@ import com.example.mikkel.workoutplanner.fragments.Fragment_Calender;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Home;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Routines;
+import com.example.mikkel.workoutplanner.singletons.StateManager;
 import com.example.mikkel.workoutplanner.utils.Animation;
 
 
@@ -48,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Gets the current state of the activity, so when the activity is remade, then it know what
         // is state where before
-        _state = DataManager.getInstance().getStateHandler().getState(MainActivityState.class);
+        _state = StateManager.getInstance().getStateHandler().getState(MainActivityState.class);
         if(_state == null)
         {
-            _state = DataManager.getInstance().getStateHandler().addState(new MainActivityState(this));
+            _state = StateManager.getInstance().getStateHandler().addState(new MainActivityState(this));
             _state.setMenuId(R.menu.menu);
         }
 
@@ -195,4 +196,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        int i = 1;
+    }
 }
