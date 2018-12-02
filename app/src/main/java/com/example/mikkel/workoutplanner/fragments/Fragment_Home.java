@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.mikkel.workoutplanner.Interfaces.Notification;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.adapters.routineGridAdapter;
@@ -26,10 +27,11 @@ import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
-public class Fragment_Home extends NavigationFragment
+public class Fragment_Home extends NavigationFragment implements Notification
 {
     private ArrayList<MuscleInfo> tempData = new ArrayList<MuscleInfo>();
     private FirebaseRecyclerAdapter adapter;
+    private RecyclerView recyclerView;
 
 
     @Nullable
@@ -37,15 +39,62 @@ public class Fragment_Home extends NavigationFragment
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home,container,false);
+        return view;
+    }
 
-        tempData.add(new MuscleInfo("Leg",2));
-        tempData.add(new MuscleInfo("Bicep",2));
-        tempData.add(new MuscleInfo("Tricep",2));
-        tempData.add(new MuscleInfo("Guns!",2));
-        tempData.add(new MuscleInfo("Cardio",2));
-        tempData.add(new MuscleInfo("Shoulder",2));
+    @Override
+    public void onResume() {
+        super.onResume();
+        routinesSetup();
+        DataManager.getInstance().getMuscleInfoEvent().subscribe(this);
 
-        RecyclerView recyclerView = view.findViewById(R.id.routinesRecyclerView);
+    }
+
+    private void routinesSetup()
+    {
+        View view = getView();
+
+        if(view == null)
+            return;
+
+        recyclerView = view.findViewById(R.id.routinesRecyclerView);
+        updateAdapter(null,true);
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
+        DataManager.getInstance().getMuscleInfoEvent().unsubscribe(this);
+    }
+
+    @Override
+    protected void onCreateNavigation() {
+        super.onCreateNavigation();
+        setToolbarTitle("Home");
+
+        MainActivity.Activity.get_state().setMenuId(R.menu.menu);
+
+    }
+
+    @Override
+    public void onNotification(Object data) {
+        updateAdapter(data.toString(),false);
+    }
+
+    private void updateAdapter(String routineUid, final boolean initUpdate)
+    {
+        ArrayList<MuscleInfo> checkList = null;
+
+        if(!initUpdate)
+        {
+            checkList = DataManager.getInstance().getMuscleInfoes().get(routineUid);
+            if(checkList == null)
+                return;
+        }
+
+        final  ArrayList<MuscleInfo> list = checkList;
 
         //The code below makes the firebase recycler view behavior
         Query query = FirebaseDatabase.getInstance().getReference().
@@ -71,7 +120,6 @@ public class Fragment_Home extends NavigationFragment
             @Override
             protected void onBindViewHolder(@NonNull RoutineHolder holder, int position, @NonNull final Routine model) {
                 holder.title.setText(model.getName());
-                holder.muscles.setAdapter(new routineGridAdapter(getActivity(),tempData));
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),3,GridLayoutManager.VERTICAL,true);
                 holder.muscles.setLayoutManager(gridLayoutManager);
                 //holder.muscles.setHasFixedSize(true);
@@ -84,33 +132,29 @@ public class Fragment_Home extends NavigationFragment
 
                         //This opens the edit exercise fragment
                         FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
-                                routines,false,
+                                routines,true,
                                 new Animation(R.anim.enter_from_right,R.anim.exit_to_left,
                                         R.anim.enter_from_left,R.anim.exit_to_right));
                         MainActivity.Activity.setCheckedInButtonNavigation(R.id.navigation_routines);
                     }
                 });
+
+                ArrayList<MuscleInfo> dataManagerList = null;
+
+                if(DataManager.getInstance().getMuscleInfoes().containsKey(model.getuId()))
+                    dataManagerList = DataManager.getInstance().getMuscleInfoes().get(model.getuId());
+
+                ArrayList<MuscleInfo> newList = !initUpdate ? list : dataManagerList;
+
+                if(newList == null)
+                    return;
+
+                holder.muscles.setAdapter(new routineGridAdapter(getActivity(),newList));
             }
         };
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter.startListening();
-        return view;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
-
-    @Override
-    protected void onCreateNavigation() {
-        super.onCreateNavigation();
-        setToolbarTitle("Home");
-
-        MainActivity.Activity.get_state().setMenuId(R.menu.menu);
-
     }
 }

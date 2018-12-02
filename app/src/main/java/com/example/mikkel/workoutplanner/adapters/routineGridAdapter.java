@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class routineGridAdapter extends RecyclerView.Adapter<RoutineGridElementHolder> {
 
     private LayoutInflater inflater;
-    private ArrayList<MuscleInfo> data;
+    private ArrayList<MuscleInfo> data = new ArrayList<>();
     private int maxTitleLenght = 9;
 
     public routineGridAdapter(Context context, ArrayList<MuscleInfo> data) {
@@ -35,11 +35,11 @@ public class routineGridAdapter extends RecyclerView.Adapter<RoutineGridElementH
     public void onBindViewHolder(@NonNull RoutineGridElementHolder holder, int position) {
         MuscleInfo info = data.get(position);
 
-        String title = info.getName();
+        String title = info.getMuscle();
 //        if(title.length() > maxTitleLenght)
 //            title = title.substring(0,maxTitleLenght) + "...";
         holder.title.setText(title);
-        holder.muscleAmount.setText(String.valueOf(info.getAmount()));
+        holder.muscleAmount.setText(String.valueOf(info.getExercises().size()));
     }
 
 

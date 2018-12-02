@@ -1,28 +1,50 @@
 package com.example.mikkel.workoutplanner.utils;
 
+import java.util.ArrayList;
+
 public class MuscleInfo
 {
-    private String name;
-    private int amount;
+    private String muscle;
+    private ArrayList<String> exercises = new ArrayList<>();
 
-    public String getName() {
-        return name;
+
+    public String getMuscle() {
+        return muscle;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMuscle(String name) {
+        this.muscle = name;
     }
 
-    public int getAmount() {
-        return amount;
+    public ArrayList<String> getExercises() {
+        return exercises;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setExercises(ArrayList<String> exercises) {
+        this.exercises = exercises;
     }
 
-    public MuscleInfo(String name, int amount) {
-        this.name = name;
-        this.amount = amount;
+    public MuscleInfo(String musle, String firstExercisesUid) {
+        this.muscle = musle;
+        exercises.add(firstExercisesUid);
+    }
+
+    public void addExercise(String exerciseUid){
+        exercises.add(exerciseUid);
+    }
+
+    public void  removeExercise(String uId)
+    {
+        int index = -1;
+        for (int i = 0; i < exercises.size(); i++) {
+            if(exercises.get(i).equals(uId))
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if(index != -1)
+            exercises.remove(index);
     }
 }

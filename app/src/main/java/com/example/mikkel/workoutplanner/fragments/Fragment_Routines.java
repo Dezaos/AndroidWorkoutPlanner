@@ -1,16 +1,10 @@
 package com.example.mikkel.workoutplanner.fragments;
 
-import android.app.FragmentManager;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -139,7 +133,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     @Override
     public void onResume() {
         super.onResume();
-        DataManager.getInstance().getEventHandler().subscribe(this);
+        DataManager.getInstance().getRoutineEvent().subscribe(this);
         setCurrentTab(-1);
     }
 
@@ -175,7 +169,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     @Override
     public void onPause() {
         super.onPause();
-        DataManager.getInstance().getEventHandler().unsubscribe(this);
+        DataManager.getInstance().getRoutineEvent().unsubscribe(this);
     }
 
     @Override
