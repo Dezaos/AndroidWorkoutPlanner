@@ -20,7 +20,6 @@ import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.data.StateData.RoutinesFragmentState;
 import com.example.mikkel.workoutplanner.dialogs.DialogNewRoutine;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
-import com.example.mikkel.workoutplanner.singletons.StateManager;
 import com.example.mikkel.workoutplanner.utils.TabInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,7 +33,6 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     private TabLayout tabsLayout;
     private ViewPager viewPager;
     private RoutineTabsAdapter tabsAdapter;
-    private RoutinesFragmentState state;
     private String nextTab;
 
     @Nullable
@@ -55,7 +53,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         super.onCreateNavigation();
         setToolbarTitle("Routines");
 
-        MainActivity.Activity.get_state().setMenuId(R.menu.routines_menu);
+        MainActivity.Activity.getState().setMenuId(R.menu.routines_menu);
     }
 
     @Override
@@ -77,15 +75,13 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         viewPager.setAdapter(tabsAdapter);
         tabsLayout.setupWithViewPager(viewPager);
 
-        if(StateManager.getInstance().getStateHandler().getState(RoutinesFragmentState.class) == null)
-            state = StateManager.getInstance().getStateHandler().addState(new RoutinesFragmentState());
-        else
-            state = StateManager.getInstance().getStateHandler().getState(RoutinesFragmentState.class);
+        if(getState(RoutinesFragmentState.class) == null)
+            addState(new RoutinesFragmentState());
 
         tabsLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                state.setSelectedTab(tab.getPosition());
+                getState(RoutinesFragmentState.class).setSelectedTab(tab.getPosition());
 
             }
 
@@ -143,7 +139,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
 
         if(index < 0)
         {
-            index = nextTab == null ? state.getSelectedTab() :
+            index = nextTab == null ? getState(RoutinesFragmentState.class).getSelectedTab() :
                     tabsAdapter.getIndex(nextTab);
         }
 
@@ -202,6 +198,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         switch (item.getItemId())
         {
             case R.id.removeRoutineMenu:
+                RoutinesFragmentState state = getState(RoutinesFragmentState.class);
                 if(tabsAdapter.getCount() > 0 && tabsAdapter.getCount() >= state.getSelectedTab())
                 {
                     String routineUid = tabsAdapter.getInfo(state.getSelectedTab()).getuId();

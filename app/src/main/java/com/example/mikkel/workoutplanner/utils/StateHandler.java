@@ -1,109 +1,78 @@
 package com.example.mikkel.workoutplanner.utils;
 
-import com.example.mikkel.workoutplanner.data.StateData.StateData;
+import android.graphics.Paint;
 
-import java.util.ArrayList;
+import com.example.mikkel.workoutplanner.data.Database.Exercise;
+import com.example.mikkel.workoutplanner.data.StateData.StateData;
+import com.example.mikkel.workoutplanner.fragments.NavigationFragment;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class StateHandler
 {
-    private ArrayList<StateData> stateData = new ArrayList<StateData>();
-    private Map<Object,StateData> objectStateData = new HashMap<Object, StateData>();
+    private Map<Object,StateData> states = new HashMap<Object, StateData>();
 
-
-    //Call this to add a new state
-    public <T extends StateData> T addState(T state)
+    //Call this to add state with an object as key
+    public <T extends StateData> T addState(Object object,T state)
     {
-        stateData.add(state);
-        return state;
-    }
-
-    public <T extends StateData> T addState(T state, String id)
-    {
-        state.setId(id);
-        stateData.add(state);
-        return state;
-    }
-
-    //Call this to get a state
-    public <T extends StateData> T getState(Class<T> type)
-    {
-        for (int i = 0; i < stateData.size(); i++) {
-            if(type.isInstance(stateData.get(i)))
-            {
-                return (T) stateData.get(i);
-            }
-        }
-        return null;
-    }
-
-    //Call this to get a state with id
-    public <T extends StateData> T getState(Class<T> type, String id)
-    {
-        for (int i = 0; i < stateData.size(); i++) {
-            if(type.isInstance(stateData.get(i)) &&
-                    id == stateData.get(i).getId())
-            {
-                return (T) stateData.get(i);
-            }
-        }
-        return null;
-    }
-
-    //Call this to remove a state
-    public <T extends StateData> T removeState(Class<T> type)
-    {
-        for (int i = 0; i < stateData.size(); i++) {
-            if(type.isInstance(stateData.get(i)))
-            {
-                StateData data = stateData.get(i);
-                stateData.remove(i);
-                return (T)data;
-            }
-        }
-        return null;
-    }
-
-    //Call this to remove a state with id
-    public <T extends StateData> T removeState(Class<T> type, String id)
-    {
-        for (int i = 0; i < stateData.size(); i++) {
-            if(type.isInstance(stateData.get(i)) &&
-                    id == stateData.get(i).getId())
-            {
-                StateData data = stateData.get(i);
-                stateData.remove(i);
-                return (T)data;
-            }
-        }
-        return null;
-    }
-
-    //CAll this to add state with an object as key
-    public <T extends StateData> T addObjectState(T state, Object object)
-    {
-        if(objectStateData.containsKey(object))
-            objectStateData.remove(object);
-        objectStateData.put(object,state);
+        if(states.containsKey(object))
+            states.remove(object);
+        states.put(object,state);
         return state;
     }
 
     //Call this to get a state with a object as key
-    public <T extends StateData> T getObjectState(Object object)
+    public <T extends StateData> T getState(Object object)
     {
-        return objectStateData.containsKey(object) ? (T)objectStateData.get(object) : null;
+        return states.containsKey(object) ? (T) states.get(object) : null;
     }
 
-    //Call this to remove a state with a objects as key
-    public <T extends StateData> T removeObjectState( Object object)
+    public Object getKey(int hashCode)
     {
-        if(objectStateData.containsKey(object))
+        for (Object object : states.keySet())
         {
-            StateData data = objectStateData.get(object);
-            objectStateData.remove(object);
+            if(object.hashCode() == hashCode)
+                return object;
+        }
+        return null;
+    }
+
+
+    //Call this to remove a state with a objects as key
+    public <T extends StateData> T removeState(Object object)
+    {
+        if(states.containsKey(object))
+        {
+            StateData data = states.get(object);
+            states.remove(object);
             return (T)data;
         }
         return null;
+    }
+
+    public boolean contains(Object onject)
+    {
+        return states.containsKey(onject);
+    }
+
+    public boolean contains(int hashCode)
+    {
+        for (Object object : states.keySet())
+        {
+            if(object.hashCode() == hashCode)
+                return true;
+        }
+        return false;
+    }
+
+
+    public void clear()
+    {
+        states.clear();
+    }
+    public int size()
+    {
+        return states.size();
     }
 }

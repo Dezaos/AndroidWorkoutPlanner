@@ -1,6 +1,5 @@
 package com.example.mikkel.workoutplanner.fragments;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -23,7 +22,7 @@ public class Fragment_Calender extends NavigationFragment
         super.onCreateNavigation();
         setToolbarTitle("Calender");
 
-        MainActivity.Activity.get_state().setMenuId(R.menu.menu);
+        MainActivity.Activity.getState().setMenuId(R.menu.menu);
 
     }
 }

@@ -27,13 +27,13 @@ public class MainActivity extends AppCompatActivity {
 
     public static MainActivity Activity;
 
-    private int _lastBottomFragment = -1;
-    BottomNavigationView _bottomNavigation;
-    private Menu _actionMenu;
-    private MainActivityState _state;
+    private int lastBottomFragment = -1;
+    BottomNavigationView bottomNavigation;
+    private Menu actionMenu;
+    private MainActivityState state;
 
-    public MainActivityState get_state() {
-        return _state;
+    public MainActivityState getState() {
+        return state;
     }
 
     @Override
@@ -43,17 +43,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        _bottomNavigation = (BottomNavigationView) findViewById(R.id.navigation);
-        _bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        bottomNavigation = (BottomNavigationView) findViewById(R.id.navigation);
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
         //Gets the current state of the activity, so when the activity is remade, then it know what
         // is state where before
-        _state = StateManager.getInstance().getStateHandler().getState(MainActivityState.class);
-        if(_state == null)
+        state = StateManager.getInstance().getStateHandler().getState(this);
+        if(state == null)
         {
-            _state = StateManager.getInstance().getStateHandler().addState(new MainActivityState(this));
-            _state.setMenuId(R.menu.menu);
+            state = StateManager.getInstance().getStateHandler().addState(this,new MainActivityState(this));
+            state.setMenuId(R.menu.menu);
         }
 
         //If the app just have been opened, then check if it is logged in and act accountancy, else
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 logout();
             }
         }
-        _state.applyState();
+        state.applyState();
     }
 
     private void logout()
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     {
         DataManager.getInstance().login();
         changeMainFragment(new Fragment_Home(),0,String.valueOf(R.id.navigation_home));
-        _bottomNavigation.getMenu().findItem(R.id.navigation_home).setChecked(true);
+        bottomNavigation.getMenu().findItem(R.id.navigation_home).setChecked(true);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
-            if(currentItemIndex == _lastBottomFragment)
+            if(currentItemIndex == lastBottomFragment)
                 return false;
             changeMainFragment(currentFragment,currentItemIndex,String.valueOf(item.getItemId()) );
             return true;
@@ -122,12 +122,12 @@ public class MainActivity extends AppCompatActivity {
     private void changeMainFragment(Fragment newFragment, int newIndex,String tag)
     {
         //old animations
-        int inAnimationCurrent = _lastBottomFragment < newIndex ? R.anim.enter_from_left : R.anim.enter_from_right;
-        int inAnimationBackstack = _lastBottomFragment < newIndex ? R.anim.enter_from_right : R.anim.enter_from_left;
-        int outAnimationCurrent = _lastBottomFragment < newIndex ? R.anim.exit_to_left : R.anim.exit_to_right;
-        int outAnimationBackstack = _lastBottomFragment < newIndex ? R.anim.exit_to_right : R.anim.exit_to_left;
+        int inAnimationCurrent = lastBottomFragment < newIndex ? R.anim.enter_from_left : R.anim.enter_from_right;
+        int inAnimationBackstack = lastBottomFragment < newIndex ? R.anim.enter_from_right : R.anim.enter_from_left;
+        int outAnimationCurrent = lastBottomFragment < newIndex ? R.anim.exit_to_left : R.anim.exit_to_right;
+        int outAnimationBackstack = lastBottomFragment < newIndex ? R.anim.exit_to_right : R.anim.exit_to_left;
 
-        _lastBottomFragment = newIndex;
+        lastBottomFragment = newIndex;
         if(newFragment != null)
         {
             FragmentTransitionManager.getInstance().initializeFragment(Activity,newFragment,true,
@@ -139,12 +139,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(_state.getMenuId(),menu);
-        _actionMenu = menu;
+        inflater.inflate(state.getMenuId(),menu);
+        actionMenu = menu;
 
-        for (int i = 0; i < _actionMenu.size(); i++) {
-            MenuItem item = _actionMenu.getItem(i);
-            item.setVisible(_state.get_showActionMenu());
+        for (int i = 0; i < actionMenu.size(); i++) {
+            MenuItem item = actionMenu.getItem(i);
+            item.setVisible(state.get_showActionMenu());
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -164,34 +164,34 @@ public class MainActivity extends AppCompatActivity {
 
     public void setBottomNavigationVisibility(int visibility)
     {
-        _bottomNavigation.setVisibility(visibility);
+        bottomNavigation.setVisibility(visibility);
     }
 
     public void setActionMenuVisibility(boolean show)
     {
-        if(_actionMenu != null)
+        if(actionMenu != null)
         {
-            for (int i = 0; i < _actionMenu.size(); i++) {
-                MenuItem item = _actionMenu.getItem(i);
+            for (int i = 0; i < actionMenu.size(); i++) {
+                MenuItem item = actionMenu.getItem(i);
                 item.setVisible(show);
             }
         }
-        _state.set_showActionMenu(show);
+        state.set_showActionMenu(show);
     }
 
     public void setCheckedInButtonNavigation(int id)
     {
-        MenuItem item = _bottomNavigation.getMenu().findItem(id);
+        MenuItem item = bottomNavigation.getMenu().findItem(id);
         item.setChecked(true);
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                _lastBottomFragment = 0;
+                lastBottomFragment = 0;
                 break;
             case R.id.navigation_routines:
-                _lastBottomFragment = 1;
+                lastBottomFragment = 1;
                 break;
             case R.id.navigation_calender:
-                _lastBottomFragment = 2;
+                lastBottomFragment = 2;
                 break;
         }
     }

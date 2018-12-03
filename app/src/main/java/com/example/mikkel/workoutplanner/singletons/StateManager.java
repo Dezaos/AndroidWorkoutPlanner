@@ -23,10 +23,6 @@ public class StateManager {
         this.stateHandler = stateHandler;
     }
 
-    public static StateManager getOurInstance() {
-        return ourInstance;
-    }
-
     //Contructor
     private StateManager() {
     }

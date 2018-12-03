@@ -18,6 +18,7 @@ import com.example.mikkel.workoutplanner.Enums.ExerciseType;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
+import com.example.mikkel.workoutplanner.data.StateData.EditExerciseFragmentState;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.utils.MathUtils;
 import com.google.firebase.database.DatabaseReference;
@@ -28,9 +29,6 @@ import java.util.Arrays;
 
 public class Fragment_EditExercise extends NavigationFragment {
 
-    //Fields
-    private String routineUId;
-
     //This array is used for the muscle auto complete
     private String[] _muscleSuggestions = new String[]
             {
@@ -39,26 +37,9 @@ public class Fragment_EditExercise extends NavigationFragment {
                 "Glutes", "Hamstrings", "Calves", "Cardio"
             };
 
-        private int savedMenu;
-
-    //This is the current exercise to edit
-    private Exercise currentExercise;
-
-    //Properties
-    public Exercise getCurrentExercise() {
-        return currentExercise;
-    }
-
-    public void setCurrentExercise(Exercise currentExercise) {
-        this.currentExercise = currentExercise;
-    }
-
-    public String getRoutineUId() {
-        return routineUId;
-    }
-
-    public void setRoutineUId(String routineUId) {
-        this.routineUId = routineUId;
+    public EditExerciseFragmentState getState()
+    {
+        return getSafeState(EditExerciseFragmentState.class);
     }
 
     @Override
@@ -95,7 +76,7 @@ public class Fragment_EditExercise extends NavigationFragment {
             If the current exercise is not null, then apply the current exercise to the
             different views or call new exercise behavior
          */
-        if(currentExercise == null)
+        if(getState().getCurrentExercise() == null)
             applyNewExercise(view);
         else
             applyOldExercise(view);
@@ -133,6 +114,8 @@ public class Fragment_EditExercise extends NavigationFragment {
     //Call this to set the current hint for the number views
     private void applySetHints(View view, int checkedId)
     {
+        Exercise currentExercise = getState().getCurrentExercise();
+
         //Set current type
         switch (checkedId)
         {
@@ -196,16 +179,19 @@ public class Fragment_EditExercise extends NavigationFragment {
     //Call this to run the new exercise behavior
     private void applyNewExercise(View view)
     {
-        currentExercise = new Exercise();
+        getState().setCurrentExercise(new Exercise());
         RadioGroup radioGroup = view.findViewById(R.id.exerciseType);
         radioGroup.check(R.id.WeightItem);
-        currentExercise.setType(ExerciseType.Weight);
+        getState().getCurrentExercise().setType(ExerciseType.Weight);
         applySetHints(view,radioGroup.getCheckedRadioButtonId());
     }
 
     //Call this to apply an old exercise
     private void applyOldExercise(View view)
     {
+
+        Exercise currentExercise = getState().getCurrentExercise();
+
         //This checks the current type
         RadioGroup radioGroup = view.findViewById(R.id.exerciseType);
         switch (currentExercise.getType())
@@ -262,6 +248,8 @@ public class Fragment_EditExercise extends NavigationFragment {
     protected void onCreateNavigation() {
         super.onCreateNavigation();
 
+        Exercise currentExercise = getState().getCurrentExercise();
+
         //Sets the toolbar type to edit- or add exercise
         setToolbarTitle(currentExercise != null && currentExercise.getuId() != null ?
                 "Edit exercise" : "Add exercise");
@@ -283,10 +271,10 @@ public class Fragment_EditExercise extends NavigationFragment {
             });
 
             //This is to store the old toolbar menu, to apply it after the fragment is done
-            savedMenu = MainActivity.Activity.get_state().getMenuId();
+            getState().setSavedMenu(MainActivity.Activity.getState().getMenuId());
 
             //Sets the new toolbar menu
-            MainActivity.Activity.get_state().setMenuId(R.menu.edit_exercise_menu);
+            MainActivity.Activity.getState().setMenuId(R.menu.edit_exercise_menu);
         }
     }
 
@@ -295,18 +283,20 @@ public class Fragment_EditExercise extends NavigationFragment {
         super.onDestroy();
 
         //Applies the old toolbar menu
-        if(savedMenu != 0)
-            MainActivity.Activity.get_state().setMenuId(savedMenu);
+        if(getState().getSavedMenu() != 0)
+            MainActivity.Activity.getState().setMenuId(getState().getSavedMenu());
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Exercise currentExercise = getState().getCurrentExercise();
+
         switch (item.getItemId())
         {
             case R.id.add_exercise:
 
                 //This makes sure that the current routine uId is correct
-                currentExercise.setRoutineUId(getRoutineUId());
+                currentExercise.setRoutineUId(getState().getRoutineUId());
 
                 //Gets the different views
                 TextInputEditText name = getView().findViewById(R.id.NameEditText);
@@ -347,14 +337,14 @@ public class Fragment_EditExercise extends NavigationFragment {
                     if(currentExercise.getuId() == null)
                     {
                         DatabaseReference ref = database.child(DataManager.EXERCISES_PATH_ID).child(uId).
-                                child(getRoutineUId()).push();
+                                child(getState().getRoutineUId()).push();
                         currentExercise.setuId(ref.getKey());
                         ref.setValue(currentExercise);
                     }
                     else
                     {
                         database.child(DataManager.EXERCISES_PATH_ID).child(uId).
-                                child(getRoutineUId()).child(currentExercise.getuId()).
+                                child(getState().getRoutineUId()).child(currentExercise.getuId()).
                                 setValue(currentExercise);
                     }
                     getFragmentManager().popBackStack();
@@ -366,6 +356,8 @@ public class Fragment_EditExercise extends NavigationFragment {
 
     private boolean applyNumberValues(int sets, int reps, float kg, float time, float km)
     {
+        Exercise currentExercise = getState().getCurrentExercise();
+
         //Gets the number views
         TextInputEditText first = getView().findViewById(R.id.firstSetElement);
         TextInputEditText second = getView().findViewById(R.id.secondSetElement);

@@ -29,10 +29,8 @@ import java.util.ArrayList;
 
 public class Fragment_Home extends NavigationFragment implements Notification
 {
-    private ArrayList<MuscleInfo> tempData = new ArrayList<MuscleInfo>();
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recyclerView;
-
 
     @Nullable
     @Override
@@ -74,7 +72,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
         super.onCreateNavigation();
         setToolbarTitle("Home");
 
-        MainActivity.Activity.get_state().setMenuId(R.menu.menu);
+        MainActivity.Activity.getState().setMenuId(R.menu.menu);
 
     }
 
@@ -157,4 +155,6 @@ public class Fragment_Home extends NavigationFragment implements Notification
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter.startListening();
     }
+
+
 }

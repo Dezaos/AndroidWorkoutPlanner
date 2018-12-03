@@ -16,6 +16,7 @@ import com.example.mikkel.workoutplanner.Enums.ExerciseType;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
+import com.example.mikkel.workoutplanner.data.StateData.ExercisesFragmentState;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.singletons.StateManager;
@@ -26,33 +27,39 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class Fragment_Exercises extends Fragment
+public class Fragment_Exercises extends NavigationFragment
 {
     private final String UID_BUNDLE_TAG = "uIdBundle";
 
     private FirebaseRecyclerAdapter adapter;
-    private String routineUid;
-    private int hash;
 
     //Gets the routine uId from the state
     public String getRoutineUId() {
-        return routineUid;
+        return statePresent() ? getState(ExercisesFragmentState.class).getRoutineUid() : null;
     }
 
     //Sets the routine uId for the state
     public void setRoutineUId(String routineUId) {
-        this.routineUid = routineUId;
+        if(!statePresent())
+            addState(new ExercisesFragmentState());
+        getState(ExercisesFragmentState.class).setRoutineUid(routineUId);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if(routineUid == null)
+        if(getRoutineUId() == null)
         {
-            routineUid = savedInstanceState.getString(UID_BUNDLE_TAG);
+            setRoutineUId(savedInstanceState.getString(UID_BUNDLE_TAG));
         }
         setup();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.startListening();
     }
 
     private void setup()
@@ -103,7 +110,7 @@ public class Fragment_Exercises extends Fragment
             @Override
             public void onClick(View v) {
                 Fragment_EditExercise editExercise = new Fragment_EditExercise();
-                editExercise.setRoutineUId(getRoutineUId());
+                editExercise.getState().setRoutineUId(getRoutineUId());
 
                 FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
                         editExercise,false,
@@ -130,15 +137,15 @@ public class Fragment_Exercises extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        StateManager.getInstance().getStateHandler().removeObjectState(this);
+        StateManager.getInstance().getStateHandler().removeState(this);
     }
 
     //Call this to edit exercise behavior
     private void onEditExerciseClick(Exercise exercise)
     {
         Fragment_EditExercise editExercise = new Fragment_EditExercise();
-        editExercise.setRoutineUId(getRoutineUId());
-        editExercise.setCurrentExercise(exercise);
+        editExercise.getState().setRoutineUId(getRoutineUId());
+        editExercise.getState().setCurrentExercise(exercise);
 
         //This opens the edit exercise fragment
         FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
@@ -207,6 +214,6 @@ public class Fragment_Exercises extends Fragment
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(UID_BUNDLE_TAG,routineUid);
+        outState.putString(UID_BUNDLE_TAG,getRoutineUId());
     }
 }
