@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.example.mikkel.workoutplanner.Interfaces.Notification;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
-import com.example.mikkel.workoutplanner.adapters.routineGridAdapter;
+import com.example.mikkel.workoutplanner.adapters.RoutineGridAdapter;
 import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
@@ -32,6 +32,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recyclerView;
 
+
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
         super.onResume();
         routinesSetup();
         DataManager.getInstance().getMuscleInfoEvent().subscribe(this);
-
+        adapter.startListening();
     }
 
     private void routinesSetup()
@@ -76,13 +77,11 @@ public class Fragment_Home extends NavigationFragment implements Notification
 
     }
 
-    @Override
-    public void onNotification(Object data) {
-        updateAdapter(data.toString(),false);
-    }
-
     private void updateAdapter(String routineUid, final boolean initUpdate)
     {
+        //Used for the on recycler click event later in the code
+        final Fragment_Home home = this;
+
         ArrayList<MuscleInfo> checkList = null;
 
         if(!initUpdate)
@@ -116,11 +115,10 @@ public class Fragment_Home extends NavigationFragment implements Notification
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull RoutineHolder holder, int position, @NonNull final Routine model) {
+            protected void onBindViewHolder(@NonNull final RoutineHolder holder, int position, @NonNull final Routine model) {
                 holder.title.setText(model.getName());
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),3,GridLayoutManager.VERTICAL,true);
                 holder.muscles.setLayoutManager(gridLayoutManager);
-                //holder.muscles.setHasFixedSize(true);
 
                 holder.editButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -147,7 +145,21 @@ public class Fragment_Home extends NavigationFragment implements Notification
                 if(newList == null)
                     return;
 
-                holder.muscles.setAdapter(new routineGridAdapter(getActivity(),newList));
+                RoutineGridAdapter gridAdapter = new RoutineGridAdapter(getActivity(),newList,model.getuId());
+                gridAdapter.getOnClick().subscribe(home);
+                holder.muscles.setAdapter(gridAdapter);
+                holder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        executeRoutine(model.getuId());
+                    }
+                });
+                holder.muscles.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        executeRoutine(model.getuId());
+                    }
+                });
             }
         };
 
@@ -156,5 +168,41 @@ public class Fragment_Home extends NavigationFragment implements Notification
         adapter.startListening();
     }
 
+    private void executeRoutine(String uId)
+    {
+        ArrayList<MuscleInfo> list = DataManager.getInstance().getMuscleInfoes().get(uId);
+        if(list != null && list.size() > 0)
+        {
+            Fragment_ExecuteRoutine executeRoutine = new Fragment_ExecuteRoutine();
 
+            //Set routine Uid
+            executeRoutine.getState().setExecuteRoutineUid(uId);
+
+            //Set routine name
+            ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
+            for (int i = 0; i < routines.size(); i++) {
+                if(routines.get(i).getuId().equals(uId))
+                {
+                    executeRoutine.getState().setRoutineName(routines.get(i).getName());
+                    break;
+                }
+
+            }
+
+            FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
+                    executeRoutine,false,
+                    new Animation(R.anim.enter_from_right,R.anim.exit_to_left,
+                            R.anim.enter_from_left,R.anim.exit_to_right));
+        }
+    }
+
+    @Override
+    public void onNotification(Object sender, Object data) {
+        if(sender == DataManager.getInstance())
+            updateAdapter(data.toString(),false);
+        else if(data instanceof String)
+            executeRoutine(data.toString());
+
+
+    }
 }

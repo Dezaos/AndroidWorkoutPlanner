@@ -20,12 +20,12 @@ public class EventHandler
             listeners.remove(listener);
     }
 
-    public void notifyAllListeners(Object data)
+    public void notifyAllListeners(Object sender ,Object data)
     {
         for (int i = listeners.size() - 1; i >= 0 ; i--) {
             Notification listener =  listeners.get(i);
             if(listener != null)
-                listener.onNotification(data);
+                listener.onNotification(sender,data);
             else
                 listeners.remove(i);
         }

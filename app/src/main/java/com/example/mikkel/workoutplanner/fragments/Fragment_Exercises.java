@@ -33,25 +33,29 @@ public class Fragment_Exercises extends NavigationFragment
 
     private FirebaseRecyclerAdapter adapter;
 
-    //Gets the routine uId from the state
-    public String getRoutineUId() {
-        return statePresent() ? getState(ExercisesFragmentState.class).getRoutineUid() : null;
+    public ExercisesFragmentState getState(){
+        return getSafeState(ExercisesFragmentState.class);
     }
 
-    //Sets the routine uId for the state
-    public void setRoutineUId(String routineUId) {
-        if(!statePresent())
-            addState(new ExercisesFragmentState());
-        getState(ExercisesFragmentState.class).setRoutineUid(routineUId);
-    }
+    ////Gets the routine uId from the state
+    //public String getRoutineUId() {
+    //    return statePresent() ? getState(ExercisesFragmentState.class).getRoutineUid() : null;
+    //}
+    //
+    ////Sets the routine uId for the state
+    //public void setRoutineUId(String routineUId) {
+    //    if(!statePresent())
+    //        addState(new ExercisesFragmentState());
+    //    getState(ExercisesFragmentState.class).setRoutineUid(routineUId);
+    //}
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if(getRoutineUId() == null)
+        if(getState().getRoutineUid() == null)
         {
-            setRoutineUId(savedInstanceState.getString(UID_BUNDLE_TAG));
+            getState().setRoutineUid(savedInstanceState.getString(UID_BUNDLE_TAG));
         }
         setup();
     }
@@ -74,7 +78,7 @@ public class Fragment_Exercises extends NavigationFragment
 
         //The code below makes the firebase recycler view behavior
         Query query = FirebaseDatabase.getInstance().getReference().
-                child(DataManager.EXERCISES_PATH_ID).child(uid).child(getRoutineUId()).
+                child(DataManager.EXERCISES_PATH_ID).child(uid).child(getState().getRoutineUid()).
                 limitToLast(100);
 
         FirebaseRecyclerOptions<Exercise> options = new FirebaseRecyclerOptions.
@@ -110,7 +114,7 @@ public class Fragment_Exercises extends NavigationFragment
             @Override
             public void onClick(View v) {
                 Fragment_EditExercise editExercise = new Fragment_EditExercise();
-                editExercise.getState().setRoutineUId(getRoutineUId());
+                editExercise.getState().setRoutineUId(getState().getRoutineUid());
 
                 FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
                         editExercise,false,
@@ -144,7 +148,7 @@ public class Fragment_Exercises extends NavigationFragment
     private void onEditExerciseClick(Exercise exercise)
     {
         Fragment_EditExercise editExercise = new Fragment_EditExercise();
-        editExercise.getState().setRoutineUId(getRoutineUId());
+        editExercise.getState().setRoutineUId(getState().getRoutineUid());
         editExercise.getState().setCurrentExercise(exercise);
 
         //This opens the edit exercise fragment
@@ -214,6 +218,6 @@ public class Fragment_Exercises extends NavigationFragment
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(UID_BUNDLE_TAG,getRoutineUId());
+        outState.putString(UID_BUNDLE_TAG,getState().getRoutineUid());
     }
 }

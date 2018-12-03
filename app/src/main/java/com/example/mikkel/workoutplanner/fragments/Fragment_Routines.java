@@ -107,7 +107,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         for (int i = 0; i < routines.size(); i++) {
             Routine routine = routines.get(i);
             Fragment_Exercises exercises = new Fragment_Exercises();
-            exercises.setRoutineUId(routine.getuId());
+            exercises.getState().setRoutineUid(routine.getuId());
             tabsAdapter.addItem(exercises, new TabInfo(routine.getName(),routine.getuId()));
         }
 
@@ -189,11 +189,6 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
     }
 
     @Override
-    public void onNotification(Object data) {
-        syncRoutines(false,false);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
@@ -216,4 +211,8 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onNotification(Object sender, Object data) {
+        syncRoutines(false,false);
+    }
 }

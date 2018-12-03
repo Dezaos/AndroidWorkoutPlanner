@@ -109,7 +109,7 @@ public class DataManager {
                 //This adds a new routine to the local list when a new routine is added
                 Routine routine = Routine.build(Routine.class,dataSnapshot);
                 routines.add(routine);
-                routineEvent.notifyAllListeners(routine);
+                routineEvent.notifyAllListeners(this,routine);
             }
 
             @Override
@@ -121,7 +121,7 @@ public class DataManager {
                 if(index >= 0)
                 {
                     routines.set(index,routine);
-                    routineEvent.notifyAllListeners(routine);
+                    routineEvent.notifyAllListeners(this, routine);
                 }
             }
 
@@ -132,7 +132,7 @@ public class DataManager {
                 Routine routine = Routine.build(Routine.class,dataSnapshot);
                 if(CollectionUtils.removeByEquals(routines,routine))
                 {
-                    routineEvent.notifyAllListeners(routine);
+                    routineEvent.notifyAllListeners(this, routine);
                 }
             }
 
@@ -197,7 +197,7 @@ public class DataManager {
                 list.add(new MuscleInfo(exercise.getMuscle(),exercise.getuId()));
         }
 
-        muscleInfoEvent.notifyAllListeners(firstExercise.getRoutineUId());
+        muscleInfoEvent.notifyAllListeners(this,firstExercise.getRoutineUId());
     }
 
     private void addMuscleInfoExercise(Exercise exercise)
@@ -228,7 +228,7 @@ public class DataManager {
                 list.add(new MuscleInfo(exercise.getMuscle(),exercise.getuId()));
         }
         if(exercise.getRoutineUId() != null)
-            muscleInfoEvent.notifyAllListeners(exercise.getRoutineUId());
+            muscleInfoEvent.notifyAllListeners(this,exercise.getRoutineUId());
     }
 
 

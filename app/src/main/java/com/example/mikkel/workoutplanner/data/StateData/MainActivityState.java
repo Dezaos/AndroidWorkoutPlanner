@@ -18,6 +18,16 @@ public class MainActivityState extends StateData
         MainActivity.Activity.invalidateOptionsMenu();
     }
 
+    public int getBottomNavigation() {
+        return bottomNavigation;
+    }
+
+    public void setBottomNavigation(int bottomNavigation) {
+        this.bottomNavigation = bottomNavigation;
+    }
+
+    private int bottomNavigation;
+
     public boolean get_showActionMenu() {
         return _showActionMenu;
     }
@@ -35,6 +45,7 @@ public class MainActivityState extends StateData
     public void applyState() {
         super.applyState();
     }
+
 
 
 }
