@@ -107,7 +107,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
         for (int i = 0; i < routines.size(); i++) {
             Routine routine = routines.get(i);
             Fragment_Exercises exercises = new Fragment_Exercises();
-            exercises.getState().setRoutineUid(routine.getuId());
+            exercises.setRoutineUId(routine.getuId());
             tabsAdapter.addItem(exercises, new TabInfo(routine.getName(),routine.getuId()));
         }
 

@@ -16,7 +16,6 @@ import com.example.mikkel.workoutplanner.Enums.ExerciseType;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
-import com.example.mikkel.workoutplanner.data.StateData.ExercisesFragmentState;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.singletons.StateManager;
@@ -27,43 +26,32 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class Fragment_Exercises extends NavigationFragment
+public class Fragment_Exercises extends Fragment
 {
     private final String UID_BUNDLE_TAG = "uIdBundle";
 
     private FirebaseRecyclerAdapter adapter;
+    private String routineUid;
 
-    public ExercisesFragmentState getState(){
-        return getSafeState(ExercisesFragmentState.class);
+    //Gets the routine uId from the state
+    public String getRoutineUId() {
+        return routineUid;
     }
 
-    ////Gets the routine uId from the state
-    //public String getRoutineUId() {
-    //    return statePresent() ? getState(ExercisesFragmentState.class).getRoutineUid() : null;
-    //}
-    //
-    ////Sets the routine uId for the state
-    //public void setRoutineUId(String routineUId) {
-    //    if(!statePresent())
-    //        addState(new ExercisesFragmentState());
-    //    getState(ExercisesFragmentState.class).setRoutineUid(routineUId);
-    //}
+    //Sets the routine uId for the state
+    public void setRoutineUId(String routineUId) {
+        this.routineUid = routineUId;
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if(getState().getRoutineUid() == null)
+        if(routineUid == null)
         {
-            getState().setRoutineUid(savedInstanceState.getString(UID_BUNDLE_TAG));
+            routineUid = savedInstanceState.getString(UID_BUNDLE_TAG);
         }
         setup();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        adapter.startListening();
     }
 
     private void setup()
@@ -78,7 +66,7 @@ public class Fragment_Exercises extends NavigationFragment
 
         //The code below makes the firebase recycler view behavior
         Query query = FirebaseDatabase.getInstance().getReference().
-                child(DataManager.EXERCISES_PATH_ID).child(uid).child(getState().getRoutineUid()).
+                child(DataManager.EXERCISES_PATH_ID).child(uid).child(getRoutineUId()).
                 limitToLast(100);
 
         FirebaseRecyclerOptions<Exercise> options = new FirebaseRecyclerOptions.
@@ -114,7 +102,7 @@ public class Fragment_Exercises extends NavigationFragment
             @Override
             public void onClick(View v) {
                 Fragment_EditExercise editExercise = new Fragment_EditExercise();
-                editExercise.getState().setRoutineUId(getState().getRoutineUid());
+                editExercise.getState().setRoutineUId(getRoutineUId());
 
                 FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
                         editExercise,false,
@@ -148,7 +136,7 @@ public class Fragment_Exercises extends NavigationFragment
     private void onEditExerciseClick(Exercise exercise)
     {
         Fragment_EditExercise editExercise = new Fragment_EditExercise();
-        editExercise.getState().setRoutineUId(getState().getRoutineUid());
+        editExercise.getState().setRoutineUId(getRoutineUId());
         editExercise.getState().setCurrentExercise(exercise);
 
         //This opens the edit exercise fragment
@@ -218,6 +206,6 @@ public class Fragment_Exercises extends NavigationFragment
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(UID_BUNDLE_TAG,getState().getRoutineUid());
+        outState.putString(UID_BUNDLE_TAG,routineUid);
     }
 }
