@@ -5,6 +5,7 @@ public class ExecuteRoutineFragmentState extends StateData
     private int savedMenu;
     private String routineName;
     private String executeRoutineUid;
+    private String routineuId;
 
     public int getSavedMenu() {
         return savedMenu;
@@ -28,5 +29,13 @@ public class ExecuteRoutineFragmentState extends StateData
 
     public void setExecuteRoutineUid(String executeRoutineUid) {
         this.executeRoutineUid = executeRoutineUid;
+    }
+
+    public String getRoutineuId() {
+        return routineuId;
+    }
+
+    public void setRoutineuId(String routineuId) {
+        this.routineuId = routineuId;
     }
 }

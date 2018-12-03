@@ -1,17 +1,22 @@
 package com.example.mikkel.workoutplanner.fragments;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
+import com.example.mikkel.workoutplanner.data.Database.ExecuteRoutine;
+import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.data.StateData.ExecuteRoutineFragmentState;
+import com.example.mikkel.workoutplanner.singletons.DataManager;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class Fragment_ExecuteRoutine extends NavigationFragment
 {
@@ -31,6 +36,28 @@ public class Fragment_ExecuteRoutine extends NavigationFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_exexute_routine,container,false);
+
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        String uId = DataManager.getInstance().getUser().getUid();
+        ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
+
+        ExecuteRoutine newRoutine = new ExecuteRoutine();
+        Routine routine = null;
+
+        for (int i = 0; i < routines.size() ; i++) {
+            if(routines.get(i).getuId().equals(getState().getRoutineuId()))
+            {
+                routine = routines.get(i);
+                break;
+            }
+        }
+
+        if(routine != null)
+            newRoutine.convert(routine);
+
+        DatabaseReference ref = database.child(DataManager.Current_Execute_Routines_PATH_ID).child(uId);
+        newRoutine.setuId(ref.getKey());
+        ref.setValue(newRoutine);
 
         return view;
     }
@@ -74,5 +101,6 @@ public class Fragment_ExecuteRoutine extends NavigationFragment
         if(getState().getSavedMenu() != 0)
             MainActivity.Activity.getState().setMenuId(getState().getSavedMenu());
     }
+
 
 }

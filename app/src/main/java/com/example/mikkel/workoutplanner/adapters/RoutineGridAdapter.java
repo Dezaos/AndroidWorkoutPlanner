@@ -43,14 +43,7 @@ public class RoutineGridAdapter extends RecyclerView.Adapter<RoutineGridElementH
             }
         });
 
-        //view.findViewById(R.id.horizontalGridElement).setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        onClick.notifyAllListeners(this, routineUid);
-        //    }
-        //});
-
-        return new RoutineGridElementHolder(view) {};
+         return new RoutineGridElementHolder(view) {};
     }
 
     @Override
@@ -60,22 +53,6 @@ public class RoutineGridAdapter extends RecyclerView.Adapter<RoutineGridElementH
         String title = info.getMuscle();
         holder.title.setText(title);
         holder.muscleAmount.setText(String.valueOf(info.getExercises().size()));
-
-        //holder.title.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        onClick.notifyAllListeners(this, routineUid);
-        //
-        //    }
-        //});
-        //
-        //holder.muscleAmount.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        onClick.notifyAllListeners(this, routineUid);
-        //
-        //    }
-        //});
 
     }
 

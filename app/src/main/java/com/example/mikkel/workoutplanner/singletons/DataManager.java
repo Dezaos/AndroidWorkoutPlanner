@@ -37,6 +37,8 @@ public class DataManager {
     //Static fields
     public static final String Routines_PATH_ID = "Routines";
     public static final String EXERCISES_PATH_ID = "Exercises";
+    public static final String Execute_Routines_PATH_ID = "ExecuteRoutines";
+    public static final String Current_Execute_Routines_PATH_ID = "CurrentExecuteRoutines";
 
     //Fields
     private FirebaseAuth auth;
@@ -44,8 +46,10 @@ public class DataManager {
     private FirebaseUser user;
     private ArrayList<Routine> routines = new ArrayList<>();
     private HashMap<String,ArrayList<MuscleInfo>> muscleInfoes = new HashMap<>();
+    private HashMap<String,ArrayList<Exercise>> exercises = new HashMap<>();
     private EventHandler routineEvent = new EventHandler();
     private EventHandler muscleInfoEvent = new EventHandler();
+
 
     //Properties
     public FirebaseUser getUser() {
@@ -73,6 +77,14 @@ public class DataManager {
 
     public HashMap<String, ArrayList<MuscleInfo>> getMuscleInfoes() {
         return muscleInfoes;
+    }
+
+    public HashMap<String, ArrayList<Exercise>> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(HashMap<String, ArrayList<Exercise>> exercises) {
+        this.exercises = exercises;
     }
 
     public void setMuscleInfoes(HashMap<String, ArrayList<MuscleInfo>> muscleInfoes) {
@@ -156,6 +168,7 @@ public class DataManager {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren())
                 {
                     updateMuscleInfo(snapshot);
+                    updateExercise(snapshot);
                 }
             }
 
@@ -166,17 +179,37 @@ public class DataManager {
         });
     }
 
+    private void updateExercise(DataSnapshot dataSnapshot)
+    {
+        Exercise firstExercise = Exercise.build(Exercise.class,dataSnapshot.getChildren().iterator().next());
+
+        //If the muscleinfos list contains the routine, then clear the list, if not add a new list
+        if(getExercises().containsKey(firstExercise.getRoutineUId()))
+            getExercises().get(firstExercise.getRoutineUId()).clear();
+        else
+            getExercises().put(firstExercise.getRoutineUId(),new ArrayList<Exercise>());
+
+        ArrayList<Exercise> list = getExercises().get(firstExercise.getRoutineUId());
+
+        for(DataSnapshot snapshot : dataSnapshot.getChildren())
+        {
+            Exercise exercise = Exercise.build(Exercise.class,snapshot);
+            list.add(exercise);
+        }
+    }
+
+
     private void updateMuscleInfo(DataSnapshot dataSnapshot)
     {
         Exercise firstExercise = Exercise.build(Exercise.class,dataSnapshot.getChildren().iterator().next());
 
         //If the muscleinfos list contains the routine, then clear the list, if not add a new list
-        if(DataManager.getInstance().getMuscleInfoes().containsKey(firstExercise.getRoutineUId()))
-            DataManager.getInstance().getMuscleInfoes().get(firstExercise.getRoutineUId()).clear();
+        if(getMuscleInfoes().containsKey(firstExercise.getRoutineUId()))
+            getMuscleInfoes().get(firstExercise.getRoutineUId()).clear();
         else
-            DataManager.getInstance().getMuscleInfoes().put(firstExercise.getRoutineUId(),new ArrayList<MuscleInfo>());
+            getMuscleInfoes().put(firstExercise.getRoutineUId(),new ArrayList<MuscleInfo>());
 
-        ArrayList<MuscleInfo> list = DataManager.getInstance().getMuscleInfoes().get(firstExercise.getRoutineUId());
+        ArrayList<MuscleInfo> list = getMuscleInfoes().get(firstExercise.getRoutineUId());
 
         //Update the muscleinfo list from the new exercises
         for(DataSnapshot snapshot : dataSnapshot.getChildren())

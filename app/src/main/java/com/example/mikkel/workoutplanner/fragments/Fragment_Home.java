@@ -57,7 +57,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
             return;
 
         recyclerView = view.findViewById(R.id.routinesRecyclerView);
-        updateAdapter(null,true);
+        updateAdapter();
 
     }
 
@@ -77,21 +77,10 @@ public class Fragment_Home extends NavigationFragment implements Notification
 
     }
 
-    private void updateAdapter(String routineUid, final boolean initUpdate)
+    private void updateAdapter()
     {
         //Used for the on recycler click event later in the code
         final Fragment_Home home = this;
-
-        ArrayList<MuscleInfo> checkList = null;
-
-        if(!initUpdate)
-        {
-            checkList = DataManager.getInstance().getMuscleInfoes().get(routineUid);
-            if(checkList == null)
-                return;
-        }
-
-        final  ArrayList<MuscleInfo> list = checkList;
 
         //The code below makes the firebase recycler view behavior
         Query query = FirebaseDatabase.getInstance().getReference().
@@ -140,12 +129,10 @@ public class Fragment_Home extends NavigationFragment implements Notification
                 if(DataManager.getInstance().getMuscleInfoes().containsKey(model.getuId()))
                     dataManagerList = DataManager.getInstance().getMuscleInfoes().get(model.getuId());
 
-                ArrayList<MuscleInfo> newList = !initUpdate ? list : dataManagerList;
-
-                if(newList == null)
+                if(dataManagerList == null)
                     return;
 
-                RoutineGridAdapter gridAdapter = new RoutineGridAdapter(getActivity(),newList,model.getuId());
+                RoutineGridAdapter gridAdapter = new RoutineGridAdapter(getActivity(),dataManagerList,model.getuId());
                 gridAdapter.getOnClick().subscribe(home);
                 holder.muscles.setAdapter(gridAdapter);
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -174,20 +161,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
         if(list != null && list.size() > 0)
         {
             Fragment_ExecuteRoutine executeRoutine = new Fragment_ExecuteRoutine();
-
-            //Set routine Uid
-            executeRoutine.getState().setExecuteRoutineUid(uId);
-
-            //Set routine name
-            ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
-            for (int i = 0; i < routines.size(); i++) {
-                if(routines.get(i).getuId().equals(uId))
-                {
-                    executeRoutine.getState().setRoutineName(routines.get(i).getName());
-                    break;
-                }
-
-            }
+            executeRoutine.getState().setRoutineuId(uId);
 
             FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
                     executeRoutine,false,
@@ -199,7 +173,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
     @Override
     public void onNotification(Object sender, Object data) {
         if(sender == DataManager.getInstance())
-            updateAdapter(data.toString(),false);
+            updateAdapter();
         else if(data instanceof String)
             executeRoutine(data.toString());
 

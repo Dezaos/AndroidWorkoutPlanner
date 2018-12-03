@@ -52,7 +52,6 @@ public class NavigationFragment extends Fragment{
 
     protected boolean statePresent()
     {
-        int hash = hashCode();
         return StateManager.getInstance().getStateHandler().contains(this);
     }
 
