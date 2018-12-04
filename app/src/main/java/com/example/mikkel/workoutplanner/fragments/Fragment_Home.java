@@ -1,27 +1,33 @@
 package com.example.mikkel.workoutplanner.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.mikkel.workoutplanner.Interfaces.Notification;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.adapters.RoutineGridAdapter;
+import com.example.mikkel.workoutplanner.data.Database.ExecuteRoutine;
 import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.utils.Animation;
-import com.example.mikkel.workoutplanner.utils.MuscleInfo;
+import com.example.mikkel.workoutplanner.data.Database.MuscleInfo;
 import com.example.mikkel.workoutplanner.viewholders.RoutineHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
@@ -29,9 +35,9 @@ import java.util.ArrayList;
 
 public class Fragment_Home extends NavigationFragment implements Notification
 {
-    private FirebaseRecyclerAdapter adapter;
+    private FirebaseRecyclerAdapter listAdapter;
+    private RoutineGridAdapter currentAdapter;
     private RecyclerView recyclerView;
-
 
     @Nullable
     @Override
@@ -46,7 +52,8 @@ public class Fragment_Home extends NavigationFragment implements Notification
         super.onResume();
         routinesSetup();
         DataManager.getInstance().getMuscleInfoEvent().subscribe(this);
-        adapter.startListening();
+        DataManager.getInstance().getCurrentRoutineEvent().subscribe(this);
+        listAdapter.startListening();
     }
 
     private void routinesSetup()
@@ -64,7 +71,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+        listAdapter.stopListening();
         DataManager.getInstance().getMuscleInfoEvent().unsubscribe(this);
     }
 
@@ -79,6 +86,82 @@ public class Fragment_Home extends NavigationFragment implements Notification
 
     private void updateAdapter()
     {
+        updateCurrentRoutine();
+        updateRoutineList();
+    }
+
+    private void updateCurrentRoutine()
+    {
+        final ExecuteRoutine executeRoutine = DataManager.getInstance().getCurrentRoutine();
+        View view = getView();
+
+        if (view == null)
+         return;
+
+        View currentRoutineView = view.findViewById(R.id.currentRoutine);
+        view.findViewById(R.id.homeCurrentRoutine).
+                setVisibility(executeRoutine == null ? View.GONE : View.VISIBLE);
+        if (executeRoutine == null)
+        {
+            currentRoutineView.setVisibility(View.GONE);
+            return;
+        }
+        currentRoutineView.setVisibility(View.VISIBLE);
+
+        CardView cardView = currentRoutineView.findViewById(R.id.currentRoutineCardView);
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                executeOldRoutine(executeRoutine);
+            }
+        });
+
+        TextView title = currentRoutineView.findViewById(R.id.currentRoutineTitle);
+        title.setText(executeRoutine.getName());
+
+        currentRoutineView.findViewById(R.id.currentStopButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //Ask the user if the ywant to stop their current routine
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Are you sure you want to stop your current routine?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        //Reset current execute routine
+                        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                        String uId = DataManager.getInstance().getUser().getUid();
+                        DatabaseReference ref = database.child(DataManager.Current_Execute_Routines_PATH_ID).child(uId).child("UserRoutine");
+                        ref.setValue(null);
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                builder.create();
+                builder.show();
+            }
+        });
+
+        RecyclerView recyclerView = currentRoutineView.findViewById(R.id.currentMusclesRecyclerView);
+        recyclerView.setNestedScrollingEnabled(true);
+        recyclerView.setLayoutManager(
+                new GridLayoutManager(getActivity(),3,GridLayoutManager.VERTICAL,true));
+        currentAdapter = new RoutineGridAdapter(
+                getActivity(),executeRoutine.getMuscleInfos(),
+                executeRoutine.getuId());
+        recyclerView.setAdapter(currentAdapter);
+
+    }
+
+    private void updateRoutineList()
+    {
         //Used for the on recycler click event later in the code
         final Fragment_Home home = this;
 
@@ -92,8 +175,8 @@ public class Fragment_Home extends NavigationFragment implements Notification
                 new FirebaseRecyclerOptions.Builder<Routine>().
                         setQuery(query,Routine.class).build();
 
-        //This created the adapter
-        adapter = new FirebaseRecyclerAdapter<Routine, RoutineHolder>(options) {
+        //This created the listAdapter
+        listAdapter = new FirebaseRecyclerAdapter<Routine, RoutineHolder>(options) {
             @NonNull
             @Override
             public RoutineHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -112,8 +195,11 @@ public class Fragment_Home extends NavigationFragment implements Notification
                 holder.editButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
                         Fragment_Routines routines = new Fragment_Routines();
                         routines.changeCurrentTab(model.getuId());
+
+
 
                         //This opens the edit exercise fragment
                         FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
@@ -138,44 +224,110 @@ public class Fragment_Home extends NavigationFragment implements Notification
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        executeRoutine(model.getuId());
+                        executeNewRoutine(model.getuId());
                     }
                 });
                 holder.muscles.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        executeRoutine(model.getuId());
+                        executeNewRoutine(model.getuId());
                     }
                 });
             }
         };
 
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(listAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter.startListening();
+        listAdapter.startListening();
     }
 
-    private void executeRoutine(String uId)
+    private void executeOldRoutine(ExecuteRoutine executeRoutine)
+    {
+
+        Fragment_ExecuteRoutine executeRoutineFragment = new Fragment_ExecuteRoutine();
+        executeRoutineFragment.getState().setRoutineuId(executeRoutine.getuId());
+        executeRoutineFragment.getState().setExecuteRoutine(executeRoutine);
+
+        FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
+                executeRoutineFragment,false,
+                new Animation(R.anim.enter_from_right,R.anim.exit_to_left,
+                        R.anim.enter_from_left,R.anim.exit_to_right));
+    }
+
+    private void executeNewRoutine(final String uId)
+    {
+        if(DataManager.getInstance().getCurrentRoutine() != null)
+        {
+            //Ask the user if the ywant to stop their current routine
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Are you sure you want to override your current routine?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    startRoutine(uId);
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            builder.create();
+            builder.show();
+        }
+        else
+        {
+            startRoutine(uId);
+        }
+
+
+    }
+
+    private void startRoutine(String uId)
     {
         ArrayList<MuscleInfo> list = DataManager.getInstance().getMuscleInfoes().get(uId);
         if(list != null && list.size() > 0)
         {
-            Fragment_ExecuteRoutine executeRoutine = new Fragment_ExecuteRoutine();
-            executeRoutine.getState().setRoutineuId(uId);
+            Fragment_ExecuteRoutine executeRoutineFragment = new Fragment_ExecuteRoutine();
+            executeRoutineFragment.getState().setRoutineuId(uId);
+
+            ArrayList<MuscleInfo> muscleInfos = DataManager.getInstance().getMuscleInfoes().get(uId);
+            ArrayList<MuscleInfo> newMuscleslist = (ArrayList<MuscleInfo>) muscleInfos.clone();
+            ExecuteRoutine executeRoutine = new ExecuteRoutine();
+
+            ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
+            Routine routine = null;
+
+            for (int i = 0; i < routines.size() ; i++) {
+                if(routines.get(i).getuId().equals(uId))
+                {
+                    routine = routines.get(i);
+                    break;
+                }
+            }
+
+            if(routine != null)
+                executeRoutine.convert(routine);
+
+            executeRoutine.setMuscleInfos(newMuscleslist);
+            executeRoutineFragment.getState().setExecuteRoutine(executeRoutine);
 
             FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
-                    executeRoutine,false,
+                    executeRoutineFragment,false,
                     new Animation(R.anim.enter_from_right,R.anim.exit_to_left,
                             R.anim.enter_from_left,R.anim.exit_to_right));
         }
     }
+
 
     @Override
     public void onNotification(Object sender, Object data) {
         if(sender == DataManager.getInstance())
             updateAdapter();
         else if(data instanceof String)
-            executeRoutine(data.toString());
+            executeNewRoutine(data.toString());
 
 
     }

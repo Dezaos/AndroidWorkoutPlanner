@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.utils.EventHandler;
-import com.example.mikkel.workoutplanner.utils.MuscleInfo;
+import com.example.mikkel.workoutplanner.data.Database.MuscleInfo;
 import com.example.mikkel.workoutplanner.viewholders.RoutineGridElementHolder;
 
 import java.util.ArrayList;

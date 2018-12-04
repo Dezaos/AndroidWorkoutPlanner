@@ -7,10 +7,31 @@
 
     <include layout="@layout/tool_bar" />
 
-    <Button
-        android:id="@+id/testButton"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:text="1"
-        android:background="@drawable/circle" />
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/executeRoutineRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+            </android.support.v7.widget.RecyclerView>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/exerciseDoneButton"
+                android:text="Done"
+                android:layout_gravity="right"
+                android:layout_marginRight="10dp"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

@@ -4,13 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.example.mikkel.workoutplanner.MainActivity;
+import com.example.mikkel.workoutplanner.data.Database.ExecuteRoutine;
 import com.example.mikkel.workoutplanner.data.Database.Exercise;
 import com.example.mikkel.workoutplanner.utils.CollectionUtils;
 import com.example.mikkel.workoutplanner.utils.EventHandler;
 import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.example.mikkel.workoutplanner.utils.ListUtils;
-import com.example.mikkel.workoutplanner.utils.MuscleInfo;
+import com.example.mikkel.workoutplanner.data.Database.MuscleInfo;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -47,9 +48,10 @@ public class DataManager {
     private ArrayList<Routine> routines = new ArrayList<>();
     private HashMap<String,ArrayList<MuscleInfo>> muscleInfoes = new HashMap<>();
     private HashMap<String,ArrayList<Exercise>> exercises = new HashMap<>();
+    private ExecuteRoutine currentRoutine;
     private EventHandler routineEvent = new EventHandler();
     private EventHandler muscleInfoEvent = new EventHandler();
-
+    private EventHandler currentRoutineEvent = new EventHandler();
 
     //Properties
     public FirebaseUser getUser() {
@@ -93,6 +95,14 @@ public class DataManager {
 
     public EventHandler getMuscleInfoEvent() {
         return muscleInfoEvent;
+    }
+
+    public EventHandler getCurrentRoutineEvent() {
+        return currentRoutineEvent;
+    }
+
+    public ExecuteRoutine getCurrentRoutine() {
+        return currentRoutine;
     }
 
     //Contructor
@@ -161,7 +171,7 @@ public class DataManager {
 
         //Update if a new exercise has been added
         FirebaseDatabase.getInstance().getReference().
-                child(DataManager.EXERCISES_PATH_ID).child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                child(EXERCISES_PATH_ID).child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
@@ -177,6 +187,63 @@ public class DataManager {
 
             }
         });
+
+        FirebaseDatabase.getInstance().getReference().
+                child(Current_Execute_Routines_PATH_ID).child(user.getUid()).
+                addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                ExecuteRoutine routine = ExecuteRoutine.build(ExecuteRoutine.class,dataSnapshot);
+                currentRoutine = routine;
+                currentRoutineEvent.notifyAllListeners(DataManager.getInstance(),currentRoutine);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                ExecuteRoutine routine = ExecuteRoutine.build(ExecuteRoutine.class,dataSnapshot);
+                currentRoutine = routine;
+                currentRoutineEvent.notifyAllListeners(DataManager.getInstance(),currentRoutine);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                currentRoutine = null;
+                currentRoutineEvent.notifyAllListeners(DataManager.getInstance(),currentRoutine);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        //
+        //FirebaseDatabase.getInstance().getReference().
+        //        child(Current_Execute_Routines_PATH_ID).child(user.getUid()).
+        //        addValueEventListener(new ValueEventListener() {
+        //    @Override
+        //    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        //        if(dataSnapshot.getChildren().iterator().next() != null)
+        //        {
+        //            ExecuteRoutine firstRoutine = ExecuteRoutine.build(ExecuteRoutine.class,
+        //                    dataSnapshot.getChildren().iterator().next());
+        //            currentRoutine = firstRoutine;
+        //
+        //        }
+        //        else
+        //            currentRoutine = null;
+        //        currentRoutineEvent.notifyAllListeners(this,currentRoutine);
+        //    }
+        //
+        //    @Override
+        //    public void onCancelled(@NonNull DatabaseError databaseError) {
+        //
+        //    }
+        //});
     }
 
     private void updateExercise(DataSnapshot dataSnapshot)

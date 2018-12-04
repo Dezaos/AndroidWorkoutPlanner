@@ -1,11 +1,21 @@
 package com.example.mikkel.workoutplanner.data.StateData;
 
+import android.support.design.widget.Snackbar;
+
+import com.example.mikkel.workoutplanner.data.Database.ExecuteExercise;
+import com.example.mikkel.workoutplanner.data.Database.ExecuteRoutine;
+
+import java.util.Timer;
+
 public class ExecuteRoutineFragmentState extends StateData
 {
     private int savedMenu;
-    private String routineName;
-    private String executeRoutineUid;
     private String routineuId;
+    private ExecuteRoutine executeRoutine = new ExecuteRoutine();
+    private boolean done;
+
+    private long savedTime;
+    private boolean showSnackbar;
 
     public int getSavedMenu() {
         return savedMenu;
@@ -15,20 +25,12 @@ public class ExecuteRoutineFragmentState extends StateData
         this.savedMenu = savedMenu;
     }
 
-    public String getRoutineName() {
-        return routineName;
+    public ExecuteRoutine getExecuteRoutine() {
+        return executeRoutine;
     }
 
-    public void setRoutineName(String routineName) {
-        this.routineName = routineName;
-    }
-
-    public String getExecuteRoutineUid() {
-        return executeRoutineUid;
-    }
-
-    public void setExecuteRoutineUid(String executeRoutineUid) {
-        this.executeRoutineUid = executeRoutineUid;
+    public void setExecuteRoutine(ExecuteRoutine executeRoutine) {
+        this.executeRoutine = executeRoutine;
     }
 
     public String getRoutineuId() {
@@ -37,5 +39,29 @@ public class ExecuteRoutineFragmentState extends StateData
 
     public void setRoutineuId(String routineuId) {
         this.routineuId = routineuId;
+    }
+
+    public long getSavedTime() {
+        return savedTime;
+    }
+
+    public void setSavedTime(long savedTime) {
+        this.savedTime = savedTime;
+    }
+
+    public boolean getShowSnackbar() {
+        return showSnackbar;
+    }
+
+    public void setShowSnackbar(boolean showSnackbar) {
+        this.showSnackbar = showSnackbar;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
     }
 }

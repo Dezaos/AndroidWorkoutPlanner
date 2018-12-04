@@ -1,4 +1,4 @@
-package com.example.mikkel.workoutplanner.utils;
+package com.example.mikkel.workoutplanner.data.Database;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,6 @@ public class MuscleInfo
 {
     private String muscle;
     private ArrayList<String> exercises = new ArrayList<>();
-
 
     public String getMuscle() {
         return muscle;
@@ -22,6 +21,9 @@ public class MuscleInfo
 
     public void setExercises(ArrayList<String> exercises) {
         this.exercises = exercises;
+    }
+
+    public MuscleInfo() {
     }
 
     public MuscleInfo(String musle, String firstExercisesUid) {

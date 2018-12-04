@@ -33,12 +33,12 @@ public class Fragment_Exercises extends Fragment
     private FirebaseRecyclerAdapter adapter;
     private String routineUid;
 
-    //Gets the routine uId from the state
+    //Gets the routine uId from
     public String getRoutineUId() {
         return routineUid;
     }
 
-    //Sets the routine uId for the state
+    //Sets the routine uId for
     public void setRoutineUId(String routineUId) {
         this.routineUid = routineUId;
     }
@@ -124,6 +124,13 @@ public class Fragment_Exercises extends Fragment
         super.onStop();
         if(adapter != null)
             adapter.stopListening();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(adapter != null)
+            adapter.startListening();
     }
 
     @Override
