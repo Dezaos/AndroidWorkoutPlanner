@@ -12,11 +12,9 @@ public class ExecuteRoutine extends FirebaseData
 {
     //Fields
     private String name;
-    private String uId;
     private ArrayList<ExecuteExercise> exercises = new ArrayList<>();
     private ArrayList<MuscleInfo> muscleInfos = new ArrayList<>();
-
-
+    private String date;
 
     //Properties
     public String getName() {
@@ -35,22 +33,20 @@ public class ExecuteRoutine extends FirebaseData
         this.exercises = exercises;
     }
 
-    @Override
-    public String getuId() {
-        return uId;
-    }
-
-    @Override
-    public void setuId(String uId) {
-        this.uId = uId;
-    }
-
     public ArrayList<MuscleInfo> getMuscleInfos() {
         return muscleInfos;
     }
 
     public void setMuscleInfos(ArrayList<MuscleInfo> muscleInfos) {
         this.muscleInfos = muscleInfos;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public ExecuteRoutine() {

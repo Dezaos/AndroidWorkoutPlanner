@@ -36,10 +36,11 @@ public class DataManager {
     }
 
     //Static fields
-    public static final String Routines_PATH_ID = "Routines";
+    public static final String ROUTINES_PATH_ID = "Routines";
     public static final String EXERCISES_PATH_ID = "Exercises";
-    public static final String Execute_Routines_PATH_ID = "ExecuteRoutines";
-    public static final String Current_Execute_Routines_PATH_ID = "CurrentExecuteRoutines";
+    public static final String EXECUTE_ROUTINES_PATH_ID = "ExecuteRoutines";
+    public static final String CURRENT_EXECUTE_ROUTINES_PATH_ID = "CurrentExecuteRoutines";
+    public static final String LAST_EXECUTE_ROUTINES_PATH_ID = "LastExecuteRoutines";
 
     //Fields
     private FirebaseAuth auth;
@@ -49,9 +50,11 @@ public class DataManager {
     private HashMap<String,ArrayList<MuscleInfo>> muscleInfoes = new HashMap<>();
     private HashMap<String,ArrayList<Exercise>> exercises = new HashMap<>();
     private ExecuteRoutine currentRoutine;
+    private ExecuteRoutine lastRoutine;
     private EventHandler routineEvent = new EventHandler();
     private EventHandler muscleInfoEvent = new EventHandler();
     private EventHandler currentRoutineEvent = new EventHandler();
+    private EventHandler lastRoutineEvent = new EventHandler();
 
     //Properties
     public FirebaseUser getUser() {
@@ -105,6 +108,14 @@ public class DataManager {
         return currentRoutine;
     }
 
+    public ExecuteRoutine getLastRoutine() {
+        return lastRoutine;
+    }
+
+    public EventHandler getLastRoutineEvent() {
+        return lastRoutineEvent;
+    }
+
     //Contructor
     private DataManager()
     {
@@ -123,7 +134,7 @@ public class DataManager {
     {
         //Routine subscription
         FirebaseDatabase.getInstance().getReference().
-                child(DataManager.Routines_PATH_ID).child(user.getUid()).addChildEventListener(
+                child(DataManager.ROUTINES_PATH_ID).child(user.getUid()).addChildEventListener(
                         new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -188,8 +199,9 @@ public class DataManager {
             }
         });
 
+        //Subscribe to current routine events
         FirebaseDatabase.getInstance().getReference().
-                child(Current_Execute_Routines_PATH_ID).child(user.getUid()).
+                child(CURRENT_EXECUTE_ROUTINES_PATH_ID).child(user.getUid()).
                 addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -221,29 +233,41 @@ public class DataManager {
 
             }
         });
-        //
-        //FirebaseDatabase.getInstance().getReference().
-        //        child(Current_Execute_Routines_PATH_ID).child(user.getUid()).
-        //        addValueEventListener(new ValueEventListener() {
-        //    @Override
-        //    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        //        if(dataSnapshot.getChildren().iterator().next() != null)
-        //        {
-        //            ExecuteRoutine firstRoutine = ExecuteRoutine.build(ExecuteRoutine.class,
-        //                    dataSnapshot.getChildren().iterator().next());
-        //            currentRoutine = firstRoutine;
-        //
-        //        }
-        //        else
-        //            currentRoutine = null;
-        //        currentRoutineEvent.notifyAllListeners(this,currentRoutine);
-        //    }
-        //
-        //    @Override
-        //    public void onCancelled(@NonNull DatabaseError databaseError) {
-        //
-        //    }
-        //});
+
+        //Subscribe to last routine events
+        FirebaseDatabase.getInstance().getReference().
+                child(LAST_EXECUTE_ROUTINES_PATH_ID).child(user.getUid()).
+                addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        ExecuteRoutine routine = ExecuteRoutine.build(ExecuteRoutine.class,dataSnapshot);
+                        lastRoutine = routine;
+                        lastRoutineEvent.notifyAllListeners(DataManager.getInstance(),currentRoutine);
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        ExecuteRoutine routine = ExecuteRoutine.build(ExecuteRoutine.class,dataSnapshot);
+                        lastRoutine = routine;
+                        lastRoutineEvent.notifyAllListeners(DataManager.getInstance(),currentRoutine);
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        lastRoutine = null;
+                        lastRoutineEvent.notifyAllListeners(DataManager.getInstance(),currentRoutine);
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     private void updateExercise(DataSnapshot dataSnapshot)

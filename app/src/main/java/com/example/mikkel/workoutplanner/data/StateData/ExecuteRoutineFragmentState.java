@@ -17,6 +17,9 @@ public class ExecuteRoutineFragmentState extends StateData
     private long savedTime;
     private boolean showSnackbar;
 
+    private String oldUId;
+    private boolean updateLast;
+
     public int getSavedMenu() {
         return savedMenu;
     }
@@ -63,5 +66,21 @@ public class ExecuteRoutineFragmentState extends StateData
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    public String getOldUId() {
+        return oldUId;
+    }
+
+    public void setOldUId(String oldUId) {
+        this.oldUId = oldUId;
+    }
+
+    public boolean getUpdateLast() {
+        return updateLast;
+    }
+
+    public void setUpdateLast(boolean updateLast) {
+        this.updateLast = updateLast;
     }
 }

@@ -181,7 +181,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
 
         Routine routine = new Routine();
         routine.setName((String)data);
-        DatabaseReference ref = database.child(DataManager.Routines_PATH_ID).
+        DatabaseReference ref = database.child(DataManager.ROUTINES_PATH_ID).
                 child(DataManager.getInstance().getUser().getUid()).push();
         routine.setuId(ref.getKey());
         ref.setValue(routine);
@@ -197,7 +197,7 @@ public class Fragment_Routines extends NavigationFragment implements OnPositiveC
                 if(tabsAdapter.getCount() > 0 && tabsAdapter.getCount() >= state.getSelectedTab())
                 {
                     String routineUid = tabsAdapter.getInfo(state.getSelectedTab()).getuId();
-                    FirebaseDatabase.getInstance().getReference().child(DataManager.Routines_PATH_ID).
+                    FirebaseDatabase.getInstance().getReference().child(DataManager.ROUTINES_PATH_ID).
                             child(DataManager.getInstance().getUser().getUid()).
                             child(routineUid).setValue(null);
 

@@ -53,6 +53,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
         routinesSetup();
         DataManager.getInstance().getMuscleInfoEvent().subscribe(this);
         DataManager.getInstance().getCurrentRoutineEvent().subscribe(this);
+        DataManager.getInstance().getLastRoutineEvent().subscribe(this);
         listAdapter.startListening();
     }
 
@@ -73,22 +74,64 @@ public class Fragment_Home extends NavigationFragment implements Notification
         super.onStop();
         listAdapter.stopListening();
         DataManager.getInstance().getMuscleInfoEvent().unsubscribe(this);
+        DataManager.getInstance().getCurrentRoutineEvent().unsubscribe(this);
+        DataManager.getInstance().getLastRoutineEvent().unsubscribe(this);
     }
 
     @Override
     protected void onCreateNavigation() {
         super.onCreateNavigation();
         setToolbarTitle("Home");
-
         MainActivity.Activity.getState().setMenuId(R.menu.menu);
-
     }
 
     private void updateAdapter()
     {
         updateCurrentRoutine();
+        updateLastRoutine();
         updateRoutineList();
     }
+
+    private void updateLastRoutine()
+    {
+        final ExecuteRoutine executeRoutine = DataManager.getInstance().getLastRoutine();
+        View view = getView();
+
+        if (view == null)
+            return;
+
+        View currentRoutineView = view.findViewById(R.id.lastRoutine);
+        view.findViewById(R.id.homeLastRoutineTitle).
+                setVisibility(executeRoutine == null ? View.GONE : View.VISIBLE);
+        if (executeRoutine == null)
+        {
+            currentRoutineView.setVisibility(View.GONE);
+            return;
+        }
+        currentRoutineView.setVisibility(View.VISIBLE);
+
+        CardView cardView = currentRoutineView.findViewById(R.id.lastRoutineCardView);
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                executeOldRoutine(executeRoutine,executeRoutine.getuId());
+            }
+        });
+
+        TextView title = currentRoutineView.findViewById(R.id.lastRoutineTitle);
+        title.setText(executeRoutine.getName());
+
+        RecyclerView recyclerView = currentRoutineView.findViewById(R.id.lastMusclesRecyclerView);
+        recyclerView.setNestedScrollingEnabled(true);
+        recyclerView.setLayoutManager(
+                new GridLayoutManager(getActivity(),3,GridLayoutManager.VERTICAL,true));
+        currentAdapter = new RoutineGridAdapter(
+                getActivity(),executeRoutine.getMuscleInfos(),
+                executeRoutine.getuId());
+        recyclerView.setAdapter(currentAdapter);
+    }
+
 
     private void updateCurrentRoutine()
     {
@@ -99,7 +142,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
          return;
 
         View currentRoutineView = view.findViewById(R.id.currentRoutine);
-        view.findViewById(R.id.homeCurrentRoutine).
+        view.findViewById(R.id.homeCurrentRoutineTitle).
                 setVisibility(executeRoutine == null ? View.GONE : View.VISIBLE);
         if (executeRoutine == null)
         {
@@ -113,7 +156,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                executeOldRoutine(executeRoutine);
+                executeOldRoutine(executeRoutine,null);
             }
         });
 
@@ -134,7 +177,9 @@ public class Fragment_Home extends NavigationFragment implements Notification
                         //Reset current execute routine
                         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
                         String uId = DataManager.getInstance().getUser().getUid();
-                        DatabaseReference ref = database.child(DataManager.Current_Execute_Routines_PATH_ID).child(uId).child("UserRoutine");
+                        DatabaseReference ref = database.
+                                child(DataManager.CURRENT_EXECUTE_ROUTINES_PATH_ID).
+                                child(uId).child("CurrentRoutine");
                         ref.setValue(null);
                     }
                 });
@@ -167,7 +212,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
 
         //The code below makes the firebase recycler view behavior
         Query query = FirebaseDatabase.getInstance().getReference().
-                child(DataManager.Routines_PATH_ID).
+                child(DataManager.ROUTINES_PATH_ID).
                 child(DataManager.getInstance().getUser().getUid()).
                 limitToLast(100);
 
@@ -241,12 +286,14 @@ public class Fragment_Home extends NavigationFragment implements Notification
         listAdapter.startListening();
     }
 
-    private void executeOldRoutine(ExecuteRoutine executeRoutine)
+    private void executeOldRoutine(ExecuteRoutine executeRoutine, String oldUid)
     {
 
         Fragment_ExecuteRoutine executeRoutineFragment = new Fragment_ExecuteRoutine();
         executeRoutineFragment.getState().setRoutineuId(executeRoutine.getuId());
         executeRoutineFragment.getState().setExecuteRoutine(executeRoutine);
+        executeRoutineFragment.getState().setOldUId(oldUid);
+        executeRoutineFragment.getState().setUpdateLast(true);
 
         FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
                 executeRoutineFragment,false,

@@ -2,35 +2,28 @@ package com.example.mikkel.workoutplanner.fragments;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
+import java.util.Calendar;
 
 import com.example.mikkel.workoutplanner.Interfaces.Notification;
 import com.example.mikkel.workoutplanner.MainActivity;
 import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.adapters.ExecuteExerciseAdapter;
 import com.example.mikkel.workoutplanner.data.Database.ExecuteRoutine;
-import com.example.mikkel.workoutplanner.data.Database.Exercise;
-import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.data.StateData.ExecuteRoutineFragmentState;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
-import com.example.mikkel.workoutplanner.data.Database.MuscleInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -58,7 +51,7 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
 
         view = inflater.inflate(R.layout.fragment_exexute_routine,container,false);
         setToolbarTitle(getState().getExecuteRoutine().getName());
-        updateDatabase();
+        updateCurrentDatabase();
 
         adapter = new ExecuteExerciseAdapter(getActivity(),getState().getExecuteRoutine().getExercises());
         RecyclerView recyclerView = view.findViewById(R.id.executeRoutineRecyclerView);
@@ -92,11 +85,15 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
                 getState().setDone(true);
 
                 //Reset current execute routine
-                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                String uId = DataManager.getInstance().getUser().getUid();
-                DatabaseReference ref = database.child(DataManager.Current_Execute_Routines_PATH_ID).child(uId).child("UserRoutine");
-                getState().getExecuteRoutine().setuId(ref.getKey());
-                ref.setValue(null);
+                if(getState().getOldUId() == null)
+                {
+                    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                    String uId = DataManager.getInstance().getUser().getUid();
+                    DatabaseReference ref = database.child(DataManager.CURRENT_EXECUTE_ROUTINES_PATH_ID).
+                            child(uId).child("CurrentRoutine");
+                    getState().getExecuteRoutine().setuId(ref.getKey());
+                    ref.setValue(null);
+                }
 
                 //Add the routine to the database
                 addRoutineToDatabase();
@@ -115,19 +112,77 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
 
     private void addRoutineToDatabase()
     {
-
-    }
-
-    private void updateDatabase()
-    {
-        //Update database
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         String uId = DataManager.getInstance().getUser().getUid();
-        DatabaseReference ref = database.child(DataManager.Current_Execute_Routines_PATH_ID).child(uId).child("UserRoutine");
-        getState().getExecuteRoutine().setuId(ref.getKey());
-        ref.setValue(getState().getExecuteRoutine());
+        ExecuteRoutine executeRoutine = getState().getExecuteRoutine();
+
+        //Get date and create uId
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        String newUid = String.valueOf(day)+String.valueOf(month)+String.valueOf(year);
+        String uIdToLastRoutine = null;
+
+        //Add the routine to the database if hte old uid is null, else update the old routine
+        if(getState().getOldUId() == null)
+        {
+            DatabaseReference newRoutineRef = database.
+                    child(DataManager.EXECUTE_ROUTINES_PATH_ID).
+                    child(uId).child(newUid).push();
+            executeRoutine.setuId(newRoutineRef.getKey());
+            executeRoutine.setDate(newUid);
+            newRoutineRef.setValue(executeRoutine);
+            uIdToLastRoutine = newRoutineRef.getKey();
+        }
+        else
+        {
+            DatabaseReference updateRef = database.
+                    child(DataManager.EXECUTE_ROUTINES_PATH_ID).
+                    child(uId).child(getState().getExecuteRoutine().getDate()).
+                    child(getState().getExecuteRoutine().getuId());
+            getState().getExecuteRoutine().setuId(getState().getOldUId());
+            updateRef.setValue(getState().getExecuteRoutine());
+        }
+
+        //Update the last routine in the database
+        if(getState().getOldUId() == null) {
+
+            //Clear the current last routine
+            database.child(DataManager.LAST_EXECUTE_ROUTINES_PATH_ID).
+                    child(uId).removeValue();
+
+            //Update the database
+            DatabaseReference lastRoutineRef = database.
+                    child(DataManager.LAST_EXECUTE_ROUTINES_PATH_ID).
+                    child(uId).child(uIdToLastRoutine);
+            executeRoutine.setuId(lastRoutineRef.getKey());
+            lastRoutineRef.setValue(executeRoutine);
+        }
+        else
+        {
+            DatabaseReference updateRef = database.
+                    child(DataManager.LAST_EXECUTE_ROUTINES_PATH_ID).
+                    child(uId).
+                    child(getState().getExecuteRoutine().getuId());
+            updateRef.setValue(getState().getExecuteRoutine());
+        }
     }
 
+    private void updateCurrentDatabase()
+    {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        String uId = DataManager.getInstance().getUser().getUid();
+
+        //Update database
+        if(getState().getOldUId() == null)
+        {
+            DatabaseReference ref = database.child(DataManager.CURRENT_EXECUTE_ROUTINES_PATH_ID)
+                    .child(uId).child("CurrentRoutine");
+            getState().getExecuteRoutine().setuId(ref.getKey());
+            ref.setValue(getState().getExecuteRoutine());
+        }
+    }
 
     @Override
     protected void onCreateNavigation() {
@@ -201,7 +256,7 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
     public void onPause() {
         super.onPause();
         if(!getState().isDone())
-            updateDatabase();
+            updateCurrentDatabase();
     }
 
     @Override
