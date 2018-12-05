@@ -12,6 +12,7 @@ import com.example.mikkel.workoutplanner.data.Database.Routine;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.example.mikkel.workoutplanner.utils.ListUtils;
 import com.example.mikkel.workoutplanner.data.Database.MuscleInfo;
+import com.example.mikkel.workoutplanner.utils.PathUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -46,15 +48,19 @@ public class DataManager {
     private FirebaseAuth auth;
     private boolean init;
     private FirebaseUser user;
+    private int dayValue;
     private ArrayList<Routine> routines = new ArrayList<>();
     private HashMap<String,ArrayList<MuscleInfo>> muscleInfoes = new HashMap<>();
     private HashMap<String,ArrayList<Exercise>> exercises = new HashMap<>();
+    private HashMap<String,ArrayList<ExecuteRoutine>> currentMonthRoutines = new HashMap<>();
+    private ArrayList<ValueEventListener> lastMonthListeners = new ArrayList<>();
     private ExecuteRoutine currentRoutine;
     private ExecuteRoutine lastRoutine;
     private EventHandler routineEvent = new EventHandler();
     private EventHandler muscleInfoEvent = new EventHandler();
     private EventHandler currentRoutineEvent = new EventHandler();
     private EventHandler lastRoutineEvent = new EventHandler();
+    private EventHandler monthRoutineEvent = new EventHandler();
 
     //Properties
     public FirebaseUser getUser() {
@@ -114,6 +120,14 @@ public class DataManager {
 
     public EventHandler getLastRoutineEvent() {
         return lastRoutineEvent;
+    }
+
+    public HashMap<String, ArrayList<ExecuteRoutine>> getCurrentMonthRoutines() {
+        return currentMonthRoutines;
+    }
+
+    public void setCurrentMonthRoutines(HashMap<String, ArrayList<ExecuteRoutine>> currentMonthRoutines) {
+        this.currentMonthRoutines = currentMonthRoutines;
     }
 
     //Contructor
@@ -374,5 +388,62 @@ public class DataManager {
     }
 
 
+    public void updateCurrentMonth(final int year, final int month)
+    {
+        currentMonthRoutines.clear();
 
+        DatabaseReference mainRef = FirebaseDatabase.getInstance().getReference().
+                child(EXECUTE_ROUTINES_PATH_ID).child(user.getUid());
+
+        for (int i = 0; i < lastMonthListeners.size(); i++) {
+            ValueEventListener listener = lastMonthListeners.get(i);
+            if(listener != null)
+                mainRef.removeEventListener(listener);
+        }
+        lastMonthListeners.clear();
+
+        for (int i = 0; i < 31; i++) {
+            dayValue = i;
+
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().
+                    child(EXECUTE_ROUTINES_PATH_ID).child(user.getUid()).
+                    child(PathUtils.getDatePath(year,month,dayValue));
+
+            ValueEventListener newListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    boolean anyWasAdded = false;
+
+                    String path = PathUtils.getDatePath(year,month,dayValue);
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren())
+                    {
+                        if(!currentMonthRoutines.containsKey(path))
+                            currentMonthRoutines.put(path,new ArrayList<ExecuteRoutine>());
+
+                        ExecuteRoutine executeRoutine = ExecuteRoutine.build(ExecuteRoutine.class,snapshot);
+
+                        if(executeRoutine != null)
+                        {
+                            currentMonthRoutines.get(path).add(executeRoutine);
+                            anyWasAdded = true;
+                        }
+
+                    }
+                    if(anyWasAdded)
+                        currentRoutineEvent.notifyAllListeners(DataManager.getInstance(),path);
+                }
+
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+
+            ref.addValueEventListener(newListener);
+            lastMonthListeners.add(newListener);
+        }
+
+    }
 }

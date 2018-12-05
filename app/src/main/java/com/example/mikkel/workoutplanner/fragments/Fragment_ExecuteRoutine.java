@@ -21,6 +21,7 @@ import com.example.mikkel.workoutplanner.adapters.ExecuteExerciseAdapter;
 import com.example.mikkel.workoutplanner.data.Database.ExecuteRoutine;
 import com.example.mikkel.workoutplanner.data.StateData.ExecuteRoutineFragmentState;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
+import com.example.mikkel.workoutplanner.utils.PathUtils;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -121,7 +122,7 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        String newUid = String.valueOf(day)+String.valueOf(month)+String.valueOf(year);
+        String newUid = PathUtils.getDatePath(year,month,day);
         String uIdToLastRoutine = null;
 
         //Add the routine to the database if hte old uid is null, else update the old routine
@@ -134,6 +135,18 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
             executeRoutine.setDate(newUid);
             newRoutineRef.setValue(executeRoutine);
             uIdToLastRoutine = newRoutineRef.getKey();
+
+            DatabaseReference newRoutineRef1 = database.
+                    child(DataManager.EXECUTE_ROUTINES_PATH_ID).
+                    child(uId).child(PathUtils.getDatePath(year,month,day+1)).push();
+            executeRoutine.setuId(newRoutineRef.getKey());
+            newRoutineRef1.setValue(executeRoutine);
+
+            DatabaseReference newRoutineRef2 = database.
+                    child(DataManager.EXECUTE_ROUTINES_PATH_ID).
+                    child(uId).child(PathUtils.getDatePath(year,month,day+3)).push();
+            executeRoutine.setuId(newRoutineRef.getKey());
+            newRoutineRef2.setValue(executeRoutine);
         }
         else
         {

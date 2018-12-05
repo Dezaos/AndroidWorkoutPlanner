@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <include layout="@layout/tool_bar"/>
 
-    <CalendarView
+    <sun.bob.mcalendarview.MCalendarView
+        android:id="@+id/mainCalenderView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".Fragment_Calender">
 
-    </CalendarView>
+    </sun.bob.mcalendarview.MCalendarView>
 
 </LinearLayout>

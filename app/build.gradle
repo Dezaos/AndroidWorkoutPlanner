@@ -35,6 +35,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.5'
     implementation 'com.google.firebase:firebase-crash:16.2.1'
     implementation 'com.firebaseui:firebase-ui-database:4.2.1'
+    compile 'sun.bob:mcalendarview:1.0.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
