@@ -120,7 +120,7 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
         //Get date and create uId
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         String newUid = PathUtils.getDatePath(year,month,day);
         String uIdToLastRoutine = null;
@@ -136,17 +136,6 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
             newRoutineRef.setValue(executeRoutine);
             uIdToLastRoutine = newRoutineRef.getKey();
 
-            DatabaseReference newRoutineRef1 = database.
-                    child(DataManager.EXECUTE_ROUTINES_PATH_ID).
-                    child(uId).child(PathUtils.getDatePath(year,month,day+1)).push();
-            executeRoutine.setuId(newRoutineRef.getKey());
-            newRoutineRef1.setValue(executeRoutine);
-
-            DatabaseReference newRoutineRef2 = database.
-                    child(DataManager.EXECUTE_ROUTINES_PATH_ID).
-                    child(uId).child(PathUtils.getDatePath(year,month,day+3)).push();
-            executeRoutine.setuId(newRoutineRef.getKey());
-            newRoutineRef2.setValue(executeRoutine);
         }
         else
         {

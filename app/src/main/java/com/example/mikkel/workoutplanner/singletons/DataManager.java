@@ -13,6 +13,7 @@ import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
 import com.example.mikkel.workoutplanner.utils.ListUtils;
 import com.example.mikkel.workoutplanner.data.Database.MuscleInfo;
 import com.example.mikkel.workoutplanner.utils.PathUtils;
+import com.example.mikkel.workoutplanner.utils.ValueEventListenerWithParameter;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -53,7 +54,7 @@ public class DataManager {
     private HashMap<String,ArrayList<MuscleInfo>> muscleInfoes = new HashMap<>();
     private HashMap<String,ArrayList<Exercise>> exercises = new HashMap<>();
     private HashMap<String,ArrayList<ExecuteRoutine>> currentMonthRoutines = new HashMap<>();
-    private ArrayList<ValueEventListener> lastMonthListeners = new ArrayList<>();
+    private ArrayList<ValueEventListenerWithParameter> lastMonthListeners = new ArrayList<>();
     private ExecuteRoutine currentRoutine;
     private ExecuteRoutine lastRoutine;
     private EventHandler routineEvent = new EventHandler();
@@ -402,19 +403,21 @@ public class DataManager {
         }
         lastMonthListeners.clear();
 
-        for (int i = 0; i < 31; i++) {
+        for (int i = 1; i <= 31; i++) {
             dayValue = i;
+
+            String datePath = PathUtils.getDatePath(year,month,dayValue);
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().
                     child(EXECUTE_ROUTINES_PATH_ID).child(user.getUid()).
-                    child(PathUtils.getDatePath(year,month,dayValue));
+                    child(datePath);
 
-            ValueEventListener newListener = new ValueEventListener() {
+            ValueEventListenerWithParameter newListener = new ValueEventListenerWithParameter(i) {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     boolean anyWasAdded = false;
 
-                    String path = PathUtils.getDatePath(year,month,dayValue);
+                    String path = PathUtils.getDatePath(year,month,(int)getData());
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren())
                     {

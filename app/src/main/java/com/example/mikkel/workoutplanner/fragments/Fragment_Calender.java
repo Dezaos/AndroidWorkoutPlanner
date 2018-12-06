@@ -12,12 +12,17 @@ import com.example.mikkel.workoutplanner.R;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.utils.PathUtils;
 
+import java.util.Calendar;
+
 import sun.bob.mcalendarview.MCalendarView;
 import sun.bob.mcalendarview.listeners.OnMonthChangeListener;
 
 public class Fragment_Calender extends NavigationFragment implements Notification
 {
     MCalendarView calendarView;
+    int currentYear;
+    int currentMonth;
+    int currentDay;
 
     @Nullable
     @Override
@@ -28,6 +33,12 @@ public class Fragment_Calender extends NavigationFragment implements Notificatio
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        Calendar calendar = Calendar.getInstance();
+        currentYear = calendar.get(Calendar.YEAR);
+        currentMonth = calendar.get(Calendar.MONTH) + 1;
+        currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+
         calendarView = getView().findViewById(R.id.mainCalenderView);
         calendarView.setOnMonthChangeListener(new OnMonthChangeListener() {
             @Override
@@ -36,7 +47,7 @@ public class Fragment_Calender extends NavigationFragment implements Notificatio
                 DataManager.getInstance().updateCurrentMonth(year,month);
             }
         });
-
+        DataManager.getInstance().updateCurrentMonth(currentYear,currentMonth);
     }
 
     @Override
@@ -63,11 +74,16 @@ public class Fragment_Calender extends NavigationFragment implements Notificatio
 
     @Override
     public void onNotification(Object sender, Object data) {
-        String date = data.toString();
-        int year = Integer.getInteger(PathUtils.getYear(date));
-        int month = Integer.getInteger(PathUtils.getMonth(date));
-        int day = Integer.getInteger(PathUtils.getDay(date));
+        if(data != null)
+        {
+            String date = data.toString();
+            int year = Integer.parseInt(PathUtils.getYear(date));
+            int month = Integer.parseInt(PathUtils.getMonth(date));
+            int day = Integer.parseInt(PathUtils.getDay(date));
 
-        calendarView.markDate(year,month,day);
+            if(!(year == currentYear && month == currentMonth && day == currentDay))
+                calendarView.markDate(year,month,day);
+
+        }
     }
 }
