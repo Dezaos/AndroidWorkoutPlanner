@@ -15,6 +15,11 @@ public class ExecuteRoutine extends FirebaseData
     private ArrayList<ExecuteExercise> exercises = new ArrayList<>();
     private ArrayList<MuscleInfo> muscleInfos = new ArrayList<>();
     private String date;
+    private int year;
+    private int month;
+    private int day;
+    private int hourOfDay;
+    private int minutesOfDay;
 
     //Properties
     public String getName() {
@@ -35,6 +40,46 @@ public class ExecuteRoutine extends FirebaseData
 
     public ArrayList<MuscleInfo> getMuscleInfos() {
         return muscleInfos;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public int getHourOfDay() {
+        return hourOfDay;
+    }
+
+    public void setHourOfDay(int hourOfDay) {
+        this.hourOfDay = hourOfDay;
+    }
+
+    public int getMinutesOfDay() {
+        return minutesOfDay;
+    }
+
+    public void setMinutesOfDay(int minutesOfDay) {
+        this.minutesOfDay = minutesOfDay;
     }
 
     public void setMuscleInfos(ArrayList<MuscleInfo> muscleInfos) {
@@ -69,20 +114,20 @@ public class ExecuteRoutine extends FirebaseData
 
             for (int j = 0; j < size; j++) {
 
-                if(exercise.getType() == ExerciseType.Weight)
-                {
-                    newExercise.getElements().add(new ExecuteExerciseElement(
-                            exercise.getSets(),exercise.getTime(),0,0));
-                }
-                else
-                {
                     newExercise.getElements().add(new ExecuteExerciseElement(
                             exercise.getReps(),exercise.getTime(),0,0));
-                }
-
             }
             this.exercises.add(newExercise);
         }
         return this;
+    }
+
+    public void setDates(int year, int month, int day, int hour, int minutes)
+    {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hourOfDay = hour;
+        this.minutesOfDay = minutes;
     }
 }

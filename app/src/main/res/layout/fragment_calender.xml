@@ -2,17 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
+        <include layout="@layout/tool_bar"/>
 
-    <include layout="@layout/tool_bar"/>
-
-    <sun.bob.mcalendarview.MCalendarView
-        android:id="@+id/mainCalenderView"
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".Fragment_Calender">
-
-    </sun.bob.mcalendarview.MCalendarView>
-
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Test"
+        android:clickable="true"
+        android:background="?android:selectableItemBackground"/>
 </LinearLayout>

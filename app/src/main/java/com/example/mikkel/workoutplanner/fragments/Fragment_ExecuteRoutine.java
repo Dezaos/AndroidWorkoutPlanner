@@ -122,6 +122,9 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minutes = calendar.get(Calendar.MINUTE);
+
         String newUid = PathUtils.getDatePath(year,month,day);
         String uIdToLastRoutine = null;
 
@@ -133,6 +136,7 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
                     child(uId).child(newUid).push();
             executeRoutine.setuId(newRoutineRef.getKey());
             executeRoutine.setDate(newUid);
+            executeRoutine.setDates(year,month,day,hour,minutes);
             newRoutineRef.setValue(executeRoutine);
             uIdToLastRoutine = newRoutineRef.getKey();
 
@@ -145,29 +149,50 @@ public class Fragment_ExecuteRoutine extends NavigationFragment implements Notif
                     child(getState().getExecuteRoutine().getuId());
             getState().getExecuteRoutine().setuId(getState().getOldUId());
             updateRef.setValue(getState().getExecuteRoutine());
+
+            ExecuteRoutine lastRoutine = DataManager.getInstance().getLastRoutine();
+            //If the last update routine should not be updated, but the current routine is the last routine
+            //Then update the last routine anyway
+            if(!getState().getUpdateLast() &&
+                    lastRoutine != null &&
+                    lastRoutine.getuId().equals(getState().getOldUId()))
+            {
+                //Update the last routine if the current routien is equal to the current last routine
+                DatabaseReference lastRoutineRef = database.
+                        child(DataManager.LAST_EXECUTE_ROUTINES_PATH_ID).
+                        child(uId).child(lastRoutine.getuId());
+                executeRoutine.setuId(lastRoutineRef.getKey());
+                executeRoutine.setDates(year,month,day,hour,minutes);
+                lastRoutineRef.setValue(executeRoutine);
+            }
         }
 
         //Update the last routine in the database
-        if(getState().getOldUId() == null) {
-
+        if(getState().getUpdateLast())
+        {
+            //Remove old last routine
             //Clear the current last routine
             database.child(DataManager.LAST_EXECUTE_ROUTINES_PATH_ID).
                     child(uId).removeValue();
+            if(getState().getOldUId() == null) {
+                //Update the database
+                DatabaseReference lastRoutineRef = database.
+                        child(DataManager.LAST_EXECUTE_ROUTINES_PATH_ID).
+                        child(uId).child(uIdToLastRoutine);
+                executeRoutine.setuId(lastRoutineRef.getKey());
+                executeRoutine.setDates(year,month,day,hour,minutes);
+                lastRoutineRef.setValue(executeRoutine);
 
-            //Update the database
-            DatabaseReference lastRoutineRef = database.
-                    child(DataManager.LAST_EXECUTE_ROUTINES_PATH_ID).
-                    child(uId).child(uIdToLastRoutine);
-            executeRoutine.setuId(lastRoutineRef.getKey());
-            lastRoutineRef.setValue(executeRoutine);
-        }
-        else
-        {
-            DatabaseReference updateRef = database.
-                    child(DataManager.LAST_EXECUTE_ROUTINES_PATH_ID).
-                    child(uId).
-                    child(getState().getExecuteRoutine().getuId());
-            updateRef.setValue(getState().getExecuteRoutine());
+            }
+            else
+            {
+                DatabaseReference updateRef = database.
+                        child(DataManager.LAST_EXECUTE_ROUTINES_PATH_ID).
+                        child(uId).
+                        child(getState().getExecuteRoutine().getuId());
+                getState().getExecuteRoutine().setDates(year,month,day,hour,minutes);
+                updateRef.setValue(getState().getExecuteRoutine());
+            }
         }
     }
 

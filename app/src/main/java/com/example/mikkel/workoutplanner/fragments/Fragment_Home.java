@@ -288,7 +288,6 @@ public class Fragment_Home extends NavigationFragment implements Notification
 
     private void executeOldRoutine(ExecuteRoutine executeRoutine, String oldUid)
     {
-
         Fragment_ExecuteRoutine executeRoutineFragment = new Fragment_ExecuteRoutine();
         executeRoutineFragment.getState().setRoutineuId(executeRoutine.getuId());
         executeRoutineFragment.getState().setExecuteRoutine(executeRoutine);
@@ -343,6 +342,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
             ArrayList<MuscleInfo> muscleInfos = DataManager.getInstance().getMuscleInfoes().get(uId);
             ArrayList<MuscleInfo> newMuscleslist = (ArrayList<MuscleInfo>) muscleInfos.clone();
             ExecuteRoutine executeRoutine = new ExecuteRoutine();
+            executeRoutineFragment.getState().setUpdateLast(true);
 
             ArrayList<Routine> routines = DataManager.getInstance().getRoutines();
             Routine routine = null;
