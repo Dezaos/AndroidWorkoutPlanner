@@ -11,7 +11,9 @@ import com.example.mikkel.workoutplanner.utils.Animation;
 
 import java.util.ArrayList;
 
-//This singleton is used to make transitions to fragments
+/**
+ * This singleton is used to make transitions to fragments
+ */
 public class FragmentTransitionManager {
     private static final FragmentTransitionManager ourInstance = new FragmentTransitionManager();
     public static FragmentTransitionManager getInstance() {
@@ -25,6 +27,49 @@ public class FragmentTransitionManager {
     }
 
     private FragmentTransitionManager() {
+    }
+
+    /**
+     * This method is used to intialize fragments and add them to a fragment manager, has a lot of
+     * overloads
+     * @param activity
+     * @param fragment
+     * @param clear
+     * @param animation
+     * @param frameId
+     * @param tag
+     */
+    public void initializeFragment(AppCompatActivity activity, Fragment fragment,
+                                   boolean clear, Animation animation, int frameId, String tag)
+    {
+        //This creates the fragment transition
+        FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
+
+        //If clear is true, then clear the backstack
+        if(clear)
+        {
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            if(fragmentManager.getBackStackEntryCount() > 0)
+            {
+                fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+        }
+
+        if(animation != null)
+            animation.useAnimation(fragmentTransaction);
+
+        //Gets the frame id
+        int id = frameId == -1 ? R.id.mainFrame : frameId;
+
+        //If this is not a clear call, then add the new fragment to the backstack
+        if(!clear)
+            fragmentTransaction.addToBackStack(null);
+
+        fragmentTransaction.replace(id,fragment,tag);
+        fragmentTransaction.commit();
+
+        //Save current Transition
+        _currentFragmentTransition = fragmentTransaction;
     }
 
     public void initializeFragment(AppCompatActivity activity, Fragment fragment, boolean clear)
@@ -61,39 +106,5 @@ public class FragmentTransitionManager {
     {
         initializeFragment(activity,fragment,clear,animation,-1,tag);
     }
-
-    public void initializeFragment(AppCompatActivity activity, Fragment fragment,
-                                   boolean clear, Animation animation, int frameId, String tag)
-    {
-        //This creates the fragment transition
-        FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
-
-        //If clear is true, then clear the backstack
-        if(clear)
-        {
-            FragmentManager fragmentManager = activity.getSupportFragmentManager();
-            if(fragmentManager.getBackStackEntryCount() > 0)
-            {
-                fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
-        }
-
-        if(animation != null)
-            animation.useAnimation(fragmentTransaction);
-
-        //Gets the frame id
-        int id = frameId == -1 ? R.id.mainFrame : frameId;
-
-        //If this is not a clear call, then add the new fragment to the backstack
-        if(!clear)
-            fragmentTransaction.addToBackStack(null);
-
-        fragmentTransaction.replace(id,fragment,tag);
-        fragmentTransaction.commit();
-
-        //Save current Transition
-        _currentFragmentTransition = fragmentTransaction;
-    }
-
 
 }

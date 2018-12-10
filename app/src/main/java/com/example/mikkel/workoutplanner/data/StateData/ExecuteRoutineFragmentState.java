@@ -13,10 +13,8 @@ public class ExecuteRoutineFragmentState extends StateData
     private String routineuId;
     private ExecuteRoutine executeRoutine = new ExecuteRoutine();
     private boolean done;
-
     private long savedTime;
     private boolean showSnackbar;
-
     private String oldUId;
     private boolean updateLast;
 

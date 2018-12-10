@@ -16,6 +16,9 @@ import com.example.mikkel.workoutplanner.utils.StateHandler;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+/**
+ * This is a super class for the fragment that want to use my state system
+ */
 public class NavigationFragment extends Fragment{
 
     private final String STATEMESSAGE= "SaveState";
@@ -30,6 +33,13 @@ public class NavigationFragment extends Fragment{
         return null;
     }
 
+    /**
+     * This will always return a state, because if no state is presen for the stateholder,
+     *  then a state will be created
+     * @param type
+     * @param <T>
+     * @return
+     */
     protected <T extends StateData> T getSafeState(Class<T> type)
     {
         if(!statePresent()) {
@@ -50,6 +60,10 @@ public class NavigationFragment extends Fragment{
         return state;
     }
 
+    /**
+     * Check if a state for the state holder is present
+     * @return
+     */
     protected boolean statePresent()
     {
         return StateManager.getInstance().getStateHandler().contains(this);
@@ -61,6 +75,9 @@ public class NavigationFragment extends Fragment{
         onCreateNavigation();
     }
 
+    /**
+     * This is a default setup for the fragment, this can be overrided
+     */
     protected void onCreateNavigation()
     {
         View view = getView();
@@ -103,24 +120,39 @@ public class NavigationFragment extends Fragment{
         }
     }
 
+    /**
+     * Call this to clean the state
+     * @param fragment
+     * @param <T>
+     */
     protected <T extends NavigationFragment>void stateCleanup(NavigationFragment fragment)
     {
         StateHandler stateHandler = StateManager.getInstance().getStateHandler();
         stateHandler.removeState(fragment);
     }
 
+    /**
+     * This is called if a fragment is killed and not used anymore
+     */
     protected void onSafeStop()
     {
         stateCleanup(this);
     }
 
-    //This is to check if the fragment is still alive or is present in a fragment manager
+    /**
+     * This is to check if the fragment is still alive or is present in a fragment manager
+     * @return
+     */
     protected boolean isAlive()
     {
         return !(this.isRemoving() || this.getActivity() == null || this.isDetached()
                 || !this.isAdded() || this.getView() == null);
     }
 
+    /**
+     * This saves the hashcode for its state
+     * @param outState
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -132,6 +164,11 @@ public class NavigationFragment extends Fragment{
         super.setInitialSavedState(state);
     }
 
+    /**
+     * The class uses the save bundle to check if the old saved instance had a state and if it has,
+     * then get that state and make it owner this new fragment
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

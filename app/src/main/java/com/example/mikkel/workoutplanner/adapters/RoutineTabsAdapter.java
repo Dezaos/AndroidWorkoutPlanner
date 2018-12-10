@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class RoutineTabsAdapter extends FragmentPagerAdapter {
     private ArrayList<Pair<Fragment_Exercises, TabInfo>> tabs = new ArrayList<>();
 
+    //Every tabs has a Tabinfo, with the name of the tab and its routine uId
     public ArrayList<Pair<Fragment_Exercises, TabInfo>> getTabs() {
         return tabs;
     }
@@ -36,11 +37,6 @@ public class RoutineTabsAdapter extends FragmentPagerAdapter {
     public Fragment_Exercises getItem(int position) {
         return tabs.get(position).first;
     }
-
-    //@Override
-    //public long getItemId(int position) {
-    //    return tabs.get(position).first.hashCode();
-    //}
 
     public TabInfo getInfo(int position)
     {

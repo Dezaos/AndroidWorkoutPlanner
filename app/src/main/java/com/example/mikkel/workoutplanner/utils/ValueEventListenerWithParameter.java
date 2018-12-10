@@ -6,6 +6,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * A ValueEventListener with a object
+ */
 public class ValueEventListenerWithParameter implements ValueEventListener {
 
     private Object data;

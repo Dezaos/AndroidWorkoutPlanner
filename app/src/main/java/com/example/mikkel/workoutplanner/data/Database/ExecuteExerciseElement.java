@@ -2,11 +2,13 @@ package com.example.mikkel.workoutplanner.data.Database;
 
 public class ExecuteExerciseElement extends FirebaseData
 {
+    //Fields
     private int maxReps;
     private float maxTime;
     private int currentReps;
     private float currentTime;
 
+    //Propertiews
     public int getMaxReps() {
         return maxReps;
     }
@@ -39,6 +41,7 @@ public class ExecuteExerciseElement extends FirebaseData
         this.currentTime = currentTime;
     }
 
+    //Cpnstructors
     public ExecuteExerciseElement(int maxReps, float maxTime, int currentReps, float currentTime) {
         this.maxReps = maxReps;
         this.maxTime = maxTime;

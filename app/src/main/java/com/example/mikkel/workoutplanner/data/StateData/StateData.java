@@ -15,6 +15,8 @@ public class StateData <T extends NavigationFragment>
 {
     private String id;
     private Map<Integer,ViewState> _views = new HashMap<Integer, ViewState>();
+
+    //The owner of the state, is used to find the state when a it is needed
     private Object owner;
 
     public String getId() {

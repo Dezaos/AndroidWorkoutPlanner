@@ -97,6 +97,7 @@ public class ExecuteRoutine extends FirebaseData
     public ExecuteRoutine() {
     }
 
+    //This convers a routine to a execute routine
     public ExecuteRoutine convert(Routine routine)
     {
         name = routine.getName();

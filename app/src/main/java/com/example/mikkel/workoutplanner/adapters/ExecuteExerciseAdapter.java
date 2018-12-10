@@ -26,7 +26,11 @@ public class ExecuteExerciseAdapter extends RecyclerView.Adapter<ExecuteExercise
     private LayoutInflater inflater;
     private View view;
     private Context context;
+
+    //The max amount of colums for the grid
     private int maxColums = 6;
+
+    //Onclik event, is called when something in the adapter is clicked
     private EventHandler onClick = new EventHandler();
 
     public EventHandler getOnClick() {
@@ -51,6 +55,7 @@ public class ExecuteExerciseAdapter extends RecyclerView.Adapter<ExecuteExercise
         ExecuteExercise exercise = exercises.get(position);
         holder.title.setText(exercise.getName());
 
+        //Not finished, time is not correct, get values depented on which type the exercise is
         if(exercise.getType() == ExerciseType.Weight)
         {
             int sets = exercise.getSets();

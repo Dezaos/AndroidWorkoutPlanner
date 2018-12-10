@@ -3,6 +3,9 @@ package com.example.mikkel.workoutplanner.utils;
 import android.view.View;
 import android.view.animation.CycleInterpolator;
 
+/**
+ * This class is used to apply animations for views
+ */
 public class ViewAnimations
 {
     public static void blink(final View view, final long inDuration, final long outDuration, final float inAlpha, final float outAlpha)

@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.mikkel.workoutplanner.R;
 
+//Used for recyclerviews
 public class RoutineGridElementHolder extends RecyclerView.ViewHolder {
 
     public TextView title;

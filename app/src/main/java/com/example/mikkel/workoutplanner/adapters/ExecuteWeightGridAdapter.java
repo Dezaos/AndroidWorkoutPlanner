@@ -21,6 +21,8 @@ public class ExecuteWeightGridAdapter extends RecyclerView.Adapter<ExecuteExerci
     ArrayList<ExecuteExerciseElement> elements = new ArrayList<>();
     private LayoutInflater inflater;
     private View view;
+
+    //Onclik event, is called when something in the adapter is clicked
     private EventHandler onClick = new EventHandler();
 
     public EventHandler getOnClick() {
@@ -67,6 +69,7 @@ public class ExecuteWeightGridAdapter extends RecyclerView.Adapter<ExecuteExerci
         });
     }
 
+    //Hide the button if the reps is 0
     private void updateButton(ExecuteExerciseElement element,ExecuteExerciseElementHolder holder)
     {
         Drawable buttonBackground = view.getResources().getDrawable(

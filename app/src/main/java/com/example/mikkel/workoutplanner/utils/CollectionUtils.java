@@ -5,6 +5,12 @@ import java.util.Iterator;
 
 public class CollectionUtils
 {
+    /**
+     * Find and remove a object in a collection
+     * @param collection
+     * @param ob
+     * @return
+     */
     public static boolean findAndRemove(Collection collection, Object ob)
     {
         if(ob != null)
@@ -23,6 +29,12 @@ public class CollectionUtils
         return false;
     }
 
+    /**
+     * Remove a object that is equal t another object
+     * @param collection
+     * @param ob
+     * @return
+     */
     public static boolean removeByEquals(Collection collection, Object ob)
     {
         if(ob != null)
@@ -41,6 +53,14 @@ public class CollectionUtils
         return false;
     }
 
+    /**
+     * Find a object that is equal to another object
+     * @param type
+     * @param collection
+     * @param ob
+     * @param <T>
+     * @return
+     */
     public static <T> T findByEquals(Class<T> type, Collection collection, Object ob)
     {
         Iterator<T> iterator = collection.iterator();

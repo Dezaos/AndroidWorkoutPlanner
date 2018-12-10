@@ -18,8 +18,11 @@ public class RoutineGridAdapter extends RecyclerView.Adapter<RoutineGridElementH
 
     private LayoutInflater inflater;
     private ArrayList<MuscleInfo> data = new ArrayList<>();
-    private EventHandler onClick = new EventHandler();
     private String routineUid;
+
+
+    //Onclik event, is called when something in the adapter is clicked
+    private EventHandler onClick = new EventHandler();
 
     public EventHandler getOnClick() {
         return onClick;

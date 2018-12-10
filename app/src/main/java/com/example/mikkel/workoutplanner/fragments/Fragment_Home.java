@@ -100,9 +100,14 @@ public class Fragment_Home extends NavigationFragment implements Notification
         if (view == null)
             return;
 
+        //Get the last routine super view
         View currentRoutineView = view.findViewById(R.id.lastRoutine);
+
+        //Set if the title should be visible
         view.findViewById(R.id.homeLastRoutineTitle).
                 setVisibility(executeRoutine == null ? View.GONE : View.VISIBLE);
+
+        //If there is not a current routine, then hide the routine super view
         if (executeRoutine == null)
         {
             currentRoutineView.setVisibility(View.GONE);
@@ -110,8 +115,10 @@ public class Fragment_Home extends NavigationFragment implements Notification
         }
         currentRoutineView.setVisibility(View.VISIBLE);
 
+        //Get the cardview
         CardView cardView = currentRoutineView.findViewById(R.id.lastRoutineCardView);
 
+        //Add click listener for the cardview
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,9 +126,11 @@ public class Fragment_Home extends NavigationFragment implements Notification
             }
         });
 
+        //Get the title for the current routine at set it to the name of the routine
         TextView title = currentRoutineView.findViewById(R.id.lastRoutineTitle);
         title.setText(executeRoutine.getName());
 
+        //Setup the recyclerview
         RecyclerView recyclerView = currentRoutineView.findViewById(R.id.lastMusclesRecyclerView);
         recyclerView.setNestedScrollingEnabled(true);
         recyclerView.setLayoutManager(
@@ -141,9 +150,12 @@ public class Fragment_Home extends NavigationFragment implements Notification
         if (view == null)
          return;
 
+        //Get the current routine super view
         View currentRoutineView = view.findViewById(R.id.currentRoutine);
         view.findViewById(R.id.homeCurrentRoutineTitle).
                 setVisibility(executeRoutine == null ? View.GONE : View.VISIBLE);
+
+        //If there is not a current routine, then hide the routine super view
         if (executeRoutine == null)
         {
             currentRoutineView.setVisibility(View.GONE);
@@ -151,8 +163,10 @@ public class Fragment_Home extends NavigationFragment implements Notification
         }
         currentRoutineView.setVisibility(View.VISIBLE);
 
+        //Get the cardview
         CardView cardView = currentRoutineView.findViewById(R.id.currentRoutineCardView);
 
+        //Add click listener for the cardview
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -160,9 +174,11 @@ public class Fragment_Home extends NavigationFragment implements Notification
             }
         });
 
+        //Get the title for the current routine at set it to the name of the routine
         TextView title = currentRoutineView.findViewById(R.id.currentRoutineTitle);
         title.setText(executeRoutine.getName());
 
+        //If the stop button is pressed, then remove the current rotutine
         currentRoutineView.findViewById(R.id.currentStopButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -194,6 +210,7 @@ public class Fragment_Home extends NavigationFragment implements Notification
             }
         });
 
+        //Setup the recyclerview
         RecyclerView recyclerView = currentRoutineView.findViewById(R.id.currentMusclesRecyclerView);
         recyclerView.setNestedScrollingEnabled(true);
         recyclerView.setLayoutManager(
@@ -244,8 +261,6 @@ public class Fragment_Home extends NavigationFragment implements Notification
                         Fragment_Routines routines = new Fragment_Routines();
                         routines.changeCurrentTab(model.getuId());
 
-
-
                         //This opens the edit exercise fragment
                         FragmentTransitionManager.getInstance().initializeFragment(MainActivity.Activity,
                                 routines,true,
@@ -263,9 +278,12 @@ public class Fragment_Home extends NavigationFragment implements Notification
                 if(dataManagerList == null)
                     return;
 
+                //Setup the adapter
                 RoutineGridAdapter gridAdapter = new RoutineGridAdapter(getActivity(),dataManagerList,model.getuId());
                 gridAdapter.getOnClick().subscribe(home);
                 holder.muscles.setAdapter(gridAdapter);
+
+                //Set click listeners
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -286,6 +304,11 @@ public class Fragment_Home extends NavigationFragment implements Notification
         listAdapter.startListening();
     }
 
+    /**
+     * Call this to open the old routine in a new fragment
+     * @param executeRoutine
+     * @param oldUid
+     */
     private void executeOldRoutine(ExecuteRoutine executeRoutine, String oldUid)
     {
         Fragment_ExecuteRoutine executeRoutineFragment = new Fragment_ExecuteRoutine();
@@ -300,6 +323,10 @@ public class Fragment_Home extends NavigationFragment implements Notification
                         R.anim.enter_from_left,R.anim.exit_to_right));
     }
 
+    /**
+     * Call this to open a new routine in a new fragment
+     * @param uId
+     */
     private void executeNewRoutine(final String uId)
     {
         if(DataManager.getInstance().getCurrentRoutine() != null)
@@ -331,6 +358,10 @@ public class Fragment_Home extends NavigationFragment implements Notification
 
     }
 
+    /**
+     * From a routine uId, open a new fragment with that routine
+     * @param uId
+     */
     private void startRoutine(String uId)
     {
         ArrayList<MuscleInfo> list = DataManager.getInstance().getMuscleInfoes().get(uId);

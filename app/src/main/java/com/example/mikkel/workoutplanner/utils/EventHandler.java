@@ -4,6 +4,9 @@ import com.example.mikkel.workoutplanner.Interfaces.Notification;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used like delegates and events from C#
+ */
 public class EventHandler
 {
     private ArrayList<Notification> listeners = new ArrayList<>();

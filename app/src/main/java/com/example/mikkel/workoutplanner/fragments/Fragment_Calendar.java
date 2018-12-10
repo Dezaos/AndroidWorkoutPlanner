@@ -18,6 +18,7 @@ import com.example.mikkel.workoutplanner.data.Database.ExecuteRoutine;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.utils.Animation;
+import com.example.mikkel.workoutplanner.utils.CurrentDayDecorator;
 import com.example.mikkel.workoutplanner.utils.EventDecorator;
 import com.example.mikkel.workoutplanner.utils.OnClickListenerWithExeRoutineHashmap;
 import com.example.mikkel.workoutplanner.utils.PathUtils;
@@ -31,7 +32,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 
-public class Fragment_Calender extends NavigationFragment implements Notification, OnDateSelectedListener, OnMonthChangedListener {
+public class Fragment_Calendar extends NavigationFragment implements Notification, OnDateSelectedListener, OnMonthChangedListener {
     MaterialCalendarView calender;
 
     @Nullable
@@ -43,14 +44,20 @@ public class Fragment_Calender extends NavigationFragment implements Notificatio
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        //Get the calender and add listeners
         calender = getView().findViewById(R.id.calendarView);
         calender.setOnDateChangedListener(this);
         calender.setOnMonthChangedListener(this);
+
         CalendarDay date = calender.getCurrentDate();
+
+        //Update the current month in the data manager
         DataManager.getInstance().updateCurrentMonth(date.getYear(),date.getMonth());
         ViewGroup.LayoutParams layoutParams = calender.getLayoutParams();
         int markerRadius = 0;
 
+        //This handles if orientation size of the calendar
         if(getActivity().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE)
         {
@@ -66,7 +73,19 @@ public class Fragment_Calender extends NavigationFragment implements Notificatio
             markerRadius = 10;
         }
 
-        calender.addDecorator(new EventDecorator(getResources().getColor(R.color.colorPrimary),markerRadius));
+        //Get date values
+        Calendar dateCalendar = Calendar.getInstance();
+        int year = dateCalendar.get(Calendar.YEAR);
+        int month = dateCalendar.get(Calendar.MONTH) + 1;
+        int day = dateCalendar.get(Calendar.DAY_OF_MONTH);
+
+        //This adds decorators to the calender
+        calender.addDecorator(new EventDecorator(getResources().getColor(R.color.colorPrimary),
+                markerRadius));
+        calender.addDecorator(new CurrentDayDecorator(
+                getResources().getDrawable(R.color.inactive),
+                CalendarDay.from(year,month,day)));
+        calender.invalidateDecorators();
 
     }
 
@@ -114,10 +133,12 @@ public class Fragment_Calender extends NavigationFragment implements Notificatio
         if (executeRoutines == null && executeRoutines.size() == 0)
             return;
 
+        //If the current month only has one routine, then open it, or make dialog with the different routines
         if(executeRoutines.size() == 1)
             startRoutine(executeRoutines.get(0));
         else
         {
+            //Get the month's routine and assign a name to them for the dialog
             HashMap<String,ExecuteRoutine> executeRoutineHashMap = new HashMap<>();
             for (int i = 0; i < executeRoutines.size(); i++) {
                 ExecuteRoutine executeRoutine = executeRoutines.get(i);
@@ -130,16 +151,19 @@ public class Fragment_Calender extends NavigationFragment implements Notificatio
             }
 
             String[] notFinalTitles = new String[executeRoutineHashMap.size()];
-
             int indexer = 0;
+
+            //Add the routines to a array, the dialog needs a array and not a list
             for (String key : executeRoutineHashMap.keySet())
             {
                 notFinalTitles[indexer] = key;
                 indexer++;
             }
 
+            //A final array for the listeners
             final String[] titles = notFinalTitles;
 
+            //Build the dialog
             final AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
             builder.setTitle("Pick routine")
                     .setItems(titles, new OnClickListenerWithExeRoutineHashmap(executeRoutineHashMap) {

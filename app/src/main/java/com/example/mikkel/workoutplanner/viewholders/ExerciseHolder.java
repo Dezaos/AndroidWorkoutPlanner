@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.mikkel.workoutplanner.R;
 
+//Used for recyclerviews
 public class ExerciseHolder extends RecyclerView.ViewHolder
 {
     public TextView name;

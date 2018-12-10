@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.example.mikkel.workoutplanner.R;
 
+//Used for recyclerviews
 public class RoutineHolder extends RecyclerView.ViewHolder
 {
     public CardView cardView;

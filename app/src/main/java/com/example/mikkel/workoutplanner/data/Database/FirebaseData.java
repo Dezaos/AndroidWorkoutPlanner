@@ -5,8 +5,10 @@ import com.google.firebase.database.DataSnapshot;
 //This class is super class for data that is supposed to be stored in Firebase realtime database
 public class FirebaseData
 {
+    //Fields
     String uId;
 
+    //Properties
     public String getuId() {
         return uId;
     }

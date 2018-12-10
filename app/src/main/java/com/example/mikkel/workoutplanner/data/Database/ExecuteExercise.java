@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class ExecuteExercise extends FirebaseData
 {
+    //Fields
     private String name;
     private String muscle;
     private ExerciseType type;
@@ -15,6 +16,7 @@ public class ExecuteExercise extends FirebaseData
     private float time;
     private float km;
 
+    //Properties
     private ArrayList<ExecuteExerciseElement> elements = new ArrayList<>();
 
     public String getName() {
@@ -89,6 +91,7 @@ public class ExecuteExercise extends FirebaseData
         this.elements = elements;
     }
 
+    //Contructors
     public ExecuteExercise() {
     }
 

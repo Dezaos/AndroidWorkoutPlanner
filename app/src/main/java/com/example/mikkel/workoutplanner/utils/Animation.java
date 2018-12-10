@@ -48,6 +48,7 @@ public class Animation
         this.backStackAnimationOut = backStackAnimationOut;
     }
 
+    //Apply the animation to a FragmetTransition
     public void useAnimation(FragmentTransaction transaction)
     {
         if(getAnimationIn() != -1 &&

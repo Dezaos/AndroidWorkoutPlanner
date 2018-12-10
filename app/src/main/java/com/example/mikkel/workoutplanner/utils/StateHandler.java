@@ -9,6 +9,9 @@ import com.example.mikkel.workoutplanner.fragments.NavigationFragment;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class is used to handle states, states are used by fragments and activities to hold their state
+ */
 public class StateHandler
 {
     private Map<Object,StateData> states = new HashMap<Object, StateData>();

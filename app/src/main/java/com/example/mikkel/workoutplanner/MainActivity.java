@@ -14,7 +14,7 @@ import android.view.MenuItem;
 import com.example.mikkel.workoutplanner.singletons.DataManager;
 import com.example.mikkel.workoutplanner.singletons.FragmentTransitionManager;
 import com.example.mikkel.workoutplanner.data.StateData.MainActivityState;
-import com.example.mikkel.workoutplanner.fragments.Fragment_Calender;
+import com.example.mikkel.workoutplanner.fragments.Fragment_Calendar;
 
 import com.example.mikkel.workoutplanner.fragments.Fragment_Home;
 import com.example.mikkel.workoutplanner.fragments.Fragment_Login;
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_calender:
                     currentItemIndex = 2;
                     if(currentFragment == null)
-                        currentFragment = new Fragment_Calender();
+                        currentFragment = new Fragment_Calendar();
                     break;
             }
 

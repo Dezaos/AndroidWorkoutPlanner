@@ -1,5 +1,8 @@
 package com.example.mikkel.workoutplanner.utils;
 
+/**
+ * Used to store name and uId for a tab adapter
+ */
 public class TabInfo
 {
     private String name;

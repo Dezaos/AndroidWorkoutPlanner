@@ -371,7 +371,7 @@ public class DataManager {
     }
 
 
-    //Call this to run the logout behavior
+
     public void logout()
     {
         user = null;

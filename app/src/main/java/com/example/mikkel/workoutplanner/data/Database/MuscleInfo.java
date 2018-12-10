@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 public class MuscleInfo
 {
+    //Fields
     private String muscle;
     private ArrayList<String> exercises = new ArrayList<>();
 
+    //Properties
     public String getMuscle() {
         return muscle;
     }
@@ -23,6 +25,7 @@ public class MuscleInfo
         this.exercises = exercises;
     }
 
+    //Constructors
     public MuscleInfo() {
     }
 

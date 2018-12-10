@@ -1,5 +1,8 @@
 package com.example.mikkel.workoutplanner.utils;
 
+/**
+ * This class is to create and get paths for the firebase database
+ */
 public class PathUtils
 {
     public static String getDatePath(int year, int month, int day)

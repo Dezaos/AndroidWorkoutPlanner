@@ -3,6 +3,9 @@ package com.example.mikkel.workoutplanner.singletons;
 import com.example.mikkel.workoutplanner.utils.EventHandler;
 import com.example.mikkel.workoutplanner.utils.StateHandler;
 
+/**
+ *
+ */
 public class StateManager {
     //Singleton
     private static final StateManager ourInstance = new StateManager();

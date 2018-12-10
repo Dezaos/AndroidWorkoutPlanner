@@ -8,6 +8,9 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
+/**
+ * This class is used for the calender to decorate the days
+ */
 public class EventDecorator implements DayViewDecorator {
 
     private int color;

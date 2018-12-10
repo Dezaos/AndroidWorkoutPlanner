@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.example.mikkel.workoutplanner.R;
 
+//Used for recyclerviews
 public class ExecuteExerciseElementHolder extends RecyclerView.ViewHolder
 {
     public Button mainButton;
