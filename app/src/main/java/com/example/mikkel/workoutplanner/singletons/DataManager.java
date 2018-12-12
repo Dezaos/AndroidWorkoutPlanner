@@ -201,11 +201,21 @@ public class DataManager {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren())
+                if(dataSnapshot.getChildrenCount() <= 0)
                 {
-                    updateMuscleInfo(snapshot);
-                    updateExercise(snapshot);
+                    exercises.clear();
+                    muscleInfoes.clear();
+                    muscleInfoEvent.notifyAllListeners(this,null);
                 }
+                else
+                {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren())
+                    {
+                        updateMuscleInfo(snapshot);
+                        updateExercise(snapshot);
+                    }
+                }
+
             }
 
             @Override

@@ -7,7 +7,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +86,7 @@ public class Fragment_Exercises extends Fragment
             @Override
             //This applies values for the different views
             protected void onBindViewHolder(@NonNull ExerciseHolder holder, int position, @NonNull final Exercise model) {
-                updateCards(holder,position,model);
+                updateCard(holder,model);
             }
         };
 
@@ -153,7 +152,7 @@ public class Fragment_Exercises extends Fragment
                         R.anim.enter_from_left,R.anim.exit_to_right));
     }
 
-    private void updateCards(@NonNull ExerciseHolder holder, int position, @NonNull final Exercise model)
+    private void updateCard(@NonNull ExerciseHolder holder, @NonNull final Exercise model)
     {
         holder.name.setText(model.getName());
         holder.mucle.setText(model.getMuscle());
